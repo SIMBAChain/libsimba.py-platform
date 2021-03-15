@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "libsimba.py-platform"
+version = "0.1.0"
+description = ""
+authors = ["Adam Brinckman <abrinckm@gmail.com>"]
+
+packages = [
+    { include = "libsimba" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+requests = "^2.25.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+test = 'libsimba.simba:Simba.main'
