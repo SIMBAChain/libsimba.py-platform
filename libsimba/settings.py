@@ -14,4 +14,13 @@ BASE_AUTH_URL = "https://login.microsoftonline.com"
 AUTH_ENDPOINT = "/97fd3cb6-823b-4578-ab45-226a5925ce05/oauth2/v2.0/"
 
 BASE_API_URL = "https://api.sep.dev.simbachain.com"
-# APP_ENDPOINT = "/v2/apps/vipart/contract/vipart_oem_v2/"
+
+TEST_APP = "<set in local settings>"
+TEST_CONTRACT = "<set in local settings>"
+TEST_METHOD = "<set in local settings>"
+TEST_INPUTS = []
+
+try:
+    from libsimba.local_settings import *
+except:
+    pass
