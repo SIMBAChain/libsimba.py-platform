@@ -7,11 +7,18 @@ DEBUG = False
 PROJECT_PATH = dirname(__file__)
 
 #SCAAS API & Auth settings
+
+# Options: client_credentials (Default), pkce, password
+AUTH_FLOW = "client_credentials" 
+
+# [Optional] CLIENT_SECRET is only needed if using the client credentials flow.
+CLIENT_SECRET = os.getenv('CLIENT_SECRET', '<set in local settings>')
 CLIENT_ID = os.getenv('CLIENT_ID', '11cbd388-342e-4d19-a6ca-97aa56deaad3')
 SCOPE = "api://{}/scaas.access".format(CLIENT_ID)
 
 BASE_AUTH_URL = "https://login.microsoftonline.com"
-AUTH_ENDPOINT = "/97fd3cb6-823b-4578-ab45-226a5925ce05/oauth2/v2.0/"
+TENANT_ID = "<set in local settings>"
+AUTH_ENDPOINT = "/{}/oauth2/v2.0/".format(TENANT_ID)
 
 BASE_API_URL = "https://api.sep.dev.simbachain.com"
 
