@@ -32,7 +32,8 @@ class Simba:
     """
     @auth_required
     def list_applications(self, headers):
-        return requests.get(self.base_api_url, headers=headers)
+        r = requests.get(self.base_api_url, headers=headers)
+        return r.json()['results']
         
     """
     GET
@@ -121,7 +122,7 @@ class Simba:
     list bundle manifest BundleManifest
     """
     @auth_required
-    def list_bundle_manifest(self, headers, app_id, contract_name, bundle_hash, opts={}):
+    def get_manifest_for_bundle_from_bundle_hash(self, headers, app_id, contract_name, bundle_hash, opts={}):
         url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/bundle/{}/manifest/".format(app_id, contract_name, bundle_hash), opts)
         return requests.get(url, headers=headers)
 
@@ -141,9 +142,10 @@ class Simba:
     get contract instance DeployedContractInstance
     """
     @auth_required
-    def get_contract_instance(self, headers, app_id, contract_name, contract_id, opts={}):
+    def get_instance_address(self, headers, app_id, contract_name, contract_id, opts={}):
         url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/contracts/{}/".format(app_id, contract_name, contract_id), opts)
-        return requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers)
+        return r.json()['address']
 
     """
     GET
@@ -191,7 +193,7 @@ class Simba:
     list instance address method ContractMethod
     """
     @auth_required
-    def list_contract_address(self, headers, app_id, contract_name, identifier, method_name, opts={}):
+    def call_getter_by_address(self, headers, app_id, contract_name, identifier, method_name, opts={}):
         url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/address/{}/{}/".format(app_id, contract_name, identifier, method_name), opts)
         return requests.get(url, headers=headers)
 
@@ -200,12 +202,12 @@ class Simba:
     ​/v2​/apps​/{application}​/contract​/{contract_name}​/address​/{identifier}​/{method_name}​/
     post instance address method ContractMethod
     """
-    # @auth_required
-    # def submit_instance_method_by_address(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
-    #     headers['content-type'] = 'application/json'
-    #     payload = json.dumps(inputs)
-    #     url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/address/{}/{}/".format(app_id, contract_name, identifier, method_name), opts)
-    #     return requests.get(url, headers=headers, payload=payload)
+    @auth_required
+    def call_setter_by_address(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
+        headers['content-type'] = 'application/json'
+        payload = json.dumps(inputs)
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/address/{}/{}/".format(app_id, contract_name, identifier, method_name), opts)
+        return requests.post(url, headers=headers, data=payload)
 
     """
     GET
@@ -213,8 +215,8 @@ class Simba:
     list instance asset method ContractMethod
     """
     @auth_required
-    def list_contract_assets(self, headers, app_id, contract_name, identifier, method_name, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/address/{}/{}/".format(app_id, contract_name, identifier, method_name), opts)
+    def call_getter_by_asset(self, headers, app_id, contract_name, identifier, method_name, opts={}):
+        url = build_url(self.base_api_url, "​/v2​/apps​/{}​/contract​/{}​/asset​/{}​/{}​/".format(app_id, contract_name, identifier, method_name), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -222,12 +224,12 @@ class Simba:
     ​/v2​/apps​/{application}​/contract​/{contract_name}​/asset​/{identifier}​/{method_name}​/
     post instance asset method ContractMethod
     """
-    # @auth_required
-    # def submit_instance_method_by_asset(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
-    #     headers['content-type'] = 'application/json'
-    #     payload = json.dumps(inputs)
-    #     url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/asset/{}/{}".format(app_id, contract_name, identifier, method_name), opts)
-    #     return requests.get(url, headers=headers, payload=payload)
+    @auth_required
+    def create_instance_asset(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
+        headers['content-type'] = 'application/json'
+        payload = json.dumps(inputs)
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/asset/{}/{}".format(app_id, contract_name, identifier, method_name), opts)
+        return requests.post(url, headers=headers, data=payload)
 
     """
     GET
@@ -244,38 +246,74 @@ class Simba:
     ​/v2​/apps​/{application}​/contract​/{contract_name}​/{method_name}​/
     post method ContractMethod
     """
-    # @auth_required
-    # def submit_contract_method(self, headers, app_id, contract_name, method_name, inputs, opts={}):
-    #     headers['content-type'] = 'application/json'
-    #     payload = json.dumps(inputs)
-    #     url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/{}".format(app_id, contract_name, method_name), opts)
-    #     return requests.get(url, headers=headers, payload=payload)
+    @auth_required
+    def submit_contract_method(self, headers, app_id, contract_name, method_name, inputs, opts={}):
+        headers['content-type'] = 'application/json'
+        payload = json.dumps(inputs)
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/{}".format(app_id, contract_name, method_name), opts)
+        return requests.post(url, headers=headers, data=payload)
 
     """
     POST
     ​/v2​/apps​/{application}​/async​/contract​/{contract_name}​/address​/{identifier}​/{method_name}​/
     post async instance address method ContractMethod
     """
-    # @auth_required
-    # def submit_contract_method_by_address_async(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
-    #     headers['content-type'] = 'application/json'
-    #     payload = json.dumps(inputs)
-    #     url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/address/{}/{}".format(app_id, contract_name, identifier, method_name), opts)
-    #     return requests.post(url, headers=headers, payload=payload)
+    @auth_required
+    def call_setter_by_address_async(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
+        headers['content-type'] = 'application/json'
+        payload = json.dumps(inputs)
+        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/address/{}/{}".format(app_id, contract_name, identifier, method_name), opts)
+        return requests.post(url, headers=headers, data=payload)
 
     """
     POST
     ​/v2​/apps​/{application}​/async​/contract​/{contract_name}​/asset​/{identifier}​/{method_name}​/
     post async instance asset method ContractMethod
+    """
+    @auth_required
+    def create_instance_asset_async(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
+        headers['content-type'] = 'application/json'
+        payload = json.dumps(inputs)
+        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/asset/{}/{}".format(app_id, contract_name, identifier, method_name), opts)
+        return requests.post(url, headers=headers, data=payload)
+
+    """
     POST
     ​/v2​/apps​/{application}​/async​/contract​/{contract_name}​/{method_name}​/
     post async method ContractMethod
+    """
+    @auth_required
+    def submit_contract_method_async(self, headers, app_id, contract_name, method_name, inputs, opts={}):
+        headers['content-type'] = 'application/json'
+        payload = json.dumps(inputs)
+        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/{}".format(app_id, contract_name, method_name), opts)
+        return requests.post(url, headers=headers, data=payload)
+
+    """
     POST
     ​/v2​/apps​/{application}​/new​/{contract_name}​/
     create contract instance ContractInstance
+    """
+    @auth_required
+    def create_contract_instance(self, headers, app_id, contract_name, opts={}):
+        headers['content-type'] = 'application/json'
+        payload = json.dumps(inputs)
+        url = build_url(self.base_api_url, "/v2/apps/{}/new/{}/".format(app_id, contract_name), opts)
+        return requests.post(url, headers=headers, data=payload)
+
+    """
     POST
     ​/v2​/apps​/{application}​/transactions​/{identifier}​/
     submit signed transaction SignedTransaction
+    """
+    @auth_required
+    def create_contract_instance(self, headers, app_id, txn_id, txn, opts={}):
+        headers['content-type'] = 'application/json'
+        payload = json.dumps({'transaction': txn})
+        url = build_url(self.base_api_url, " ​/v2​/apps​/{}​/transactions​/{}​/".format(app_id, txn_id), opts)
+        return requests.post(url, headers=headers, data=payload)
+
+    """
     POST
     ​/v2​/apps​/{application}​/contract​/{contract_name}​/graphql​/
     post gql search Application
