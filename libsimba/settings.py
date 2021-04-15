@@ -2,7 +2,7 @@ import os
 
 from os.path import join, dirname
 
-DEBUG = False
+DEBUG = True
 
 PROJECT_PATH = dirname(__file__)
 

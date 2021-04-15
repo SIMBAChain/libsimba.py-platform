@@ -27,7 +27,7 @@ class Simba:
     # -------------------------------------------------
     """
     GET
-    ​/v2​/apps​/
+    /v2/apps/
     list Application
     """
     @auth_required
@@ -37,7 +37,7 @@ class Simba:
         
     """
     GET
-    ​/v2​/apps​/{application}​/
+    /v2/apps/{application}/
     retrieve Application
     """
     @auth_required
@@ -47,7 +47,7 @@ class Simba:
         
     """
     GET
-    ​/v2​/apps​/{application}​/transactions​/
+    /v2/apps/{application}/transactions/
     list application transactions Transaction
     """
     @auth_required
@@ -57,7 +57,7 @@ class Simba:
         
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/
+    /v2/apps/{application}/contract/{contract_name}/
     get contract MetadataDeployedContract
     """
     @auth_required
@@ -67,7 +67,7 @@ class Simba:
         
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/transactions​/
+    /v2/apps/{application}/contract/{contract_name}/transactions/
     list contract transactions Transaction
     """
     @auth_required
@@ -77,7 +77,7 @@ class Simba:
     
     """
     GET
-    ​/v2​/apps​/{application}​/contracts​/
+    /v2/apps/{application}/contracts/
     list contracts ExtendedDeployedContract
     """
     @auth_required
@@ -87,7 +87,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/validate​/{contract_name}​/{bundle_hash}​/
+    /v2/apps/{application}/validate/{contract_name}/{bundle_hash}/
     validate bundle BundleValidation
     """
     @auth_required
@@ -97,7 +97,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/bundle​/{bundle_hash}​/
+    /v2/apps/{application}/contract/{contract_name}/bundle/{bundle_hash}/
     get bundle BundleData
     """
     @auth_required
@@ -107,7 +107,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/bundle​/{bundle_hash}​/filename​/{file_name}​/
+    /v2/apps/{application}/contract/{contract_name}/bundle/{bundle_hash}/filename/{file_name}/
     get bundle file BundleData
     """
     @auth_required
@@ -118,7 +118,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/bundle​/{bundle_hash}​/manifest​/
+    /v2/apps/{application}/contract/{contract_name}/bundle/{bundle_hash}/manifest/
     list bundle manifest BundleManifest
     """
     @auth_required
@@ -128,7 +128,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/info​/
+    /v2/apps/{application}/contract/{contract_name}/info/
     list contract info ContractInfo
     """
     @auth_required
@@ -138,7 +138,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/contracts​/{contract_id}​/
+    /v2/apps/{application}/contract/{contract_name}/contracts/{contract_id}/
     get contract instance DeployedContractInstance
     """
     @auth_required
@@ -149,7 +149,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/contracts​/
+    /v2/apps/{application}/contract/{contract_name}/contracts/
     list contract instances DeployedContractInstance
     """
     @auth_required
@@ -159,7 +159,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/events​/{event_name}​/
+    /v2/apps/{application}/contract/{contract_name}/events/{event_name}/
     list events TransactionEvent
     """
     @auth_required
@@ -169,7 +169,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/receipt​/{hash}​/
+    /v2/apps/{application}/contract/{contract_name}/receipt/{hash}/
     get receipt TransactionReceipt
     """
     @auth_required
@@ -179,7 +179,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/transaction​/{hash}​/
+    /v2/apps/{application}/contract/{contract_name}/transaction/{hash}/
     get transaction TransactionDetail
     """
     @auth_required
@@ -189,7 +189,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/address​/{identifier}​/{method_name}​/
+    /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
     list instance address method ContractMethod
     """
     @auth_required
@@ -199,7 +199,7 @@ class Simba:
 
     """
     POST
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/address​/{identifier}​/{method_name}​/
+    /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
     post instance address method ContractMethod
     """
     @auth_required
@@ -211,17 +211,17 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/asset​/{identifier}​/{method_name}​/
+    /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
     list instance asset method ContractMethod
     """
     @auth_required
     def call_getter_by_asset(self, headers, app_id, contract_name, identifier, method_name, opts={}):
-        url = build_url(self.base_api_url, "​/v2​/apps​/{}​/contract​/{}​/asset​/{}​/{}​/".format(app_id, contract_name, identifier, method_name), opts)
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/asset/{}/{}/".format(app_id, contract_name, identifier, method_name), opts)
         return requests.get(url, headers=headers)
 
     """
     POST
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/asset​/{identifier}​/{method_name}​/
+    /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
     post instance asset method ContractMethod
     """
     @auth_required
@@ -233,7 +233,7 @@ class Simba:
 
     """
     GET
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/{method_name}​/
+    /v2/apps/{application}/contract/{contract_name}/{method_name}/
     list method ContractMethod
     """
     @auth_required
@@ -243,7 +243,7 @@ class Simba:
 
     """
     POST
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/{method_name}​/
+    /v2/apps/{application}/contract/{contract_name}/{method_name}/
     post method ContractMethod
     """
     @auth_required
@@ -255,7 +255,7 @@ class Simba:
 
     """
     POST
-    ​/v2​/apps​/{application}​/async​/contract​/{contract_name}​/address​/{identifier}​/{method_name}​/
+    /v2/apps/{application}/async/contract/{contract_name}/address/{identifier}/{method_name}/
     post async instance address method ContractMethod
     """
     @auth_required
@@ -267,7 +267,7 @@ class Simba:
 
     """
     POST
-    ​/v2​/apps​/{application}​/async​/contract​/{contract_name}​/asset​/{identifier}​/{method_name}​/
+    /v2/apps/{application}/async/contract/{contract_name}/asset/{identifier}/{method_name}/
     post async instance asset method ContractMethod
     """
     @auth_required
@@ -279,7 +279,7 @@ class Simba:
 
     """
     POST
-    ​/v2​/apps​/{application}​/async​/contract​/{contract_name}​/{method_name}​/
+    /v2/apps/{application}/async/contract/{contract_name}/{method_name}/
     post async method ContractMethod
     """
     @auth_required
@@ -291,7 +291,7 @@ class Simba:
 
     """
     POST
-    ​/v2​/apps​/{application}​/new​/{contract_name}​/
+    /v2/apps/{application}/new/{contract_name}/
     create contract instance ContractInstance
     """
     @auth_required
@@ -303,19 +303,19 @@ class Simba:
 
     """
     POST
-    ​/v2​/apps​/{application}​/transactions​/{identifier}​/
+    /v2/apps/{application}/transactions/{identifier}/
     submit signed transaction SignedTransaction
     """
     @auth_required
     def create_contract_instance(self, headers, app_id, txn_id, txn, opts={}):
         headers['content-type'] = 'application/json'
         payload = json.dumps({'transaction': txn})
-        url = build_url(self.base_api_url, " ​/v2​/apps​/{}​/transactions​/{}​/".format(app_id, txn_id), opts)
+        url = build_url(self.base_api_url, " /v2/apps/{}/transactions/{}/".format(app_id, txn_id), opts)
         return requests.post(url, headers=headers, data=payload)
 
     """
     POST
-    ​/v2​/apps​/{application}​/contract​/{contract_name}​/graphql​/
+    /v2/apps/{application}/contract/{contract_name}/graphql/
     post gql search Application
     """
 
