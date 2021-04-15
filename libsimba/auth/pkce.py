@@ -12,22 +12,22 @@ from libsimba.settings import CLIENT_ID, SCOPE, BASE_AUTH_URL, AUTH_ENDPOINT
 from libsimba.utils import build_url
 
 
-class Auth:
+class Pkce:
 
     access_token=None
 
     @staticmethod
     def main():
-        Auth.login()
+        Pkce.login()
     
     @staticmethod
     def login():
-        if Auth._is_authenticated():
-            return Auth.access_token
+        if Pkce._is_authenticated():
+            return Pkce.access_token
 
-        [code_verifier, code_challenge] = Auth._prepare_challenge()
+        [code_verifier, code_challenge] = Pkce._prepare_challenge()
 
-        thread = _thread.start_new_thread(Auth.start_server, (code_verifier,))
+        thread = _thread.start_new_thread(Pkce.start_server, (code_verifier,))
         sleep(1)
 
         query_params = {
@@ -41,10 +41,10 @@ class Auth:
 
         print(build_url(BASE_AUTH_URL, "{}authorize".format(AUTH_ENDPOINT), query_params))
 
-        while Auth.access_token is None:
+        while Pkce.access_token is None:
             pass
         
-        return Auth.access_token
+        return Pkce.access_token
 
     @staticmethod
     def start_server(code_verifier):
@@ -83,14 +83,14 @@ class Auth:
                 with open('./.token', 'w') as fd:
                     fd.write(access_token)
                 
-                Auth.access_token = access_token
+                Pkce.access_token = access_token
                 
         server = HTTPServer(('', 7201), CallbackHandler)
         server.serve_forever()
 
     @staticmethod
     def _is_authenticated():
-        if Auth.access_token is not None:
+        if Pkce.access_token is not None:
             return True
         
         if os.path.exists('./.token'):
@@ -101,7 +101,7 @@ class Auth:
                     # r = requests.get(whoami_url, headers={'Authorization': "Bearer {}".format(access_token)})
                     # if r.status_code != 200:
                         # return False
-                    Auth.access_token = access_token
+                    Pkce.access_token = access_token
                     return True
                 except:
                     return False
@@ -118,4 +118,4 @@ class Auth:
         return [code_verifier, code_challenge]
 
 if __name__ == '__main__':
-    Auth.main()
+    Pkce.main()
