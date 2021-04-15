@@ -8,7 +8,7 @@ import requests
 from urllib.parse import parse_qs
 from time import sleep
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from libsimba.settings import CLIENT_ID, CLIENT_SECRET, SCOPE, BASE_AUTH_URL, AUTH_ENDPOINT
+from libsimba.settings import CLIENT_ID, CLIENT_SECRET, SCOPE, BASE_AUTH_URL, AUTH_ENDPOINT, BASE_API_URL
 from libsimba.utils import build_url
 
 
@@ -59,11 +59,11 @@ class ClientCredentials:
         if os.path.exists('./.token'):
             with open('./.token', 'r') as fd:
                 access_token = fd.read()
-                # whoami_url = build_url(BASE_API_URL, "user/whoami/", {})
+                whoami_url = build_url(BASE_API_URL, "user/whoami/", {})
                 try:
-                    # r = requests.get(whoami_url, headers={'Authorization': "Bearer {}".format(access_token)})
-                    # if r.status_code != 200:
-                        # return False
+                    r = requests.get(whoami_url, headers={'Authorization': "Bearer {}".format(access_token)})
+                    if r.status_code != 200:
+                        return False
                     ClientCredentials.access_token = access_token
                     return True
                 except:
