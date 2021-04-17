@@ -3,6 +3,7 @@ import json
 from libsimba.decorators import auth_required
 from libsimba.utils import build_url
 
+
 class SimbaContract:
     def __init__(self, base_api_url, app_name, contract_name):
         self.app_name = app_name
