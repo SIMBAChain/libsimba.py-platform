@@ -3,11 +3,13 @@ import requests
 # DEBUG SETTINGS
 from libsimba.settings import DEBUG, TEST_APP, TEST_CONTRACT, TEST_METHOD, TEST_INPUTS
 
-# from libsimba.auth import Auth
 from libsimba.simba_contract import SimbaContract
 from libsimba.decorators import auth_required
 from libsimba.utils import build_url
 from libsimba.settings import BASE_API_URL
+
+import logging
+log = logging.getLogger(__name__)
 
 
 class Simba:
@@ -329,16 +331,16 @@ class Simba:
         
         simba = Simba(BASE_API_URL)
         contract = simba.get_contract(TEST_APP, TEST_CONTRACT)
-        print(BASE_API_URL, TEST_APP, TEST_CONTRACT)
+        log.info(BASE_API_URL, TEST_APP, TEST_CONTRACT)
 
-        r = contract.submit_method(TEST_METHOD, {'__Lemon': '00002', 'weight_oz': 3})
-        print(r.text)
+        r = contract.submit_method(TEST_METHOD, TEST_INPUTS)
+        log.info(r.text)
         assert (r.status_code >= 200 and r.status_code <= 299)
-        print(r.json())
+        log.info(r.json())
 
         r = contract.query_method(TEST_METHOD)
         assert (r.status_code >= 200 and r.status_code <= 299)
-        print(r.json())
+        log.info(r.json())
 
 
 if DEBUG is True and __name__ == '__main__':

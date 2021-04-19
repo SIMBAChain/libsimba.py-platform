@@ -1,5 +1,5 @@
+import json
 import os
-
 from os.path import join, dirname
 
 DEBUG = True
@@ -18,6 +18,14 @@ try:
 except ModuleNotFoundError as e1:
     # Ignore if the local_settings file is missing
     pass
+
+# Load from local_setting, then override with env var if present
+TEST_APP = os.getenv('SIMBA_APP', TEST_APP)
+TEST_CONTRACT = os.getenv('SIMBA_CONTRACT', TEST_CONTRACT)
+TEST_METHOD = os.getenv('SIMBA_METHOD', TEST_METHOD)
+test_input_json = os.getenv('SIMBA_INPUTS', None)
+if test_input_json:
+    TEST_INPUTS = json.loads(test_input_json)
 
 # SCAAS API & Auth settings
 

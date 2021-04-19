@@ -11,6 +11,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from libsimba.settings import CLIENT_ID, SCOPE, BASE_AUTH_URL, AUTH_ENDPOINT, BASE_API_URL
 from libsimba.utils import build_url
 
+import logging
+log = logging.getLogger(__name__)
+
 
 class Pkce:
 
@@ -39,7 +42,7 @@ class Pkce:
             "code_challenge_method": "S256"
         }
 
-        print(build_url(BASE_AUTH_URL, "{}authorize".format(AUTH_ENDPOINT), query_params))
+        log.debug(build_url(BASE_AUTH_URL, "{}authorize".format(AUTH_ENDPOINT), query_params))
 
         while Pkce.access_token is None:
             pass

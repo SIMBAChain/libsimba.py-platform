@@ -1,20 +1,15 @@
-import re
 import os
-import _thread
-import base64
-import hashlib
-import secrets
 import requests
-from urllib.parse import parse_qs
-from time import sleep
-from http.server import BaseHTTPRequestHandler, HTTPServer
 from libsimba.settings import CLIENT_ID, CLIENT_SECRET, SCOPE, BASE_AUTH_URL, AUTH_ENDPOINT, BASE_API_URL
 from libsimba.utils import build_url
+
+import logging
+log = logging.getLogger(__name__)
 
 
 class ClientCredentials:
 
-    access_token=None
+    access_token = None
 
     @staticmethod
     def main():
@@ -39,9 +34,8 @@ class ClientCredentials:
 
             access_token = r.json()['access_token']
         except Exception as e:
-            print(e)
+            log.error(e)
             return None
-
 
         if access_token is not None:
             with open('./.token', 'w') as fd:
@@ -68,6 +62,7 @@ class ClientCredentials:
                     return True
                 except:
                     return False
+
 
 if __name__ == '__main__':
     ClientCredentials.main()
