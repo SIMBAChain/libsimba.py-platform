@@ -1,3 +1,5 @@
+from typing import List, Optional
+
 import requests
 import json
 from libsimba.decorators import auth_required
@@ -13,19 +15,22 @@ class SimbaContract:
         self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
 
     @auth_required
-    def query_method(self, headers, method_name, opts={}):
+    def query_method(self, headers, method_name, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(self.contract_uri, method_name), opts)
         return requests.get(url, headers=headers)
     
     @auth_required
-    def submit_method(self, headers, method_name, inputs, opts={}):
+    def submit_method(self, headers, method_name, inputs, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(self.contract_uri, method_name), opts)
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
         return requests.post(url, headers=headers, data=payload)
 
     @auth_required
-    def submit_contract_method_with_files(self, headers, method_name, inputs, files=None, opts={}):
+    def submit_contract_method_with_files(self, headers, method_name, inputs, files=None, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(self.contract_uri, method_name), opts)
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
@@ -35,7 +40,9 @@ class SimbaContract:
             return requests.post(url, headers=headers, data=payload)
 
     @auth_required
-    def submit_contract_method_with_files_async(self, headers, method_name, inputs, files=None, opts={}):
+    def submit_contract_method_with_files_async(self, headers, method_name, inputs, files=None,
+                                                opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(self.async_contract_uri, method_name), opts)
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
@@ -45,11 +52,29 @@ class SimbaContract:
             return requests.post(url, headers=headers, data=payload)
 
     @auth_required
-    def get_transactions(self, headers, opts={}):
+    def get_transactions(self, headers, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/transactions/".format(self.contract_uri), opts)
         return requests.get(url, headers=headers)
 
     @auth_required
-    def validate_bundle_hash(self, headers, bundle_hash, opts={}):
+    def validate_bundle_hash(self, headers, bundle_hash, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/validate/{}/{}".format(self.app_name, self.contract_name, bundle_hash), opts)
+        return requests.get(url, headers=headers)
+
+    @auth_required
+    def get_transaction_statuses(self, headers, txn_hashes: List[str] = None, opts: Optional[dict] = None):
+        # transaction status for a list of txn hashes
+        # filter[transaction_hash.in] can be a key in opts, or the txn_hashes param
+        # if filter is not in the opts, and txn_hashes is given,
+        # this method correctly formats the filter string in opts
+        opts = opts or {}
+        if isinstance(txn_hashes, str):
+            txn_hashes = [txn_hashes]
+        if 'filter[transaction_hash.in]' not in opts and txn_hashes:
+            opts['filter[transaction_hash.in]'] = ','.join(txn_hashes)
+        url = build_url(self.base_api_url, "v2/apps/{}/contract/{}/transactions".format(
+            self.app_name, self.contract_name
+        ), opts)
         return requests.get(url, headers=headers)

@@ -1,4 +1,7 @@
 import json
+import os
+from typing import Optional
+
 import requests
 # DEBUG SETTINGS
 from libsimba.settings import DEBUG, TEST_APP, TEST_CONTRACT, TEST_METHOD, TEST_INPUTS
@@ -36,54 +39,59 @@ class Simba:
     def list_applications(self, headers):
         r = requests.get(self.base_api_url, headers=headers)
         return r.json()['results']
-        
+
     """
     GET
     /v2/apps/{application}/
     retrieve Application
     """
     @auth_required
-    def retrieve_application(self, headers, app_id, opts={}):
+    def retrieve_application(self, headers, app_id, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "/v2/apps/{}/".format(app_id), opts)
         return requests.get(url, headers=headers)
-        
+
     """
     GET
     /v2/apps/{application}/transactions/
     list application transactions Transaction
     """
     @auth_required
-    def list_application_transactions(self, headers, app_id, opts={}):
+    def list_application_transactions(self, headers, app_id, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "/v2/apps/{}/transactions/".format(app_id), opts)
         return requests.get(url, headers=headers)
-        
+
     """
     GET
     /v2/apps/{application}/contract/{contract_name}/
     get contract MetadataDeployedContract
     """
     @auth_required
-    def get_application_contract(self, headers, app_id, contract_name, opts={}):
+    def get_application_contract(self, headers, app_id, contract_name, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/".format(app_id, contract_name), opts)
         return requests.get(url, headers=headers)
-        
+
     """
     GET
     /v2/apps/{application}/contract/{contract_name}/transactions/
     list contract transactions Transaction
     """
     @auth_required
-    def list_contract_transactions(self, headers, app_id, contract_name, opts={}):
+    def list_contract_transactions(self, headers, app_id, contract_name, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/transactions/".format(app_id, contract_name), opts)
         return requests.get(url, headers=headers)
-    
+
     """
     GET
     /v2/apps/{application}/contracts/
     list contracts ExtendedDeployedContract
     """
     @auth_required
-    def list_contracts(self, headers, app_id, opts={}):
+    def list_contracts(self, headers, app_id, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "/v2/apps/{}/contracts/".format(app_id), opts)
         return requests.get(url, headers=headers)
 
@@ -93,8 +101,10 @@ class Simba:
     validate bundle BundleValidation
     """
     @auth_required
-    def validate_bundle(self, headers, app_id, contract_name, bundle_hash, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/validate/{}/{}/".format(app_id, contract_name, bundle_hash), opts)
+    def validate_bundle(self, headers, app_id, contract_name, bundle_hash, opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/validate/{}/{}/".format(
+            app_id, contract_name, bundle_hash), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -103,8 +113,10 @@ class Simba:
     get bundle BundleData
     """
     @auth_required
-    def get_bundle(self, headers, app_id, contract_name, bundle_hash, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/bundle/{}/".format(app_id, contract_name, bundle_hash), opts)
+    def get_bundle(self, headers, app_id, contract_name, bundle_hash, opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/bundle/{}/".format(
+            app_id, contract_name, bundle_hash), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -113,8 +125,10 @@ class Simba:
     get bundle file BundleData
     """
     @auth_required
-    def get_bundle_file(self, headers, app_id, contract_name, bundle_hash, file_name, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/bundle/{}/filename/{}/".format(app_id, contract_name, bundle_hash, file_name), opts)
+    def get_bundle_file(self, headers, app_id, contract_name, bundle_hash, file_name, opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/bundle/{}/filename/{}/".format(
+            app_id, contract_name, bundle_hash, file_name), opts)
         return requests.get(url, headers=headers)
 
 
@@ -124,8 +138,11 @@ class Simba:
     list bundle manifest BundleManifest
     """
     @auth_required
-    def get_manifest_for_bundle_from_bundle_hash(self, headers, app_id, contract_name, bundle_hash, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/bundle/{}/manifest/".format(app_id, contract_name, bundle_hash), opts)
+    def get_manifest_for_bundle_from_bundle_hash(self, headers, app_id, contract_name, bundle_hash,
+                                                 opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/bundle/{}/manifest/".format(
+            app_id, contract_name, bundle_hash), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -134,7 +151,8 @@ class Simba:
     list contract info ContractInfo
     """
     @auth_required
-    def list_contract_info(self, headers, app_id, contract_name, opts={}):
+    def list_contract_info(self, headers, app_id, contract_name, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/info".format(app_id, contract_name), opts)
         return requests.get(url, headers=headers)
 
@@ -144,7 +162,8 @@ class Simba:
     get contract instance DeployedContractInstance
     """
     @auth_required
-    def get_instance_address(self, headers, app_id, contract_name, contract_id, opts={}):
+    def get_instance_address(self, headers, app_id, contract_name, contract_id, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/contracts/{}/".format(app_id, contract_name, contract_id), opts)
         r = requests.get(url, headers=headers)
         return r.json()['address']
@@ -155,7 +174,8 @@ class Simba:
     list contract instances DeployedContractInstance
     """
     @auth_required
-    def list_contract_instances(self, headers, app_id, contract_name, opts={}):
+    def list_contract_instances(self, headers, app_id, contract_name, opts: Optional[dict] = None):
+        opts = opts or {}
         url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/contracts/".format(app_id, contract_name), opts)
         return requests.get(url, headers=headers)
 
@@ -165,8 +185,10 @@ class Simba:
     list events TransactionEvent
     """
     @auth_required
-    def list_events(self, headers, app_id, contract_name, event_name, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/events/{}/".format(app_id, contract_name, event_name), opts)
+    def list_events(self, headers, app_id, contract_name, event_name, opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/events/{}/".format(
+            app_id, contract_name, event_name), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -175,8 +197,10 @@ class Simba:
     get receipt TransactionReceipt
     """
     @auth_required
-    def get_receipt(self, headers, app_id, contract_name, receipt_hash, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/receipt/{}/".format(app_id, contract_name, receipt_hash), opts)
+    def get_receipt(self, headers, app_id, contract_name, receipt_hash, opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/receipt/{}/".format(
+            app_id, contract_name, receipt_hash), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -185,8 +209,10 @@ class Simba:
     get transaction TransactionDetail
     """
     @auth_required
-    def get_transaction(self, headers, app_id, contract_name, transaction_hash, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/transaction/{}/".format(app_id, contract_name, transaction_hash), opts)
+    def get_transaction(self, headers, app_id, contract_name, transaction_hash, opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/transaction/{}/".format(
+            app_id, contract_name, transaction_hash), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -195,8 +221,11 @@ class Simba:
     list instance address method ContractMethod
     """
     @auth_required
-    def call_getter_by_address(self, headers, app_id, contract_name, identifier, method_name, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/address/{}/{}/".format(app_id, contract_name, identifier, method_name), opts)
+    def call_getter_by_address(self, headers, app_id, contract_name, identifier, method_name,
+                               opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/address/{}/{}/".format(
+            app_id, contract_name, identifier, method_name), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -205,10 +234,13 @@ class Simba:
     post instance address method ContractMethod
     """
     @auth_required
-    def call_setter_by_address(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
+    def call_setter_by_address(self, headers, app_id, contract_name, identifier, method_name, inputs,
+                               opts: Optional[dict] = None):
+        opts = opts or {}
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/address/{}/{}/".format(app_id, contract_name, identifier, method_name), opts)
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/address/{}/{}/".format(
+            app_id, contract_name, identifier, method_name), opts)
         return requests.post(url, headers=headers, data=payload)
 
     """
@@ -217,8 +249,11 @@ class Simba:
     list instance asset method ContractMethod
     """
     @auth_required
-    def call_getter_by_asset(self, headers, app_id, contract_name, identifier, method_name, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/asset/{}/{}/".format(app_id, contract_name, identifier, method_name), opts)
+    def call_getter_by_asset(self, headers, app_id, contract_name, identifier, method_name,
+                             opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/asset/{}/{}/".format(
+            app_id, contract_name, identifier, method_name), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -227,10 +262,13 @@ class Simba:
     post instance asset method ContractMethod
     """
     @auth_required
-    def create_instance_asset(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
+    def create_instance_asset(self, headers, app_id, contract_name, identifier, method_name, inputs,
+                              opts: Optional[dict] = None):
+        opts = opts or {}
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/asset/{}/{}".format(app_id, contract_name, identifier, method_name), opts)
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/asset/{}/{}".format(
+            app_id, contract_name, identifier, method_name), opts)
         return requests.post(url, headers=headers, data=payload)
 
     """
@@ -239,8 +277,10 @@ class Simba:
     list method ContractMethod
     """
     @auth_required
-    def list_contract_methods(self, headers, app_id, contract_name, method_name, opts={}):
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/{}/".format(app_id, contract_name, method_name), opts)
+    def list_contract_methods(self, headers, app_id, contract_name, method_name, opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/{}/".format(
+            app_id, contract_name, method_name), opts)
         return requests.get(url, headers=headers)
 
     """
@@ -249,10 +289,12 @@ class Simba:
     post method ContractMethod
     """
     @auth_required
-    def submit_contract_method(self, headers, app_id, contract_name, method_name, inputs, opts={}):
+    def submit_contract_method(self, headers, app_id, contract_name, method_name, inputs, opts: Optional[dict] = None):
+        opts = opts or {}
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
-        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/{}".format(app_id, contract_name, method_name), opts)
+        url = build_url(self.base_api_url, "/v2/apps/{}/contract/{}/{}".format(
+            app_id, contract_name, method_name), opts)
         return requests.post(url, headers=headers, data=payload)
 
     """
@@ -261,10 +303,13 @@ class Simba:
     post async instance address method ContractMethod
     """
     @auth_required
-    def call_setter_by_address_async(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
+    def call_setter_by_address_async(self, headers, app_id, contract_name, identifier, method_name, inputs,
+                                     opts: Optional[dict] = None):
+        opts = opts or {}
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
-        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/address/{}/{}".format(app_id, contract_name, identifier, method_name), opts)
+        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/address/{}/{}".format(
+            app_id, contract_name, identifier, method_name), opts)
         return requests.post(url, headers=headers, data=payload)
 
     """
@@ -273,10 +318,13 @@ class Simba:
     post async instance asset method ContractMethod
     """
     @auth_required
-    def create_instance_asset_async(self, headers, app_id, contract_name, identifier, method_name, inputs, opts={}):
+    def create_instance_asset_async(self, headers, app_id, contract_name, identifier, method_name, inputs,
+                                    opts: Optional[dict] = None):
+        opts = opts or {}
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
-        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/asset/{}/{}".format(app_id, contract_name, identifier, method_name), opts)
+        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/asset/{}/{}".format(
+            app_id, contract_name, identifier, method_name), opts)
         return requests.post(url, headers=headers, data=payload)
 
     """
@@ -285,10 +333,13 @@ class Simba:
     post async method ContractMethod
     """
     @auth_required
-    def submit_contract_method_async(self, headers, app_id, contract_name, method_name, inputs, opts={}):
+    def submit_contract_method_async(self, headers, app_id, contract_name, method_name, inputs,
+                                     opts: Optional[dict] = None):
+        opts = opts or {}
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
-        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/{}".format(app_id, contract_name, method_name), opts)
+        url = build_url(self.base_api_url, "/v2/apps/{}/async/contract/{}/{}".format(
+            app_id, contract_name, method_name), opts)
         return requests.post(url, headers=headers, data=payload)
 
     """
@@ -297,7 +348,8 @@ class Simba:
     create contract instance ContractInstance
     """
     @auth_required
-    def create_contract_instance(self, headers, app_id, contract_name, opts={}):
+    def create_contract_instance(self, headers, app_id, contract_name, opts: Optional[dict] = None):
+        opts = opts or {}
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
         url = build_url(self.base_api_url, "/v2/apps/{}/new/{}/".format(app_id, contract_name), opts)
@@ -309,7 +361,8 @@ class Simba:
     submit signed transaction SignedTransaction
     """
     @auth_required
-    def create_contract_instance(self, headers, app_id, txn_id, txn, opts={}):
+    def create_contract_instance(self, headers, app_id, txn_id, txn, opts: Optional[dict] = None):
+        opts = opts or {}
         headers['content-type'] = 'application/json'
         payload = json.dumps({'transaction': txn})
         url = build_url(self.base_api_url, " /v2/apps/{}/transactions/{}/".format(app_id, txn_id), opts)
@@ -326,12 +379,15 @@ class Simba:
     # ----------------------------------------------
     @staticmethod
     def test():
+        logging.basicConfig(level=os.environ.get("SIMBA_LOGLEVEL", "DEBUG"))
+
         if DEBUG is False:
+            log.info('Debug is False, not running tests')
             return
-        
+
         simba = Simba(BASE_API_URL)
         contract = simba.get_contract(TEST_APP, TEST_CONTRACT)
-        log.info(BASE_API_URL, TEST_APP, TEST_CONTRACT)
+        log.info('{} :: {} :: {}'.format(BASE_API_URL, TEST_APP, TEST_CONTRACT))
 
         r = contract.submit_method(TEST_METHOD, TEST_INPUTS)
         log.info(r.text)
