@@ -1,5 +1,5 @@
-from libsimba.auth import Pkce
-from libsimba.auth import ClientCredentials
+from libsimba.auth.pkce import Pkce
+from libsimba.auth.client_credentials import ClientCredentials
 from libsimba.settings import AUTH_FLOW
 from libsimba.settings import CLIENT_ID, CLIENT_SECRET, SCOPE, AUTH_FLOW, TENANT_ID
 
