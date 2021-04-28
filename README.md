@@ -1,6 +1,6 @@
 # libsimba.py-platform
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SIMBAChain/libsimba.py-platform/master?filepath=notebooks%2Fexamples.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SIMBAChain/libsimba.py-platform/main?filepath=notebooks%2Fexamples.ipynb)
 
 
 libsimba.py-platform is a library simplifying the use of SIMBAChain SEP APIs. 
