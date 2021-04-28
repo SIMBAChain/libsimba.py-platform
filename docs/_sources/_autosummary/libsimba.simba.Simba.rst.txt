@@ -1,0 +1,51 @@
+﻿libsimba.simba.Simba
+====================
+
+.. currentmodule:: libsimba.simba
+
+.. autoclass:: Simba
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Simba.__init__
+      ~Simba.call_getter_by_address
+      ~Simba.call_getter_by_asset
+      ~Simba.call_setter_by_address
+      ~Simba.call_setter_by_address_async
+      ~Simba.create_contract_instance
+      ~Simba.create_instance_asset
+      ~Simba.create_instance_asset_async
+      ~Simba.get_application_contract
+      ~Simba.get_bundle
+      ~Simba.get_bundle_file
+      ~Simba.get_contract
+      ~Simba.get_instance_address
+      ~Simba.get_manifest_for_bundle_from_bundle_hash
+      ~Simba.get_receipt
+      ~Simba.get_transaction
+      ~Simba.list_application_transactions
+      ~Simba.list_applications
+      ~Simba.list_contract_info
+      ~Simba.list_contract_instances
+      ~Simba.list_contract_methods
+      ~Simba.list_contract_transactions
+      ~Simba.list_contracts
+      ~Simba.list_events
+      ~Simba.retrieve_application
+      ~Simba.submit_contract_method
+      ~Simba.submit_contract_method_async
+      ~Simba.test
+      ~Simba.validate_bundle
+      ~Simba.whoami
+   
+   
+
+   
+   
+   

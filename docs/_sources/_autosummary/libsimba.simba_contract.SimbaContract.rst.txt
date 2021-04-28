@@ -1,0 +1,29 @@
+﻿libsimba.simba\_contract.SimbaContract
+======================================
+
+.. currentmodule:: libsimba.simba_contract
+
+.. autoclass:: SimbaContract
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SimbaContract.__init__
+      ~SimbaContract.get_transaction_statuses
+      ~SimbaContract.get_transactions
+      ~SimbaContract.query_method
+      ~SimbaContract.submit_contract_method_with_files
+      ~SimbaContract.submit_contract_method_with_files_async
+      ~SimbaContract.submit_method
+      ~SimbaContract.validate_bundle_hash
+   
+   
+
+   
+   
+   
