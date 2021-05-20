@@ -1,3 +1,4 @@
+import json
 import os
 import unittest
 import logging
@@ -46,3 +47,36 @@ class TestSEP(unittest.TestCase):
         r = self.simba.whoami()
         assert (200 <= r.status_code <= 299)
         log.info(r.json())
+
+    def test_004(self):
+        """
+        Submit file to contract
+        """
+
+        TEST_APP = 'compBatch'
+        TEST_CONTRACT = 'ComponentBatch'
+        TEST_METHOD = 'request_for_initialization'
+        TEST_INPUTS = {
+            '__batch_number': 'abcdef2',
+            'datetime': '5764253'
+        }
+
+        f1 = open('./data/file1.txt', 'r')
+        TEST_FILES = [
+            ('file1.txt', f1)
+        ]
+
+        contract = self.simba.get_contract(TEST_APP, TEST_CONTRACT)
+        r = contract.submit_contract_method_with_files(TEST_METHOD, TEST_INPUTS, TEST_FILES)
+
+        f1.close()
+
+        res = r.json()
+        log.info(res)
+        assert (200 <= r.status_code <= 299)
+
+        assert 'inputs' in res
+        assert '_bundleHash' in res['inputs']
+        assert res['inputs']['_bundleHash'] != ''
+
+

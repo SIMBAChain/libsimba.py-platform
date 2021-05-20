@@ -32,19 +32,16 @@ class SimbaContract:
     def submit_contract_method_with_files(self, headers, method_name, inputs, files=None, opts: Optional[dict] = None):
         opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(self.contract_uri, method_name), opts)
-        headers['content-type'] = 'application/json'
-        payload = json.dumps(inputs)
         if files:
-            return requests.post(url, headers=headers, data=payload, files=files)
+            return requests.post(url, headers=headers, data=inputs, files=files)
         else:
-            return requests.post(url, headers=headers, data=payload)
+            return requests.post(url, headers=headers, data=inputs)
 
     @auth_required
     def submit_contract_method_with_files_async(self, headers, method_name, inputs, files=None,
                                                 opts: Optional[dict] = None):
         opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(self.async_contract_uri, method_name), opts)
-        headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
         if files:
             return requests.post(url, headers=headers, data=payload, files=files)
