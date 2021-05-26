@@ -41,15 +41,6 @@ class SimbaHintedContract:
         self.output_file = outputFile
         self.template_folder = templateFolder
     
-    def contractStructs(self) -> List[Any]:
-        """
-        contractStructs returns a list of struct types from our contract
-
-        Returns:
-            List[Any]: list of struct types from contract
-        """
-        return [struct for struct in self.metadata_object.contract.types]
-    
     def acceptsFiles(self, method_name:str) -> bool:
         """
         returns a bool indicating whether method_name accepts files or not, as indicated by whether
