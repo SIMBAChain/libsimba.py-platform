@@ -1,0 +1,120 @@
+{
+	"contract": {
+		"assets": {
+			"MyAsset": {
+				"depends": [],
+				"methods": ["types"]
+			}
+		},
+		"methods": {
+			"types": {
+				"params": [{
+					"name": "__MyAsset",
+					"type": "string",
+					"simba_type": "uuid"
+				}, {
+					"name": "myText",
+					"type": "string",
+					"simba_type": "text",
+					"default_value": "no comment"
+				}, {
+					"name": "myEmail",
+					"type": "string",
+					"simba_type": "email"
+				}, {
+					"name": "myUid",
+					"type": "string",
+					"simba_type": "uuid"
+				}, {
+					"name": "myDecimal",
+					"type": "string",
+					"simba_type": "deciaml",
+					"default_value": "0000000000.0000",
+					"format": "10.4"
+				}, {
+					"name": "myBigInteger",
+					"type": "int256",
+					"simba_type": "bigInteger"
+				}, {
+					"name": "myInteger",
+					"type": "int64",
+					"simba_type": "integer"
+				}],
+				"documentation": {
+					"user": ["A function that covers some current simba types."],
+					"dev": ["This has parameters for some simba types."],
+					"params": [{
+						"param": ["__MyAsset The main Asset simba_type=uuid;"]
+					}, {
+						"param": ["myText simba_type=text; default_value = no comment;"]
+					}, {
+						"param": ["myEmail simba_type=email;"]
+					}, {
+						"param": ["myUid simba_type=uuid;"]
+					}, {
+						"param": ["myDecimal simba_type=deciaml; format=10.4; default_value=0000000000.0000;"]
+					}, {
+						"param": ["myBigInteger simba_type=bigInteger;"]
+					}, {
+						"param": ["myInteger simba_type=integer;"]
+					}]
+				}
+			},
+			"types1": {
+				"params": [{
+					"name": "myDate",
+					"type": "string",
+					"simba_type": "date",
+					"format": "yyyy-MM-dd"
+				}, {
+					"name": "myDateTime",
+					"type": "string",
+					"simba_type": "dateTime",
+					"format": "yyyy-MM-dd'T'HH:mm:ss"
+				}, {
+					"name": "myMoney",
+					"type": "string",
+					"simba_type": "currency",
+					"format": "C2,en-US"
+				}, {
+					"name": "myURL",
+					"type": "string",
+					"simba_type": "uri"
+				}, {
+					"name": "myAddress",
+					"type": "address",
+					"simba_type": "address"
+				}],
+				"documentation": {
+					"user": ["A function that covers some current simba types."],
+					"dev": ["This has parameters for some simba types."],
+					"params": [{
+						"param": ["myDate The Date simba_type=date; format=yyyy-MM-dd;"]
+					}, {
+						"param": ["myDateTime The Date Time simba_type=dateTime; format=yyyy-MM-dd'T'HH:mm:ss;"]
+					}, {
+						"param": ["myMoney The Money simba_type=currency; format=C2,en-US;"]
+					}, {
+						"param": ["myURL A URL simba_type=uri;"]
+					}, {
+						"param": ["myAddress A hex address simba_type=address;"]
+					}]
+				}
+			}
+		},
+		"types": {},
+		"source": {
+			"lang": "solidity",
+			"version": ">=0.5.0 <0.7.0"
+		},
+		"name": "Application",
+		"documentation": {
+			"title": ["A contract that displays the various attributes", "of metadata."],
+			"author": ["Andrew Harrison"],
+			"user": ["This contract shows aspects of metadata. profile=documentation;"]
+		},
+		"meta": {
+			"profile": "documentation"
+		}
+	}
+}
