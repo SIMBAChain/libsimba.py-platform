@@ -155,6 +155,7 @@ class SimbaHintedContract:
                 arrType = self.handleArray(fullType, basicType)
                 return arrType
             return basicType
+        # will need to add more exhaustive logic for other solidityType -> string conversions here:
         if fullType.startswith('string') or fullType.startswith('address'):
             basicType = 'str'
             if self.isArray(fullType):
