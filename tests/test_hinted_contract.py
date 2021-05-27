@@ -1,4 +1,4 @@
-#%%
+
 from libsimba.simba_hinted_contract import SimbaHintedContract
 import os 
 
@@ -26,4 +26,3 @@ outputFile = "app_md_3_contract.py"
 appName = "app_md_3_app"
 scc = SimbaHintedContract(metadata, appName, outputFile=outputFile)
 scc.write_contract()
-#%%

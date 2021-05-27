@@ -1,4 +1,4 @@
-#%%
+
 from typing import List, Tuple, Dict, Optional, Union, Any
 import json 
 from jinja2 import Environment, FileSystemLoader 
@@ -262,9 +262,3 @@ class SimbaHintedContract:
         with open(self.output_file, 'w') as f:
             f.write(output)
 
-#%%
-# relPath = 'data/app_md.json'
-# metadata = '/Users/brendanbirch/development/simba/libsimba.py-platform/tests/data/app_md.json'
-# outputFile = 'app_md_contract.py'
-# appName = "app_md_app"
-# scc = SimbaHintedContract(metadata, appName, outputFile = outputFile)
