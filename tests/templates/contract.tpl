@@ -19,7 +19,7 @@ class {{SimbaHintedContractObj.contract_name}}:
 
     def get_transaction_statuses(self, txn_hashes: List[str] = None, opts: Optional[dict] = None):
         return self.simba_contract.get_transaction_statuses(txn_hashes, opts)
-{% for signature, docString, inputs, returnDetails in SimbaHintedContractObj.sigInputReturnDetails() %}
+{% for signature, docString, inputs, returnDetails in SimbaHintedContractObj.sig_doc_input_return() %}
     {{signature}}
     {{docString}}
         {{inputs}}
