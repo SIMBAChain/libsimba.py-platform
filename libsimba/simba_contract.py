@@ -21,9 +21,9 @@ class SimbaContract:
         return requests.get(url, headers=headers)
     
     @auth_required
-    def submit_method(self, headers, method_name, inputs, opts: Optional[dict] = None, async=False):
+    def submit_method(self, headers, method_name, inputs, opts: Optional[dict] = None, async_method=False):
         opts = opts or {}
-        contract_uri = self.contract_uri if async is False else self.async_contract_uri
+        contract_uri = self.contract_uri if async_method is False else self.async_contract_uri
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(contract_uri, method_name), opts)
         headers['content-type'] = 'application/json'
         payload = json.dumps(inputs)
@@ -31,7 +31,7 @@ class SimbaContract:
 
     @auth_required
     def submit_method_async(self, headers, method_name, inputs, opts: Optional[dict] = None):
-        return self.submit_method(headers, method_name, inputs, opts, async=True)
+        return self.submit_method(headers, method_name, inputs, opts, async_method=True)
 
     @auth_required
     def submit_contract_method_with_files(self, headers, method_name, inputs, files=None, opts: Optional[dict] = None):

@@ -1,4 +1,5 @@
 
+
 from typing import List, Tuple, Dict, Optional, Union, Any
 import json 
 from jinja2 import Environment, FileSystemLoader 
@@ -232,7 +233,7 @@ class SimbaHintedContract:
             if acceptsFiles:
                 signature += ', files: List[Tuple], async_method: bool = False, opts: Optional[dict] = None'
             else:
-                signature += ', opts: Optional[dict] = None, query_method: bool = False'
+                signature += ', async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False'
             if itReturns:
                 signature += ') -> List[Any]:'
             else:
@@ -244,7 +245,7 @@ class SimbaHintedContract:
             if acceptsFiles:
                 returnDetails.append(f'if async_method:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files=files, opts=opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files=files, opts=opts)')
             else:
-                returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts=opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts=opts)')
+                returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts=opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts=opts, async_method=async_method)')
         sigDocInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
         return sigDocInputReturn
 
@@ -261,4 +262,5 @@ class SimbaHintedContract:
         output = output.replace('\t', '    ')
         with open(self.output_file, 'w') as f:
             f.write(output)
+
 
