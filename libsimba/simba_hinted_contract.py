@@ -1,10 +1,7 @@
-
-import pprint 
-pprint = pprint.PrettyPrinter().pprint
+#%%
 from typing import List, Tuple, Dict, Optional, Union, Any
 import json 
 from jinja2 import Environment, FileSystemLoader 
-
 
 class SimbaHintedContract:
     def __init__(
@@ -41,7 +38,7 @@ class SimbaHintedContract:
         self.output_file = outputFile
         self.template_folder = templateFolder
     
-    def acceptsFiles(self, method_name:str) -> bool:
+    def accepts_files(self, method_name:str) -> bool:
         """
         returns a bool indicating whether method_name accepts files or not, as indicated by whether
         _bundleHash is present as a parameter name in method_name's parameters
@@ -57,7 +54,7 @@ class SimbaHintedContract:
                 return True 
         return False
     
-    def fileMethods(self) -> List[str]:
+    def file_methods(self) -> List[str]:
         """
         returns a list of method names that accept files. 
         
@@ -66,7 +63,7 @@ class SimbaHintedContract:
         Returns:
             List[str]: list of contract methods that accept files
         """
-        return [method for method in self.contract_methods if self.acceptsFiles(method)]
+        return [method for method in self.contract_methods if self.accepts_files(method)]
 
     def return_data_types(self, method_name:str, as_dict=False) -> Union[List, Dict]:
         """
@@ -88,33 +85,33 @@ class SimbaHintedContract:
             return None
         for i, r in enumerate(m.get('returns', [])):
             dt = r['type'] # come back and handle type later
-            nativeType = self.nativePythonType(r)
+            nativeType = self.native_python_type(r)
             if as_dict:
                 result[str(i)] = nativeType
             else:
                 result.append(nativeType)
         return result
 
-    def handleArray(self, fullType:str, basicType:str) -> str:
+    def handle_array(self, fullType:str, basicType:str) -> str:
         """
-        handleArray is meant to handle arrays and nested arrays, and return a string formatted version of that nested array
+        handle_array is meant to handle arrays and nested arrays, and return a string formatted version of that nested array
 
         Args:
             param (app_metadata.DataType): method parameter, of type DataType, for which we want to obtain a native Python data type hint
-            paramType (str): native Python type obtained in nativePythonType (int, str, etc.)
+            paramType (str): native Python type obtained in native_python_type (int, str, etc.)
 
         Returns:
             arrType (str): string formatted version of array or nested array
         """
         arrType = f'List[{basicType}]'
-        for _ in range(self.getDimensions(fullType)-1):
+        for _ in range(self.get_dimensions(fullType)-1):
             arrType = f'List[{arrType}]'
         return arrType
 
-    def isArray(self, param):
+    def is_array(self, param):
         return param.endswith(']')
     
-    def getDimensions(self, param:str, dims:Optional[int] = 0) -> int:
+    def get_dimensions(self, param:str, dims:Optional[int] = 0) -> int:
         """
         Recursive function to determine dimensions of array type
 
@@ -129,11 +126,11 @@ class SimbaHintedContract:
             return dims 
         param = param[param.find('[')+1:]
         dims += 1 
-        return self.getDimensions(param, dims)
+        return self.get_dimensions(param, dims)
 
-    def nativePythonType(self, param: dict) -> str:
+    def native_python_type(self, param: dict) -> str:
         """
-        nativePythonType will return a native Python type (int, str, etc.)
+        native_python_type will return a native Python type (int, str, etc.)
 
         Args:
             param (dict): method parameter for which we want to obtain a native Python data type hint
@@ -145,47 +142,47 @@ class SimbaHintedContract:
         if fullType.startswith('struct'):
             # since API expects dict for struct, we pass 'dict' instead of 'object' as a type hint
             basicType = 'dict'
-            if self.isArray(fullType):
-                arrType = self.handleArray(fullType, basicType)
+            if self.is_array(fullType):
+                arrType = self.handle_array(fullType, basicType)
                 return arrType 
             return basicType
         if fullType.startswith('int') or fullType.startswith('uint'):
             basicType = 'int'
-            if self.isArray(fullType):
-                arrType = self.handleArray(fullType, basicType)
+            if self.is_array(fullType):
+                arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
         # will need to add more exhaustive logic for other solidityType -> string conversions here
         # presumably for datetime, etc.
         if fullType.startswith('string') or fullType.startswith('address'):
             basicType = 'str'
-            if self.isArray(fullType):
-                arrType = self.handleArray(fullType, basicType)
+            if self.is_array(fullType):
+                arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
         if fullType.startswith('number'):
             basicType = 'Union[int, float]'
-            if self.isArray(fullType):
-                arrType = self.handleArray(fullType, basicType)
+            if self.is_array(fullType):
+                arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
         if fullType.startswith('bool'):
             basicType = 'bool'
-            if self.isArray(fullType):
-                arrType = self.handleArray(fullType, basicType)
+            if self.is_array(fullType):
+                arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
 
         # handle cases not handled above - probably need to add some additional logic here
         basicType = fullType
-        if self.isArray(fullType):
-            arrType = self.handleArray(fullType, basicType)
+        if self.is_array(fullType):
+            arrType = self.handle_array(fullType, basicType)
             return arrType
         return fullType
 
-    def sigInputReturnDetails(self) -> List[str]:
+    def sig_doc_input_return(self) -> List[str]:
         """
-        sigInputReturnDetails will return a list of list(zip) form, with the three items in that 
+        sig_doc_input_return will return a list of list(zip) form, with the three items in that 
         zipped list being a list of method signatures, method body inputs, and method return statements
         for each method in our contract
 
@@ -211,9 +208,9 @@ class SimbaHintedContract:
         returnDetails = []
         docStringDetails = []
         for methodName in self.contract_methods:
-            accepts_files = False
-            if self.acceptsFiles(methodName):
-                accepts_files = True
+            acceptsFiles = False
+            if self.accepts_files(methodName):
+                acceptsFiles = True
                 docStringDetails.append(f'\t"""\n\t\tIf async_method == True, then {methodName} will be invoked as async, otherwise {methodName} will be invoked as non async\n\t\t"""')
             else:
                 docStringDetails.append(f'\t"""\n\t\tIf query_method == True, then invocations of {methodName} will be queried. Otherwise {methodName} will be invoked with inputs.\n\t\t"""')
@@ -227,12 +224,12 @@ class SimbaHintedContract:
                 # we should simply include files in our call:
                 if paramName == '_bundleHash':
                     continue
-                hint_type = self.nativePythonType(param)
+                hint_type = self.native_python_type(param)
                 signature += f" {paramName}: {hint_type},"
                 inputs += f"\t\t'{paramName}': {paramName},"
                 inputs += '\n\t'
             signature = signature[:-1]
-            if accepts_files:
+            if acceptsFiles:
                 signature += ', files: List[Tuple], async_method: bool = False, opts: Optional[dict] = None'
             else:
                 signature += ', opts: Optional[dict] = None, query_method: bool = False'
@@ -244,16 +241,16 @@ class SimbaHintedContract:
             inputs += '\n\t\t}'
             signatureDetails.append(signature)
             inputDetails.append(inputs)
-            if accepts_files:
+            if acceptsFiles:
                 returnDetails.append(f'if async_method:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files=files, opts=opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files=files, opts=opts)')
             else:
                 returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts=opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts=opts)')
-        sigInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
-        return sigInputReturn
+        sigDocInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
+        return sigDocInputReturn
 
-    def writeContract(self):
+    def write_contract(self):
         """
-        writeContract will use a jinja template to create a .py formatted version of our 
+        write_contract will use a jinja template to create a .py formatted version of our 
         smart contract, for which our contract will be represented as a class
         """
         file_loader = FileSystemLoader(self.template_folder)
@@ -265,3 +262,9 @@ class SimbaHintedContract:
         with open(self.output_file, 'w') as f:
             f.write(output)
 
+#%%
+# relPath = 'data/app_md.json'
+# metadata = '/Users/brendanbirch/development/simba/libsimba.py-platform/tests/data/app_md.json'
+# outputFile = 'app_md_contract.py'
+# appName = "app_md_app"
+# scc = SimbaHintedContract(metadata, appName, outputFile = outputFile)
