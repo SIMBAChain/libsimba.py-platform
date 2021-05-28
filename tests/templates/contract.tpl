@@ -12,6 +12,7 @@ class {{SimbaHintedContractObj.contract_name}}:
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     {% for cls in SimbaHintedContractObj.classes_from_structs() %}
     {{cls}}
+    {{SimbaHintedContractObj.convert_classes_to_dicts_nested()}}
     {% endfor %}
     def get_transactions(self, opts: Optional[dict] = None):
         return self.simba_contract.get_transactions(opts=opts)
@@ -25,5 +26,11 @@ class {{SimbaHintedContractObj.contract_name}}:
     {{signature}}
     {{docString}}
         {{inputs}}
+        # the following logic converts classes, including nested classes, back to dicts for our API calls
+        for attr_name, attr_value in inputs.items():
+            if hasattr(attr_value, "convert_params"):
+                attr_value.convert_params()
+                inputs[attr_name] = attr_value.__dict__
+        
         {{returnDetails}}
 {% endfor %}

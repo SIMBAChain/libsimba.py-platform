@@ -111,7 +111,7 @@ class SimbaHintedContract:
     def is_array(self, param):
         return param.endswith(']')
 
-    def handle_struct(self, structParam: str):
+    def handle_struct(self, structParam: str, forward_reference:bool = False):
         """
         gives us custom struct type, accounting for array
 
@@ -124,10 +124,30 @@ class SimbaHintedContract:
         if self.is_array(structParam):
             structType = structParam[:structParam.find('[')]
             # should 'libsimba' below be local directory instead?
-            structType = 'libsimba.' + structType
+            if forward_reference:
+                structType = f'"{structType}"'
             return structType
-        structType = 'libsimba.' + structParam
+        if forward_reference:
+            structType = f'"{structParam}"'
+        else:
+            structType = structParam
         return structType
+
+    def convert_classes_to_dicts_nested(self):
+        converterFunction = """
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                print('attr_value:', attr_value)
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)"""
+        converterFunction.replace('\t', '    ')
+        converterFunction = converterFunction.rstrip()
+        return converterFunction
 
     def classes_from_structs(self):
         classStrings = []
@@ -135,11 +155,12 @@ class SimbaHintedContract:
             assignments = []
             className = self.struct_names[struct]
             sig = f'class {className}:\n\t\tdef __init__(self'
+            # sorry, I know the following line is ugly...I'll work on making it more aesthetically pleasing
             components = self.contract['types'][struct]['components']
             for component in components:
                 name = component['name']
                 assignments.append(f"self.{name}={name}")
-                compType = self.native_python_type(component)
+                compType = self.native_python_type(component, forward_reference=True)
                 # all components will have default value, even if None
                 # if we want to change this, then we'll need to move
                 # defaulted components to end of components list, since 
@@ -152,7 +173,10 @@ class SimbaHintedContract:
                     defaultValue = ''
                 if compType.startswith('List') and defaultValue == None:
                     defaultValue = []
-                sig += f", {name}: {compType}"
+                if compType in self.struct_names:
+                    sig += f', {name}: "{compType}"' # we're handling forward referencing here, which requires quotes 
+                else:
+                    sig += f", {name}: {compType}"
                 if compType == 'str':
                     sig += f" = '{defaultValue}'"
                 else:
@@ -181,7 +205,7 @@ class SimbaHintedContract:
         dims += 1 
         return self.get_dimensions(param, dims)
 
-    def native_python_type(self, param: dict) -> str:
+    def native_python_type(self, param: dict, forward_reference: bool = False) -> str:
         """
         native_python_type will return a native Python type (int, str, etc.)
 
@@ -197,7 +221,7 @@ class SimbaHintedContract:
             fullType = fullType[7:]
             if self.is_array(fullType):
                 brackets = fullType[fullType.find('['):]
-                structType = self.handle_struct(fullType)
+                structType = self.handle_struct(fullType, forward_reference=forward_reference)
                 fullType = structType + brackets
                 arrType = self.handle_array(fullType, structType)
                 return arrType 
@@ -282,8 +306,11 @@ class SimbaHintedContract:
                 # we should simply include files in our call:
                 if paramName == '_bundleHash':
                     continue
-                hint_type = self.native_python_type(param)
-                signature += f" {paramName}: {hint_type},"
+                hint_type = self.native_python_type(param, forward_reference=True)
+                if hint_type in self.struct_names:
+                    signature += f' {paramName}: "{hint_type}",'
+                else:
+                    signature += f" {paramName}: {hint_type},"
                 inputs += f"\t\t'{paramName}': {paramName},"
                 inputs += '\n\t'
             signature = signature[:-1]

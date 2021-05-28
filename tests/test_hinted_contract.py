@@ -26,3 +26,5 @@ outputFile = "app_md_3_contract.py"
 appName = "app_md_3_app"
 scc = SimbaHintedContract(metadata, appName, outputFile=outputFile)
 scc.write_contract()
+
+
