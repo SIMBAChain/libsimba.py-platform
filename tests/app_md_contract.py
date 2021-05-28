@@ -11,56 +11,34 @@ class Application:
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     
-    class Person:
+    class ConverterBase:
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)
+    
+    class Person(ConverterBase):
         def __init__(self, name: str = '2020-01-01T00:00:00.000', age: int = 99, addr: "Application.Addr" = None):
             self.name=name
             self.age=age
             self.addr=addr
     
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
-    
-    class Addr:
+    class Addr(ConverterBase):
         def __init__(self, street: str = '', number: int = 0, town: str = ''):
             self.street=street
             self.number=number
             self.town=town
     
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
-    
-    class AddressPerson:
+    class AddressPerson(ConverterBase):
         def __init__(self, name: str = '', age: int = 0, addrs: List["Application.Addr"] = []):
             self.name=name
             self.age=age
             self.addrs=addrs
-    
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
     
     def get_transactions(self, opts: Optional[dict] = None):
         return self.simba_contract.get_transactions(opts=opts)

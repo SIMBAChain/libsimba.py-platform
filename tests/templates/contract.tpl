@@ -10,9 +10,11 @@ class {{SimbaHintedContractObj.contract_name}}:
         self.contract_name = "{{SimbaHintedContractObj.contract_name}}"
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
+    
+    class ConverterBase:
+    {{- SimbaHintedContractObj.convert_classes_to_dicts_nested() }}
     {% for cls in SimbaHintedContractObj.classes_from_structs() %}
     {{cls}}
-    {{SimbaHintedContractObj.convert_classes_to_dicts_nested()}}
     {% endfor %}
     def get_transactions(self, opts: Optional[dict] = None):
         return self.simba_contract.get_transactions(opts=opts)

@@ -137,7 +137,6 @@ class SimbaHintedContract:
         converterFunction = """
         def param_converter_helper(self, class_dict, attr_name, attr_value):
             if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
                 class_dict[attr_name] = attr_value.__dict__
                 for att_name, att_val in class_dict[attr_name].items():
                     self.param_converter_helper(class_dict[attr_name], att_name, att_val)
@@ -154,7 +153,7 @@ class SimbaHintedContract:
         for struct in self.contract['types']:
             assignments = []
             className = self.struct_names[struct]
-            sig = f'class {className}:\n\t\tdef __init__(self'
+            sig = f'class {className}(ConverterBase):\n\t\tdef __init__(self'
             # sorry, I know the following line is ugly...I'll work on making it more aesthetically pleasing
             components = self.contract['types'][struct]['components']
             for component in components:

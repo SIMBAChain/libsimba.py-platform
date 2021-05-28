@@ -11,52 +11,30 @@ class AssemblyBom:
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     
-    class Part:
+    class ConverterBase:
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)
+    
+    class Part(ConverterBase):
         def __init__(self, __Part: str = ''):
             self.__Part=__Part
     
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
-    
-    class Assembly:
+    class Assembly(ConverterBase):
         def __init__(self, __Assembly: str = ''):
             self.__Assembly=__Assembly
     
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
-    
-    class Supplier:
+    class Supplier(ConverterBase):
         def __init__(self, __Supplier: str = ''):
             self.__Supplier=__Supplier
     
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
-    
-    class StockItem:
+    class StockItem(ConverterBase):
         def __init__(self, __StockItem: str = '', part: "AssemblyBom.Part" = None, unitOfIssue: str = '', SMRCode: str = '', NSN: str = '', partNumber: str = '', UOC: str = ''):
             self.__StockItem=__StockItem
             self.part=part
@@ -66,33 +44,11 @@ class AssemblyBom:
             self.partNumber=partNumber
             self.UOC=UOC
     
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
-    
-    class AssemblyPart:
+    class AssemblyPart(ConverterBase):
         def __init__(self, __AssemblyPart: str = '', part: "AssemblyBom.Part" = None, quantity: str = ''):
             self.__AssemblyPart=__AssemblyPart
             self.part=part
             self.quantity=quantity
-    
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                print('attr_value:', attr_value)
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
     
     def get_transactions(self, opts: Optional[dict] = None):
         return self.simba_contract.get_transactions(opts=opts)
