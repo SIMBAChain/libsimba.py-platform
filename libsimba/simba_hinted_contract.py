@@ -1,5 +1,3 @@
-
-
 from typing import List, Tuple, Dict, Optional, Union, Any
 import json 
 from jinja2 import Environment, FileSystemLoader 
@@ -38,6 +36,7 @@ class SimbaHintedContract:
         self.contract_template = contractTemplate 
         self.output_file = outputFile
         self.template_folder = templateFolder
+        self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract['types']}
     
     def accepts_files(self, method_name:str) -> bool:
         """
@@ -111,6 +110,59 @@ class SimbaHintedContract:
 
     def is_array(self, param):
         return param.endswith(']')
+
+    def handle_struct(self, structParam: str):
+        """
+        gives us custom struct type, accounting for array
+
+        Args:
+            structParam (str): struct in either Contract.Struct or Contract.Struct[]...[] format
+
+        Returns:
+            [str]: string in either 'libsimba.Contract.Struct' or 'List[libsimba.Contract.Struct]'form
+        """
+        if self.is_array(structParam):
+            structType = structParam[:structParam.find('[')]
+            # should 'libsimba' below be local directory instead?
+            structType = 'libsimba.' + structType
+            return structType
+        structType = 'libsimba.' + structParam
+        return structType
+
+    def classes_from_structs(self):
+        classStrings = []
+        for struct in self.contract['types']:
+            assignments = []
+            className = self.struct_names[struct]
+            sig = f'class {className}:\n\t\tdef __init__(self'
+            components = self.contract['types'][struct]['components']
+            for component in components:
+                name = component['name']
+                assignments.append(f"self.{name}={name}")
+                compType = self.native_python_type(component)
+                # all components will have default value, even if None
+                # if we want to change this, then we'll need to move
+                # defaulted components to end of components list, since 
+                # Python doesn't allow positional arguments to follow keyword arguments
+                defaultValue = component.get('default_value', None)
+                # the following logic is to mimic solidity default behavior
+                if compType == 'int' and defaultValue == None:
+                    defaultValue = 0
+                if compType == 'str' and defaultValue == None:
+                    defaultValue = ''
+                if compType.startswith('List') and defaultValue == None:
+                    defaultValue = []
+                sig += f", {name}: {compType}"
+                if compType == 'str':
+                    sig += f" = '{defaultValue}'"
+                else:
+                    sig += f" = {defaultValue}"
+            sig += '):'
+            for assigned in assignments:
+                sig += f"\n\t\t\t{assigned}"
+            sig = sig.replace('\t', '    ')
+            classStrings.append(sig)
+        return classStrings
     
     def get_dimensions(self, param:str, dims:Optional[int] = 0) -> int:
         """
@@ -142,11 +194,16 @@ class SimbaHintedContract:
         fullType = param['type']
         if fullType.startswith('struct'):
             # since API expects dict for struct, we pass 'dict' instead of 'object' as a type hint
-            basicType = 'dict'
+            fullType = fullType[7:]
             if self.is_array(fullType):
-                arrType = self.handle_array(fullType, basicType)
+                brackets = fullType[fullType.find('['):]
+                structType = self.handle_struct(fullType)
+                fullType = structType + brackets
+                arrType = self.handle_array(fullType, structType)
                 return arrType 
-            return basicType
+            else:
+                structType = self.handle_struct(fullType)
+            return structType
         if fullType.startswith('int') or fullType.startswith('uint'):
             basicType = 'int'
             if self.is_array(fullType):

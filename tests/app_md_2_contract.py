@@ -20,7 +20,7 @@ class Application:
     def get_transaction_statuses(self, txn_hashes: List[str] = None, opts: Optional[dict] = None):
         return self.simba_contract.get_transaction_statuses(txn_hashes, opts)
 
-    def types(self, __MyAsset: str, myText: str, myEmail: str, myUid: str, myDecimal: str, myBigInteger: int, myInteger: int, opts: Optional[dict] = None, query_method: bool = False):
+    def types(self, __MyAsset: str, myText: str, myEmail: str, myUid: str, myDecimal: str, myBigInteger: int, myInteger: int, async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
         """
         If query_method == True, then invocations of types will be queried. Otherwise types will be invoked with inputs.
         """
@@ -36,9 +36,9 @@ class Application:
         if query_method:
             return self.simba_contract.query_method("types", opts=opts)
         else:
-            return self.simba_contract.submit_method("types", inputs, opts=opts)
+            return self.simba_contract.submit_method("types", inputs, opts=opts, async_method=async_method)
 
-    def types1(self, myDate: str, myDateTime: str, myMoney: str, myURL: str, myAddress: str, opts: Optional[dict] = None, query_method: bool = False):
+    def types1(self, myDate: str, myDateTime: str, myMoney: str, myURL: str, myAddress: str, async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
         """
         If query_method == True, then invocations of types1 will be queried. Otherwise types1 will be invoked with inputs.
         """
@@ -52,4 +52,4 @@ class Application:
         if query_method:
             return self.simba_contract.query_method("types1", opts=opts)
         else:
-            return self.simba_contract.submit_method("types1", inputs, opts=opts)
+            return self.simba_contract.submit_method("types1", inputs, opts=opts, async_method=async_method)
