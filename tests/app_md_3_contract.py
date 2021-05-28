@@ -15,16 +15,49 @@ class AssemblyBom:
         def __init__(self, __Part: str = ''):
             self.__Part=__Part
     
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                print('attr_value:', attr_value)
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)
+    
     class Assembly:
         def __init__(self, __Assembly: str = ''):
             self.__Assembly=__Assembly
+    
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                print('attr_value:', attr_value)
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)
     
     class Supplier:
         def __init__(self, __Supplier: str = ''):
             self.__Supplier=__Supplier
     
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                print('attr_value:', attr_value)
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)
+    
     class StockItem:
-        def __init__(self, __StockItem: str = '', part: libsimba.AssemblyBom.Part = None, unitOfIssue: str = '', SMRCode: str = '', NSN: str = '', partNumber: str = '', UOC: str = ''):
+        def __init__(self, __StockItem: str = '', part: "AssemblyBom.Part" = None, unitOfIssue: str = '', SMRCode: str = '', NSN: str = '', partNumber: str = '', UOC: str = ''):
             self.__StockItem=__StockItem
             self.part=part
             self.unitOfIssue=unitOfIssue
@@ -33,11 +66,33 @@ class AssemblyBom:
             self.partNumber=partNumber
             self.UOC=UOC
     
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                print('attr_value:', attr_value)
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)
+    
     class AssemblyPart:
-        def __init__(self, __AssemblyPart: str = '', part: libsimba.AssemblyBom.Part = None, quantity: str = ''):
+        def __init__(self, __AssemblyPart: str = '', part: "AssemblyBom.Part" = None, quantity: str = ''):
             self.__AssemblyPart=__AssemblyPart
             self.part=part
             self.quantity=quantity
+    
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                print('attr_value:', attr_value)
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)
     
     def get_transactions(self, opts: Optional[dict] = None):
         return self.simba_contract.get_transactions(opts=opts)
@@ -48,7 +103,7 @@ class AssemblyBom:
     def get_transaction_statuses(self, txn_hashes: List[str] = None, opts: Optional[dict] = None):
         return self.simba_contract.get_transaction_statuses(txn_hashes, opts)
 
-    def mbomStock(self, stockItem: libsimba.AssemblyBom.StockItem, specifiedSupplier: libsimba.AssemblyBom.Supplier, SOH: str, remanufacturedCost: str, totalCost: str, comment: str, point50LikeItems: str, pc_Replacement_8716_15_EA: str, pc_Replacement_Q667_600_EA: str, async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
+    def mbomStock(self, stockItem: "AssemblyBom.StockItem", specifiedSupplier: "AssemblyBom.Supplier", SOH: str, remanufacturedCost: str, totalCost: str, comment: str, point50LikeItems: str, pc_Replacement_8716_15_EA: str, pc_Replacement_Q667_600_EA: str, async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
         """
         If query_method == True, then invocations of mbomStock will be queried. Otherwise mbomStock will be invoked with inputs.
         """
@@ -63,12 +118,18 @@ class AssemblyBom:
             'pc_Replacement_8716_15_EA': pc_Replacement_8716_15_EA,
             'pc_Replacement_Q667_600_EA': pc_Replacement_Q667_600_EA,
         }
+        # the following logic converts classes, including nested classes, back to dicts for our API calls
+        for attr_name, attr_value in inputs.items():
+            if hasattr(attr_value, "convert_params"):
+                attr_value.convert_params()
+                inputs[attr_name] = attr_value.__dict__
+        
         if query_method:
             return self.simba_contract.query_method("mbomStock", opts=opts)
         else:
             return self.simba_contract.submit_method("mbomStock", inputs, opts=opts, async_method=async_method)
 
-    def assemblage(self, name: libsimba.AssemblyBom.Assembly, niins: List[libsimba.AssemblyBom.Part], parts: List[libsimba.AssemblyBom.AssemblyPart], async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
+    def assemblage(self, name: "AssemblyBom.Assembly", niins: List["AssemblyBom.Part"], parts: List["AssemblyBom.AssemblyPart"], async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
         """
         If query_method == True, then invocations of assemblage will be queried. Otherwise assemblage will be invoked with inputs.
         """
@@ -77,12 +138,18 @@ class AssemblyBom:
             'niins': niins,
             'parts': parts,
         }
+        # the following logic converts classes, including nested classes, back to dicts for our API calls
+        for attr_name, attr_value in inputs.items():
+            if hasattr(attr_value, "convert_params"):
+                attr_value.convert_params()
+                inputs[attr_name] = attr_value.__dict__
+        
         if query_method:
             return self.simba_contract.query_method("assemblage", opts=opts)
         else:
             return self.simba_contract.submit_method("assemblage", inputs, opts=opts, async_method=async_method)
 
-    def assemblyGroup(self, name: libsimba.AssemblyBom.Assembly, subAssemblies: List[libsimba.AssemblyBom.Assembly], async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
+    def assemblyGroup(self, name: "AssemblyBom.Assembly", subAssemblies: List["AssemblyBom.Assembly"], async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
         """
         If query_method == True, then invocations of assemblyGroup will be queried. Otherwise assemblyGroup will be invoked with inputs.
         """
@@ -90,6 +157,12 @@ class AssemblyBom:
             'name': name,
             'subAssemblies': subAssemblies,
         }
+        # the following logic converts classes, including nested classes, back to dicts for our API calls
+        for attr_name, attr_value in inputs.items():
+            if hasattr(attr_value, "convert_params"):
+                attr_value.convert_params()
+                inputs[attr_name] = attr_value.__dict__
+        
         if query_method:
             return self.simba_contract.query_method("assemblyGroup", opts=opts)
         else:

@@ -33,6 +33,12 @@ class Application:
             'myBigInteger': myBigInteger,
             'myInteger': myInteger,
         }
+        # the following logic converts classes, including nested classes, back to dicts for our API calls
+        for attr_name, attr_value in inputs.items():
+            if hasattr(attr_value, "convert_params"):
+                attr_value.convert_params()
+                inputs[attr_name] = attr_value.__dict__
+        
         if query_method:
             return self.simba_contract.query_method("types", opts=opts)
         else:
@@ -49,6 +55,12 @@ class Application:
             'myURL': myURL,
             'myAddress': myAddress,
         }
+        # the following logic converts classes, including nested classes, back to dicts for our API calls
+        for attr_name, attr_value in inputs.items():
+            if hasattr(attr_value, "convert_params"):
+                attr_value.convert_params()
+                inputs[attr_name] = attr_value.__dict__
+        
         if query_method:
             return self.simba_contract.query_method("types1", opts=opts)
         else:
