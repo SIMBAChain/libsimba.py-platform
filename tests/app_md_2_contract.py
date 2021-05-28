@@ -11,6 +11,17 @@ class Application:
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     
+    class ConverterBase:
+        def param_converter_helper(self, class_dict, attr_name, attr_value):
+            if hasattr(attr_value, '__dict__'):
+                class_dict[attr_name] = attr_value.__dict__
+                for att_name, att_val in class_dict[attr_name].items():
+                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
+    
+        def convert_params(self):
+            for att_name, att_value in self.__dict__.items():
+                self.param_converter_helper(self.__dict__, att_name, att_value)
+    
     def get_transactions(self, opts: Optional[dict] = None):
         return self.simba_contract.get_transactions(opts=opts)
     
