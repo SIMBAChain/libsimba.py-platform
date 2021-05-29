@@ -2,6 +2,7 @@ import libsimba
 from libsimba.simba import Simba
 from datetime import datetime
 from typing import List, Tuple, Dict, String, Any, Optional
+from libsimba.class_converter import ClassToDictConverter, convert_classes
 
 class {{SimbaHintedContractObj.contract_name}}:
     def __init__(self):
@@ -10,9 +11,6 @@ class {{SimbaHintedContractObj.contract_name}}:
         self.contract_name = "{{SimbaHintedContractObj.contract_name}}"
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
-    
-    class ConverterBase:
-    {{- SimbaHintedContractObj.convert_classes_to_dicts_nested() }}
     {% for cls in SimbaHintedContractObj.classes_from_structs() %}
     {{cls}}
     {% endfor %}
@@ -28,11 +26,7 @@ class {{SimbaHintedContractObj.contract_name}}:
     {{signature}}
     {{docString}}
         {{inputs}}
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         {{returnDetails}}
 {% endfor %}

@@ -2,6 +2,7 @@ import libsimba
 from libsimba.simba import Simba
 from datetime import datetime
 from typing import List, Tuple, Dict, String, Any, Optional
+from libsimba.class_converter import ClassToDictConverter, convert_classes
 
 class AssemblyBom:
     def __init__(self):
@@ -11,30 +12,19 @@ class AssemblyBom:
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     
-    class ConverterBase:
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
-    
-    class Part(ConverterBase):
+    class Part(ClassToDictConverter):
         def __init__(self, __Part: str = ''):
             self.__Part=__Part
     
-    class Assembly(ConverterBase):
+    class Assembly(ClassToDictConverter):
         def __init__(self, __Assembly: str = ''):
             self.__Assembly=__Assembly
     
-    class Supplier(ConverterBase):
+    class Supplier(ClassToDictConverter):
         def __init__(self, __Supplier: str = ''):
             self.__Supplier=__Supplier
     
-    class StockItem(ConverterBase):
+    class StockItem(ClassToDictConverter):
         def __init__(self, __StockItem: str = '', part: "AssemblyBom.Part" = None, unitOfIssue: str = '', SMRCode: str = '', NSN: str = '', partNumber: str = '', UOC: str = ''):
             self.__StockItem=__StockItem
             self.part=part
@@ -44,7 +34,7 @@ class AssemblyBom:
             self.partNumber=partNumber
             self.UOC=UOC
     
-    class AssemblyPart(ConverterBase):
+    class AssemblyPart(ClassToDictConverter):
         def __init__(self, __AssemblyPart: str = '', part: "AssemblyBom.Part" = None, quantity: str = ''):
             self.__AssemblyPart=__AssemblyPart
             self.part=part
@@ -74,11 +64,7 @@ class AssemblyBom:
             'pc_Replacement_8716_15_EA': pc_Replacement_8716_15_EA,
             'pc_Replacement_Q667_600_EA': pc_Replacement_Q667_600_EA,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("mbomStock", opts=opts)
@@ -94,11 +80,7 @@ class AssemblyBom:
             'niins': niins,
             'parts': parts,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("assemblage", opts=opts)
@@ -113,11 +95,7 @@ class AssemblyBom:
             'name': name,
             'subAssemblies': subAssemblies,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("assemblyGroup", opts=opts)

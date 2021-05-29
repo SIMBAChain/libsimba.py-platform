@@ -28,6 +28,7 @@ class SimbaHintedContract:
         """
         metadata = open(metaData, 'r')
         metadata = json.load(metadata)
+        self.metadata = metadata
         self.contract = metadata['contract']
         self.contract_name = self.contract['name']
         self.contract_methods = self.contract['methods']
@@ -134,53 +135,66 @@ class SimbaHintedContract:
         return structType
 
     def convert_classes_to_dicts_nested(self):
+        """
+        function for producing a class that has methods for converting a class instance to a dict
+        this function would be used in our .tpl doc if we wanted to declare the class inside our geneerated contract.py doc
+
+        this function is not currently used. Instead, class definition is now done in libsimba.class_converter
+        """
         converterFunction = """
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
+        def class_to_dict_converter_helper(self, class_dict, attr_name, attr_value):
             if hasattr(attr_value, '__dict__'):
                 class_dict[attr_name] = attr_value.__dict__
                 for att_name, att_val in class_dict[attr_name].items():
                     self.param_converter_helper(class_dict[attr_name], att_name, att_val)
     
-        def convert_params(self):
+        def class_to_dict_converter(self):
             for att_name, att_value in self.__dict__.items():
                 self.param_converter_helper(self.__dict__, att_name, att_value)"""
         converterFunction.replace('\t', '    ')
         converterFunction = converterFunction.rstrip()
         return converterFunction
 
+    def component_default_value(self, component_type:str, def_val: str):
+        if component_type == 'int' and def_val == None:
+            def_val = 0
+        if component_type == 'str' and def_val == None:
+            def_val = ''
+        if component_type.startswith('List') and def_val == None:
+            def_val = []
+        return def_val
+
+    def struct_init_signature_with_components(self, struct:str, assignments: List):
+        className = self.struct_names[struct]
+        sig = f'class {className}(ClassToDictConverter):\n\t\tdef __init__(self'
+        components = self.contract['types'][struct]['components']
+        for component in components:
+            name = component['name']
+            assignments.append(f"self.{name}={name}")
+            compType = self.native_python_type(component, forward_reference=True)
+            # all components will have default value, even if None
+            # if we want to change this, then we'll need to move
+            # defaulted components to end of components list, since 
+            # Python doesn't allow positional arguments to follow keyword arguments
+            defaultValue = component.get('default_value', None)
+            # the following logic is to mimic solidity default behavior
+            defaultValue = self.component_default_value(compType, defaultValue)
+            if compType in self.struct_names:
+                sig += f', {name}: "{compType}"' # we're handling forward referencing here, which requires quotes 
+            else:
+                sig += f", {name}: {compType}"
+            if compType == 'str':
+                sig += f" = '{defaultValue}'"
+            else:
+                sig += f" = {defaultValue}"
+        sig += '):'
+        return [sig, assignments]
+
     def classes_from_structs(self):
         classStrings = []
         for struct in self.contract['types']:
             assignments = []
-            className = self.struct_names[struct]
-            sig = f'class {className}(ConverterBase):\n\t\tdef __init__(self'
-            # sorry, I know the following line is ugly...I'll work on making it more aesthetically pleasing
-            components = self.contract['types'][struct]['components']
-            for component in components:
-                name = component['name']
-                assignments.append(f"self.{name}={name}")
-                compType = self.native_python_type(component, forward_reference=True)
-                # all components will have default value, even if None
-                # if we want to change this, then we'll need to move
-                # defaulted components to end of components list, since 
-                # Python doesn't allow positional arguments to follow keyword arguments
-                defaultValue = component.get('default_value', None)
-                # the following logic is to mimic solidity default behavior
-                if compType == 'int' and defaultValue == None:
-                    defaultValue = 0
-                if compType == 'str' and defaultValue == None:
-                    defaultValue = ''
-                if compType.startswith('List') and defaultValue == None:
-                    defaultValue = []
-                if compType in self.struct_names:
-                    sig += f', {name}: "{compType}"' # we're handling forward referencing here, which requires quotes 
-                else:
-                    sig += f", {name}: {compType}"
-                if compType == 'str':
-                    sig += f" = '{defaultValue}'"
-                else:
-                    sig += f" = {defaultValue}"
-            sig += '):'
+            sig, assignments = self.struct_init_signature_with_components(struct, assignments)   
             for assigned in assignments:
                 sig += f"\n\t\t\t{assigned}"
             sig = sig.replace('\t', '    ')
@@ -192,7 +206,7 @@ class SimbaHintedContract:
         Recursive function to determine dimensions of array type
 
         Args:
-            param (str): string formatted parameter (eg 'str[][][]')
+            param (str): string formatted parameter (eg 'str[][]')
             dims (Optional[int], optional): [description]. Defaults to 0.
 
         Returns:
@@ -261,6 +275,143 @@ class SimbaHintedContract:
             return arrType
         return fullType
 
+    def array_restrictions(self, arr:str):
+        arr_lengths = {}
+        for i in range(self.get_dimensions(arr)):
+            arr_len = arr[arr.find('[')+1:arr.find(']')]
+            arr_lengths[i] = int(arr_len) if arr_len else None 
+            arr = arr[arr.find(']')+1:]
+        return arr_lengths
+
+    def check_array_lengths(self, arr:List[Any], param_name, param_restrictions_dict:Dict, level=0):
+        level_restriction = param_restrictions_dict[param_name][level]
+        if level_restriction is not None:
+            if len(arr) != level_restriction:
+                raise ValueError("array length error")
+        level += 1
+        for i, sub_element in enumerate(arr):
+            # first check to make sure that if one element is list, all elements are lists
+            if i > 0 and type(arr[i]) != type(arr[i-1]):
+                raise TypeError("array element types do not match")
+            # then recursively check each sublist
+            if type(sub_element) == list:
+                self.check_array_lengths(sub_element, param_name, param_restrictions_dict, level=level)
+            else:
+                if param_restrictions_dict[param_name]['contains_uint'] is True:
+                    if type(sub_element) != int:
+                        raise TypeError("final sub array elements must be type int") 
+                    if sub_element < 0:
+                        raise ValueError("final sub array elements must be non-negative")
+        return True
+
+    def check_uint_restriction(self, param_value):
+        if param_value < 0:
+            raise ValueError("parameter value must be >= 0")
+        if type(param_value) != int:
+            raise ValueError("parameter must be type int")
+        
+    def validate_params(self, method_name, inputs):
+        paramRestrictions = self.param_restrictions()
+        method_restrictions = paramRestrictions.get(method_name, None)
+        if not method_restrictions:
+            # this means the method had no array length or uint restrictions
+            return True
+        uint_params = paramRestrictions.get('uint_params', {})
+        array_params = paramRestrictions.get('array_params', {})
+        for param_name, param_value in inputs.items():
+            if param_name in uint_params:
+                self.check_uint_restriction(param_value)
+            if param_name in array_params:
+                self.check_array_lengths(param_value, param_name, array_params)
+        return True
+
+    def param_restrictions(self):
+        """
+        This will return a dictionary of methods that have either array parameters with length restrictions,
+        or uint parameters. This includes methods that have dynamic (non-length restricted) parameters for 
+        which the elements are uints.
+
+        If a method does NOT have one of the following:
+            fixed-length (length-restricted) array parameters
+            uint parameters
+            fixed-length or dynamic array parameters whose elements are uints or uint-elemented arrays
+
+            then the method WILL NOT be included in our return array. 
+            This will allow for a quick check when we call each method to ask whether we need to check 
+            param restrictions
+        
+        Note that if a method does not have any params with array length restrictions, then the key 
+        'array_params' will not be populated for that method in our return object
+        Similarly, if a method does not have any params that are uints, then the key 'uint_params'
+        will not be populated for that method in our return object
+
+        Returns:
+            [dict]: example return for a contract with methods 'an_arr', 'array_params', and 'bbb':
+
+            {'an_arr': {'array_params': {'first': {0: None, 'contains_uint': True}}},
+            'another_uint_param': {'uint_params': ['another_uint', 'second_uint']},
+            'bbb': {'array_params': {'first': {0: None, 1: None, 'contains_uint': True}}}
+            }
+        """
+        md = self.metadata
+        contract = md['contract']
+        paramRestrictions = {}
+        methods = {method: values for method, values in contract['methods'].items()}
+        for method, params in methods.items():
+            for paramDict in params['params']:
+                paramName = paramDict['name']
+                rawType = paramDict['type']
+                contains_or_is_uint = rawType.startswith('uint')
+                # don't do anything if not an array and not contains_or_is_uint
+                # we're only worried about uint type checking and array length checking
+                if not contains_or_is_uint and not self.is_array(paramName):
+                    continue
+                if method not in paramRestrictions:
+                    paramRestrictions[method] = {}
+                if contains_or_is_uint and not self.is_array(rawType):
+                    # we are just keeping a list of paramNames for params that are uint_params
+                    if 'uint_params' not in paramRestrictions[method]:
+                        paramRestrictions[method]['uint_params'] = [paramName]
+                    else:
+                        paramRestrictions[method]['uint_params'].append(paramName)
+                elif self.is_array(rawType):
+                    if 'array_params' not in paramRestrictions[method]:
+                        paramRestrictions[method]['array_params'] = {}
+                    arrRestrictions = self.array_restrictions(rawType)
+                    arrRestrictions['contains_uint'] = contains_or_is_uint
+                    paramRestrictions[method]['array_params'][paramName] = arrRestrictions
+        return paramRestrictions
+
+    def sig_and_input_for_method(self, methodName:str, acceptsFiles:bool, itReturns:bool):
+        params = self.contract_methods[methodName]['params']
+        signature = f"def {methodName}(self,"
+        inputs = 'inputs= {\n\t'
+        for param in params:
+            paramName = param['name']
+            # we shouldn't include a parameter in our call as _bundleHash
+            # we should simply include files in our call:
+            if paramName == '_bundleHash':
+                continue
+            hint_type = self.native_python_type(param, forward_reference=True)
+            if hint_type in self.struct_names:
+                signature += f' {paramName}: "{hint_type}",'
+            else:
+                signature += f" {paramName}: {hint_type},"
+            inputs += f"\t\t'{paramName}': {paramName},"
+            inputs += '\n\t'
+        signature = signature[:-1]
+        if acceptsFiles:
+            signature += ', files: List[Tuple], async_method: bool = False, opts: Optional[dict] = None'
+        else:
+            signature += ', async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False'
+        if itReturns:
+            signature += ') -> List[Any]:'
+        else:
+            signature += '):'
+        inputs = inputs.rstrip()
+        inputs += '\n\t\t}'
+        return [signature, inputs]
+
     def sig_doc_input_return(self) -> List[str]:
         """
         sig_doc_input_return will return a list of list(zip) form, with the three items in that 
@@ -296,33 +447,7 @@ class SimbaHintedContract:
             else:
                 docStringDetails.append(f'\t"""\n\t\tIf query_method == True, then invocations of {methodName} will be queried. Otherwise {methodName} will be invoked with inputs.\n\t\t"""')
             itReturns = self.return_data_types(methodName, as_dict=False)
-            params = self.contract_methods[methodName]['params']
-            signature = f"def {methodName}(self,"
-            inputs = 'inputs= {\n\t'
-            for param in params:
-                paramName = param['name']
-                # we shouldn't include a parameter in our call as _bundleHash
-                # we should simply include files in our call:
-                if paramName == '_bundleHash':
-                    continue
-                hint_type = self.native_python_type(param, forward_reference=True)
-                if hint_type in self.struct_names:
-                    signature += f' {paramName}: "{hint_type}",'
-                else:
-                    signature += f" {paramName}: {hint_type},"
-                inputs += f"\t\t'{paramName}': {paramName},"
-                inputs += '\n\t'
-            signature = signature[:-1]
-            if acceptsFiles:
-                signature += ', files: List[Tuple], async_method: bool = False, opts: Optional[dict] = None'
-            else:
-                signature += ', async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False'
-            if itReturns:
-                signature += ') -> List[Any]:'
-            else:
-                signature += '):'
-            inputs = inputs.rstrip()
-            inputs += '\n\t\t}'
+            signature, inputs = self.sig_and_input_for_method(methodName, acceptsFiles, itReturns)
             signatureDetails.append(signature)
             inputDetails.append(inputs)
             if acceptsFiles:
@@ -345,5 +470,3 @@ class SimbaHintedContract:
         output = output.replace('\t', '    ')
         with open(self.output_file, 'w') as f:
             f.write(output)
-
-
