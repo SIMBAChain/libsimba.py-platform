@@ -14,6 +14,27 @@
 	"contract": {
 		"assets": {},
 		"methods": {
+			"uint_and_uint_arr_test": {
+				"params": [{
+					"name":"first_uint",
+					"type":"uint256"
+				}, {
+					"name":"a_nested_uint_array",
+					"type":"uint256[5][3]"
+				}, {
+					"name":"non_nested_uint_array",
+					"type":"uint256[][]"
+				}]
+			},
+			"another_uint_param": {
+				"params": [{
+					"name":"another_uint",
+					"type":"uint256"
+				}, {
+					"name":"second_uint",
+					"type":"uint256"
+				}]
+			},
 			"a_str_arr": {
 				"params": [{
 					"name": "first",

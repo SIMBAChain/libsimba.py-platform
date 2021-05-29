@@ -2,6 +2,7 @@ import libsimba
 from libsimba.simba import Simba
 from datetime import datetime
 from typing import List, Tuple, Dict, String, Any, Optional
+from libsimba.class_converter import ClassToDictConverter, convert_classes
 
 class Application:
     def __init__(self):
@@ -11,30 +12,19 @@ class Application:
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     
-    class ConverterBase:
-        def param_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def convert_params(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)
-    
-    class Person(ConverterBase):
+    class Person(ClassToDictConverter):
         def __init__(self, name: str = '2020-01-01T00:00:00.000', age: int = 99, addr: "Application.Addr" = None):
             self.name=name
             self.age=age
             self.addr=addr
     
-    class Addr(ConverterBase):
+    class Addr(ClassToDictConverter):
         def __init__(self, street: str = '', number: int = 0, town: str = ''):
             self.street=street
             self.number=number
             self.town=town
     
-    class AddressPerson(ConverterBase):
+    class AddressPerson(ClassToDictConverter):
         def __init__(self, name: str = '', age: int = 0, addrs: List["Application.Addr"] = []):
             self.name=name
             self.age=age
@@ -49,6 +39,37 @@ class Application:
     def get_transaction_statuses(self, txn_hashes: List[str] = None, opts: Optional[dict] = None):
         return self.simba_contract.get_transaction_statuses(txn_hashes, opts)
 
+    def uint_and_uint_arr_test(self, first_uint: int, a_nested_uint_array: List[List[int]], non_nested_uint_array: List[List[int]], async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
+        """
+        If query_method == True, then invocations of uint_and_uint_arr_test will be queried. Otherwise uint_and_uint_arr_test will be invoked with inputs.
+        """
+        inputs= {
+            'first_uint': first_uint,
+            'a_nested_uint_array': a_nested_uint_array,
+            'non_nested_uint_array': non_nested_uint_array,
+        }
+        convert_classes(inputs)
+        
+        if query_method:
+            return self.simba_contract.query_method("uint_and_uint_arr_test", opts=opts)
+        else:
+            return self.simba_contract.submit_method("uint_and_uint_arr_test", inputs, opts=opts, async_method=async_method)
+
+    def another_uint_param(self, another_uint: int, second_uint: int, async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
+        """
+        If query_method == True, then invocations of another_uint_param will be queried. Otherwise another_uint_param will be invoked with inputs.
+        """
+        inputs= {
+            'another_uint': another_uint,
+            'second_uint': second_uint,
+        }
+        convert_classes(inputs)
+        
+        if query_method:
+            return self.simba_contract.query_method("another_uint_param", opts=opts)
+        else:
+            return self.simba_contract.submit_method("another_uint_param", inputs, opts=opts, async_method=async_method)
+
     def a_str_arr(self, first: List[str], async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False):
         """
         If query_method == True, then invocations of a_str_arr will be queried. Otherwise a_str_arr will be invoked with inputs.
@@ -56,11 +77,7 @@ class Application:
         inputs= {
             'first': first,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("a_str_arr", opts=opts)
@@ -74,11 +91,7 @@ class Application:
         inputs= {
             'first': first,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("an_arr", opts=opts)
@@ -93,11 +106,7 @@ class Application:
             'first': first,
             'second': second,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("two_arrs", opts=opts)
@@ -111,11 +120,7 @@ class Application:
         inputs= {
             'first': first,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("address_arr", opts=opts)
@@ -129,11 +134,7 @@ class Application:
         inputs= {
             'first': first,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("bbb", opts=opts)
@@ -147,11 +148,7 @@ class Application:
         inputs= {
             'first': first,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("nested_arr", opts=opts)
@@ -165,11 +162,7 @@ class Application:
         inputs= {
             'first': first,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("nested_arr_2", opts=opts)
@@ -183,11 +176,7 @@ class Application:
         inputs= {
             'first': first,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("nested_arr_3", opts=opts)
@@ -201,11 +190,7 @@ class Application:
         inputs= {
             'first': first,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if async_method:
             return self.simba_contract.submit_contract_method_with_files_async("nested_arr_4", inputs, files=files, opts=opts)
@@ -220,11 +205,7 @@ class Application:
             'people': people,
             'test_bool': test_bool,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("structTest_1", opts=opts)
@@ -239,11 +220,7 @@ class Application:
             'person': person,
             'test_bool': test_bool,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("structTest_2", opts=opts)
@@ -257,11 +234,7 @@ class Application:
         inputs= {
             'person': person,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if async_method:
             return self.simba_contract.submit_contract_method_with_files_async("structTest_5", inputs, files=files, opts=opts)
@@ -275,11 +248,7 @@ class Application:
         inputs= {
             'person': person,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if async_method:
             return self.simba_contract.submit_contract_method_with_files_async("structTest_3", inputs, files=files, opts=opts)
@@ -293,11 +262,7 @@ class Application:
         inputs= {
             'persons': persons,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if async_method:
             return self.simba_contract.submit_contract_method_with_files_async("structTest_4", inputs, files=files, opts=opts)
@@ -311,11 +276,7 @@ class Application:
         inputs= {
             'persons_0': persons_0,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if async_method:
             return self.simba_contract.submit_contract_method_with_files_async("structTest_6", inputs, files=files, opts=opts)
@@ -328,11 +289,7 @@ class Application:
         """
         inputs= {
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("nowt", opts=opts)
@@ -346,11 +303,7 @@ class Application:
         inputs= {
             'the_date': the_date,
         }
-        # the following logic converts classes, including nested classes, back to dicts for our API calls
-        for attr_name, attr_value in inputs.items():
-            if hasattr(attr_value, "convert_params"):
-                attr_value.convert_params()
-                inputs[attr_name] = attr_value.__dict__
+        convert_classes(inputs)
         
         if query_method:
             return self.simba_contract.query_method("date_string", opts=opts)
