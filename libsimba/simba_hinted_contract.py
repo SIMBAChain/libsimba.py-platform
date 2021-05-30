@@ -13,7 +13,8 @@ class SimbaHintedContract:
         baseAPIurl: str = 'https://api.sep.dev.simbachain.com/',
         contractTemplate: str ='contract.tpl', 
         outputFile: str = 'newContract.py',
-        templateFolder: str ='templates'
+        templateFolder: str ='templates',
+        contractName: str = None # we will need to pass this once outside of testing
         ):
         """
         SimbaHintedContract allows us to represent our smart contract as a Python class
@@ -30,12 +31,14 @@ class SimbaHintedContract:
             templateFolder (str, optional): folder contianing our jinja template. Defaults to 'templates'.
         """
         # will need to rewrite logic to access metadata
-        # self.metadata = self.get_metadata() # this line will replace the next line in production
-        self.metadata = json.load(open(metaData, 'r'))
-        self.contract = self.metadata['contract']
-        self.contract_name = self.contract['name']
-        self.contract_methods = self.contract['methods']
+        # self.contract_name = contractName # will uncomment this after testing
         self.app_name = appName
+        self.metadata = json.load(open(metaData, 'r'))
+        # self.metadata = self.get_metadata() # this line will be uncommented after testing
+        self.contract = self.metadata['contract']
+        self.contract_name = self.contract['name'] # remove after testing
+        self.contract_methods = self.contract['methods']
+
         self.base_api_url = baseAPIurl
         self.contract_template = contractTemplate 
         self.output_file = outputFile
