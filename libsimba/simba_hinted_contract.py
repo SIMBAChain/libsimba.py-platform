@@ -8,13 +8,13 @@ from libsimba.utils import build_url
 class SimbaHintedContract:
     def __init__(
         self, 
-        metaData: str, 
-        appName: str, 
-        baseAPIurl: str = 'https://api.sep.dev.simbachain.com/',
-        contractTemplate: str ='contract.tpl', 
-        outputFile: str = 'newContract.py',
-        templateFolder: str ='templates',
-        contractName: str = None # we will need to pass this once outside of testing
+        metadata: str, 
+        app_name: str, 
+        base_api_url: str = 'https://api.sep.dev.simbachain.com/',
+        contract_template: str ='contract.tpl', 
+        output_file: str = 'newContract.py',
+        template_folder: str ='templates',
+        contract_name: str = None # we will need to pass this once outside of testing
         ):
         """
         SimbaHintedContract allows us to represent our smart contract as a Python class
@@ -23,26 +23,26 @@ class SimbaHintedContract:
         Note that the underlying functionality is still contained in https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py
 
         Args:
-            metaData (str): string formatted json metadata from our smart contract
-            appName (str): name of the app that accesses our smart contract
-            baseAPIurl (str, optional): Defaults to 'https://api.sep.dev.simbachain.com/'.
-            contractTemplate (str, optional): name of the jinja template used to create .py version of contract code. Defaults to 'contract.tpl'.
-            outputFile (str, optional): name of .py file we wish to write our .py version of contract to. Defaults to 'newContract.py'.
-            templateFolder (str, optional): folder contianing our jinja template. Defaults to 'templates'.
+            metadata (str): string formatted json metadata from our smart contract
+            app_name (str): name of the app that accesses our smart contract
+            base_api_url (str, optional): Defaults to 'https://api.sep.dev.simbachain.com/'.
+            contract_template (str, optional): name of the jinja template used to create .py version of contract code. Defaults to 'contract.tpl'.
+            output_file (str, optional): name of .py file we wish to write our .py version of contract to. Defaults to 'newContract.py'.
+            template_folder (str, optional): folder contianing our jinja template. Defaults to 'templates'.
         """
         # will need to rewrite logic to access metadata
-        # self.contract_name = contractName # will uncomment this after testing
-        self.app_name = appName
-        self.metadata = json.load(open(metaData, 'r'))
+        # self.contract_name = contract_name # will uncomment this after testing
+        self.app_name = app_name
+        self.metadata = json.load(open(metadata, 'r'))
         # self.metadata = self.get_metadata() # this line will be uncommented after testing
         self.contract = self.metadata['contract']
         self.contract_name = self.contract['name'] # remove after testing
         self.contract_methods = self.contract['methods']
 
-        self.base_api_url = baseAPIurl
-        self.contract_template = contractTemplate 
-        self.output_file = outputFile
-        self.template_folder = templateFolder
+        self.base_api_url = base_api_url
+        self.contract_template = contract_template 
+        self.output_file = output_file
+        self.template_folder = template_folder
         self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract['types']}
 
     @auth_required 
