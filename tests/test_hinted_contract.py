@@ -11,24 +11,28 @@ wDir = os.path.dirname(__file__)
 
 relPath = 'data/app_md.json'
 metadata = os.path.join(wDir, relPath)
-outputFile = 'app_md_contract.py'
-appName = "app_md_app"
-scc = SimbaHintedContract(metadata, appName, outputFile = outputFile)
+output_file = 'app_md_contract.py'
+app_name = "app_md_app"
+scc = SimbaHintedContract(metadata, app_name, output_file = output_file)
 scc.write_contract()
+# print(scc.contract_name)
 
 
 relPath = 'data/app_md_2.json'
 metadata = os.path.join(wDir, relPath)
-outputFile = "app_md_2_contract.py"
-appName = "app_md_2_app"
-scc = SimbaHintedContract(metadata, appName, outputFile = outputFile)
+output_file = "app_md_2_contract.py"
+app_name = "app_md_2_app"
+scc = SimbaHintedContract(metadata, app_name, output_file = output_file)
 scc.write_contract()
+# print(scc.contract_name)
 
 relPath = 'data/app_md_3.json'
 metadata = os.path.join(wDir, relPath)
-outputFile = "app_md_3_contract.py"
-appName = "app_md_3_app"
-scc = SimbaHintedContract(metadata, appName, outputFile=outputFile)
+output_file = "app_md_3_contract.py"
+app_name = "app_md_3_app"
+scc = SimbaHintedContract(metadata, app_name, output_file=output_file)
 scc.write_contract()
+# print(scc.contract_name)
+
 
 
