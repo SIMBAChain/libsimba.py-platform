@@ -18,7 +18,7 @@ class SimbaHintedContract:
         """
         SimbaHintedContract allows us to represent our smart contract as a Python class
         The purpose of this class is largely to provide an SDK that utilizes type hinting 
-        and method calls (as opposed to python requests)
+        and exposes method calls instead of python get requests
         Note that the underlying functionality is still contained in https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py
 
         Args:
