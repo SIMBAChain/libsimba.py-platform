@@ -1,6 +1,13 @@
 from typing import Any
 
 def convert_classes(inputs):
+    """
+    solidity structs represented as classes will have "class_to_dict_converter" attr
+    this function gets called in contract method calls inside simba_contract.py
+
+    Args:
+        inputs (dict): dict of {param_name: param_value} form
+    """
     for attr_name, attr_value in inputs.items():
         if hasattr(attr_value, "class_to_dict_converter"):
             attr_value.class_to_dict_converter()

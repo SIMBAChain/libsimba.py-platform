@@ -470,3 +470,4 @@ class SimbaHintedContract:
         output = output.replace('\t', '    ')
         with open(self.output_file, 'w') as f:
             f.write(output)
+

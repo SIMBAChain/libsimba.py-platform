@@ -19,7 +19,7 @@ class SimbaContract(ParamCheckingContract):
 
     @auth_required 
     def get_metadata(self, headers):
-        url = build_url(self.base_api_url, "v2/apps/{}/contract/{}/?format=json".format(self.contract_name, self.app_name)) 
+        url = build_url(self.base_api_url, "v2/apps/{}/contract/{}/?format=json".format(self.app_name, self.contract_name)) 
         return requests.get(url, headers=headers)
 
     @auth_required
