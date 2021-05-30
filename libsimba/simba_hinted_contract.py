@@ -325,7 +325,7 @@ class SimbaHintedContract:
                 self.check_array_lengths(param_value, param_name, array_params)
         return True
 
-    def param_restrictions(self):
+    def param_restrictions(self) -> dict:
         """
         This will return a dictionary of methods that have either array parameters with length restrictions,
         or uint parameters. This includes methods that have dynamic (non-length restricted) parameters for 
@@ -382,7 +382,7 @@ class SimbaHintedContract:
                     paramRestrictions[method]['array_params'][paramName] = arrRestrictions
         return paramRestrictions
 
-    def sig_and_input_for_method(self, methodName:str, acceptsFiles:bool, itReturns:bool):
+    def sig_and_input_for_method(self, methodName:str, acceptsFiles:bool, itReturns:bool) -> list:
         params = self.contract_methods[methodName]['params']
         signature = f"def {methodName}(self,"
         inputs = 'inputs= {\n\t'
