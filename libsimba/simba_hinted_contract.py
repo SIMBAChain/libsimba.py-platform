@@ -1,6 +1,9 @@
 from typing import List, Tuple, Dict, Optional, Union, Any
 import json 
 from jinja2 import Environment, FileSystemLoader 
+import requests
+from libsimba.decorators import auth_required
+from libsimba.utils import build_url
 
 class SimbaHintedContract:
     def __init__(
@@ -26,10 +29,10 @@ class SimbaHintedContract:
             outputFile (str, optional): name of .py file we wish to write our .py version of contract to. Defaults to 'newContract.py'.
             templateFolder (str, optional): folder contianing our jinja template. Defaults to 'templates'.
         """
-        metadata = open(metaData, 'r')
-        metadata = json.load(metadata)
-        self.metadata = metadata
-        self.contract = metadata['contract']
+        # will need to rewrite logic to access metadata
+        # self.metadata = self.get_metadata() # this line will replace the next line in production
+        self.metadata = json.load(open(metaData, 'r'))
+        self.contract = self.metadata['contract']
         self.contract_name = self.contract['name']
         self.contract_methods = self.contract['methods']
         self.app_name = appName
@@ -38,6 +41,11 @@ class SimbaHintedContract:
         self.output_file = outputFile
         self.template_folder = templateFolder
         self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract['types']}
+
+    @auth_required 
+    def get_metadata(self, headers):
+        url = build_url(self.base_api_url, "v2/apps/{}/contract/{}/?format=json".format(self.app_name, self.contract_name)) 
+        return requests.get(url, headers=headers)
     
     def accepts_files(self, method_name:str) -> bool:
         """
