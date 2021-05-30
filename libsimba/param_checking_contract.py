@@ -19,10 +19,10 @@ class ParamCheckingContract:
         url = build_url(self.base_api_url, "v2/apps/{}/contract/{}/?format=json".format(self.app_name, self.contract_name)) 
         return requests.get(url, headers=headers)
 
-    def is_array(self, param):
+    def is_array(self, param) -> bool:
         return param.endswith(']')
 
-    def array_restrictions(self, arr:str):
+    def array_restrictions(self, arr:str) -> dict:
         """
         returns a dictionary that maps dimension to array-length restriction
         Our outer-most array is associated with our lowest dimension: 0
@@ -59,7 +59,7 @@ class ParamCheckingContract:
         dims += 1 
         return self.get_dimensions(param, dims)
     
-    def param_restrictions(self):
+    def param_restrictions(self) -> dict:
         """
         This will return a dictionary of methods that have either array parameters with length restrictions,
         or uint parameters. This includes methods that have dynamic (non-length restricted) parameters for 
