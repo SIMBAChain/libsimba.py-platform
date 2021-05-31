@@ -11,24 +11,22 @@ from libsimba.param_checking_contract import ParamCheckingContract
 
 class SimbaContract(ParamCheckingContract):
     def __init__(self, base_api_url, app_name, contract_name):
+        self.base_api_url = base_api_url
         self.app_name = app_name
         self.contract_name = contract_name
-        self.base_api_url = base_api_url
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
         self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
         self.metadata = self.get_metadata()
-        print(self.metadata)
-        # self.params_restricted = self.param_restrictions()
+        self.params_restricted = self.param_restrictions()
 
     @auth_required 
     def get_metadata(self, headers, opts: Optional[dict] = None):
         opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts) 
         resp = requests.get(url, headers=headers)
-        metadata = resp.json()
+        metadata = resp.json()['metadata']
         return metadata
         
-
     @auth_required
     def query_method(self, headers, method_name, opts: Optional[dict] = None):
         opts = opts or {}
@@ -99,9 +97,4 @@ class SimbaContract(ParamCheckingContract):
             self.app_name, self.contract_name
         ), opts)
         return requests.get(url, headers=headers)
-#%%
-if __name__ == '__main__':
-    app_name = "newCompBatch"
-    contract_name = "newCompBatch"
-    base_api_url = 'https://api.sep.dev.simbachain.com/'
-    sc = SimbaContract(base_api_url, app_name, contract_name)
+

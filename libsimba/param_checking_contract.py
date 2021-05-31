@@ -150,7 +150,7 @@ class ParamCheckingContract:
                 raise ValueError("array length error")
         level += 1
         for i, element in enumerate(arr):
-            # first check to make sure that if one element is list, all elements are lists
+            # first check to make sure we don't have any type mixing in arrays
             if i > 0 and type(arr[i]) != type(arr[i-1]):
                 raise TypeError("array element types do not match")
             # then recursively check each sublist

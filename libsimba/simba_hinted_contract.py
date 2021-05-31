@@ -9,13 +9,13 @@ from libsimba.utils import build_url
 class SimbaHintedContract:
     def __init__(
         self, 
-        metadata: str, 
+        # metadata: str, 
         app_name: str, 
+        contract_name: str, # we will need to pass this once outside of testing
         base_api_url: str = 'https://api.sep.dev.simbachain.com/',
         contract_template: str ='contract.tpl', 
         output_file: str = 'newContract.py',
         template_folder: str ='templates',
-        contract_name: str = None # we will need to pass this once outside of testing
         ):
         """
         SimbaHintedContract allows us to represent our smart contract as a Python class
@@ -31,27 +31,29 @@ class SimbaHintedContract:
             output_file (str, optional): name of .py file we wish to write our .py version of contract to. Defaults to 'newContract.py'.
             template_folder (str, optional): folder contianing our jinja template. Defaults to 'templates'.
         """
-        # will need to rewrite logic to access metadata
-        # self.contract_name = contract_name # will uncomment this after testing
         self.app_name = app_name
-        self.metadata = json.load(open(metadata, 'r'))
-        # self.metadata = self.get_metadata() # this line will be uncommented after testing
-        self.contract = self.metadata['contract']
-        self.contract_name = self.contract['name'] # remove after testing
-        self.contract_methods = self.contract['methods']
-
+        self.contract_name = contract_name
         self.base_api_url = base_api_url
+        self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
+        self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
+        self.metadata = self.get_metadata()
+        self.contract = self.metadata['contract']
+        # note that we have to specify the following line, because the contract name passed by the user 
+        # and used for the API may be different than what's specified in the actual contract, and what 
+        # we actually want to use here is the contract name found in the metadata
+        self.contract_name_from_metadata = self.contract['name']
+        self.contract_methods = self.contract['methods']
         self.contract_template = contract_template 
         self.output_file = output_file
         self.template_folder = template_folder
-        self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract['types']}
+        self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract.get('types', {})}
 
     @auth_required 
     def get_metadata(self, headers, opts: Optional[dict] = None):
         opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts) 
         resp = requests.get(url, headers=headers)
-        metadata = resp.json()
+        metadata = resp.json()['metadata']
         return metadata
     
     def accepts_files(self, method_name:str) -> bool:
@@ -416,9 +418,9 @@ class SimbaHintedContract:
             inputs += '\n\t'
         signature = signature[:-1]
         if acceptsFiles:
-            signature += ', files: List[Tuple], async_method: bool = False, opts: Optional[dict] = None'
+            signature += ', files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None'
         else:
-            signature += ', async_method: bool = False, opts: Optional[dict] = None, query_method: bool = False'
+            signature += ', async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False'
         if itReturns:
             signature += ') -> List[Any]:'
         else:
@@ -466,9 +468,9 @@ class SimbaHintedContract:
             signatureDetails.append(signature)
             inputDetails.append(inputs)
             if acceptsFiles:
-                returnDetails.append(f'if async_method:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files=files, opts=opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files=files, opts=opts)')
+                returnDetails.append(f'if async_method:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files, opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files, opts)')
             else:
-                returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts=opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts=opts, async_method=async_method)')
+                returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts, async_method)')
         sigDocInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
         return sigDocInputReturn
 
@@ -485,4 +487,6 @@ class SimbaHintedContract:
         output = output.replace('\t', '    ')
         with open(self.output_file, 'w') as f:
             f.write(output)
+
+
 
