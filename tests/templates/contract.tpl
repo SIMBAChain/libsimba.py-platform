@@ -1,10 +1,10 @@
 import libsimba
 from libsimba.simba import Simba
 from datetime import datetime
-from typing import List, Tuple, Dict, String, Any, Optional
+from typing import List, Tuple, Dict, Any, Optional
 from libsimba.class_converter import ClassToDictConverter, convert_classes
 
-class {{SimbaHintedContractObj.contract_name}}:
+class {{SimbaHintedContractObj.contract_name_from_metadata}}:
     def __init__(self):
         self.app_name = "{{SimbaHintedContractObj.app_name}}"
         self.base_api_url = "{{SimbaHintedContractObj.base_api_url}}"
@@ -15,10 +15,10 @@ class {{SimbaHintedContractObj.contract_name}}:
     {{cls}}
     {% endfor %}
     def get_transactions(self, opts: Optional[dict] = None):
-        return self.simba_contract.get_transactions(opts=opts)
+        return self.simba_contract.get_transactions(opts)
     
     def validate_bundle_hash(self, bundle_hash: str, opts: Optional[dict] = None):
-        return self.simba_contract.get_transactions(bundle_hash, opts=opts)
+        return self.simba_contract.get_transactions(bundle_hash, opts)
 
     def get_transaction_statuses(self, txn_hashes: List[str] = None, opts: Optional[dict] = None):
         return self.simba_contract.get_transaction_statuses(txn_hashes, opts)

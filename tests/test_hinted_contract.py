@@ -4,35 +4,15 @@ import os
 import pprint
 pprint = pprint.PrettyPrinter().pprint 
 
-
-# not a proper test - just demonstrating instantiating hinted class object 
-# using different metadata.json files
-wDir = os.path.dirname(__file__)
-
-relPath = 'data/app_md.json'
-metadata = os.path.join(wDir, relPath)
-output_file = 'app_md_contract.py'
-app_name = "app_md_app"
-scc = SimbaHintedContract(metadata, app_name, output_file = output_file)
-scc.write_contract()
-# print(scc.contract_name)
+# new interface used here - just providing example of writing contract as class object in "test_simba_output.py"
+app_name = "TestSimbaHinted"
+contract_name = "TestSimbaHinted"
+base_api_url = 'https://api.sep.dev.simbachain.com/'
+output_file = "test_simba_output.py"
+sch = SimbaHintedContract(app_name, contract_name, base_api_url, output_file=output_file)
+sch.write_contract()
 
 
-relPath = 'data/app_md_2.json'
-metadata = os.path.join(wDir, relPath)
-output_file = "app_md_2_contract.py"
-app_name = "app_md_2_app"
-scc = SimbaHintedContract(metadata, app_name, output_file = output_file)
-scc.write_contract()
-# print(scc.contract_name)
-
-relPath = 'data/app_md_3.json'
-metadata = os.path.join(wDir, relPath)
-output_file = "app_md_3_contract.py"
-app_name = "app_md_3_app"
-scc = SimbaHintedContract(metadata, app_name, output_file=output_file)
-scc.write_contract()
-# print(scc.contract_name)
 
 
 
