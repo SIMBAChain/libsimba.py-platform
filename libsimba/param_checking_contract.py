@@ -15,9 +15,12 @@ class ParamCheckingContract:
         self.params_restricted = self.param_restrictions()
 
     @auth_required 
-    def get_metadata(self, headers):
-        url = build_url(self.base_api_url, "v2/apps/{}/contract/{}/?format=json".format(self.app_name, self.contract_name)) 
-        return requests.get(url, headers=headers)
+    def get_metadata(self, headers, opts: Optional[dict] = None):
+        opts = opts or {}
+        url = build_url(self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts) 
+        resp = requests.get(url, headers=headers)
+        metadata = resp.json()
+        return metadata
 
     def is_array(self, param) -> bool:
         return param.endswith(']')
