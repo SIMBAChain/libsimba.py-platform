@@ -3,7 +3,6 @@ from libsimba.decorators import auth_required
 from libsimba.utils import build_url
 import requests
 
-
 class ParamCheckingContract:
     def __init__(self, base_api_url, app_name, contract_name):
         self.app_name = app_name
@@ -144,24 +143,26 @@ class ParamCheckingContract:
         Returns:
             [bool]: True if no exceptions raised
         """
-        level_restriction = param_restrictions_dict[param_name][level]
+        level_restriction = param_restrictions_dict[param_name].get(level, "Too Many Dimensions")
+        if level_restriction == "Too Many Dimensions":
+            raise ValueError("check_array_restrictions: passed array contains too many dimensions")
         if level_restriction is not None:
             if len(arr) != level_restriction:
-                raise ValueError("array length error")
+                raise ValueError("check_array_restrictions: array length error")
         level += 1
         for i, element in enumerate(arr):
             # first check to make sure we don't have any type mixing in arrays
             if i > 0 and type(arr[i]) != type(arr[i-1]):
-                raise TypeError("array element types do not match")
+                raise TypeError("check_array_restrictions: array element types do not match")
             # then recursively check each sublist
             if type(element) == list:
                 self.check_array_restrictions(element, param_name, param_restrictions_dict, level=level)
             else:
                 if param_restrictions_dict[param_name]['contains_uint'] is True:
                     if type(element) != int:
-                        raise TypeError("final sub array elements must be type int") 
+                        raise TypeError("check_array_restrictions: array elements must be type int") 
                     if element < 0:
-                        raise ValueError("final sub array elements must be non-negative")
+                        raise ValueError("check_array_restrictions: array elements must be non-negative")
         return True
 
     def check_uint_restriction(self, param_value:int):
@@ -201,8 +202,9 @@ class ParamCheckingContract:
         if not method_restrictions:
             # this means the method had no array length or uint restrictions
             return True
-        uint_params = paramRestrictions.get('uint_params', {})
-        array_params = paramRestrictions.get('array_params', {})
+        uint_params = paramRestrictions.get(f'{method_name}', {}).get('uint_params', {})
+        array_params = paramRestrictions.get(f'{method_name}', {}).get('array_params', {})
+        
         for param_name, param_value in inputs.items():
             if param_name in uint_params:
                 self.check_uint_restriction(param_value)
