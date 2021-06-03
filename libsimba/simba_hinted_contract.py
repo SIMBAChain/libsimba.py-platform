@@ -9,9 +9,8 @@ from libsimba.utils import build_url
 class SimbaHintedContract:
     def __init__(
         self, 
-        # metadata: str, 
         app_name: str, 
-        contract_name: str, # we will need to pass this once outside of testing
+        contract_name: str, 
         base_api_url: str = 'https://api.sep.dev.simbachain.com/',
         contract_template: str ='contract.tpl', 
         output_file: str = 'newContract.py',
@@ -103,7 +102,7 @@ class SimbaHintedContract:
             return None
         for i, r in enumerate(m.get('returns', [])):
             dt = r['type'] # come back and handle type later
-            nativeType = self.native_python_type(r)
+            nativeType = self.hinted_data_type(r)
             if as_dict:
                 result[str(i)] = nativeType
             else:
@@ -116,7 +115,7 @@ class SimbaHintedContract:
 
         Args:
             param (app_metadata.DataType): method parameter, of type DataType, for which we want to obtain a native Python data type hint
-            paramType (str): native Python type obtained in native_python_type (int, str, etc.)
+            paramType (str): native Python type obtained in hinted_data_type (int, str, etc.)
 
         Returns:
             arrType (str): string formatted version of array or nested array
@@ -129,7 +128,7 @@ class SimbaHintedContract:
     def is_array(self, param):
         return param.endswith(']')
 
-    def handle_struct(self, structParam: str, forward_reference:bool = False):
+    def handle_struct(self, structParam: str, forward_reference:bool = True):
         """
         gives us custom struct type, accounting for array
 
@@ -141,7 +140,6 @@ class SimbaHintedContract:
         """
         if self.is_array(structParam):
             structType = structParam[:structParam.find('[')]
-            # should 'libsimba' below be local directory instead?
             if forward_reference:
                 structType = f'"{structType}"'
             return structType
@@ -172,7 +170,18 @@ class SimbaHintedContract:
         converterFunction = converterFunction.rstrip()
         return converterFunction
 
-    def component_default_value(self, component_type:str, def_val: str):
+    def component_default_value(self, component_type:str, def_val: Any = None):
+        """
+        All classes that we use to represent classes should default to empty values
+        for their respective data types, to mimic solidity behavior
+
+        Args:
+            component_type (str): string representing data type ('int', 'str', etc.)
+            def_val (str): default value that should be assigned to variable of component_type. Detafults to None.
+
+        Returns:
+            [Any]: default value for component_type
+        """
         if component_type == 'int' and def_val == None:
             def_val = 0
         if component_type == 'str' and def_val == None:
@@ -181,14 +190,25 @@ class SimbaHintedContract:
             def_val = []
         return def_val
 
-    def struct_init_signature_with_components(self, struct:str, assignments: List):
+    def struct_init_signature_with_components(self, struct:str):
+        """
+        struct_init_signature_with_components will produce a signature for the __init__
+        method for our classes that represent structs, with parameters (components) and default values
+
+        Args:
+            struct (str): name of struct that we want to create a class object for
+
+        Returns:
+            [str, list]: list containing a signature and attribute assignments for struct class
+        """
+        assignments = []
         className = self.struct_names[struct]
         sig = f'class {className}(ClassToDictConverter):\n\t\tdef __init__(self'
         components = self.contract['types'][struct]['components']
         for component in components:
             name = component['name']
             assignments.append(f"self.{name}={name}")
-            compType = self.native_python_type(component, forward_reference=True)
+            compType = self.hinted_data_type(component, forward_reference=True)
             # all components will have default value, even if None
             # if we want to change this, then we'll need to move
             # defaulted components to end of components list, since 
@@ -208,10 +228,15 @@ class SimbaHintedContract:
         return [sig, assignments]
 
     def classes_from_structs(self):
+        """
+        generates class object strings for each of our contract's structs
+
+        Returns:
+            [List[str]]: list of string representations of struct classes
+        """
         classStrings = []
         for struct in self.contract['types']:
-            assignments = []
-            sig, assignments = self.struct_init_signature_with_components(struct, assignments)   
+            sig, assignments = self.struct_init_signature_with_components(struct)   
             for assigned in assignments:
                 sig += f"\n\t\t\t{assigned}"
             sig = sig.replace('\t', '    ')
@@ -235,13 +260,17 @@ class SimbaHintedContract:
         dims += 1 
         return self.get_dimensions(param, dims)
 
-    def native_python_type(self, param: dict, forward_reference: bool = False) -> str:
+    def hinted_data_type(self, param: dict, forward_reference: bool = True) -> str:
         """
-        native_python_type will return a native Python type (int, str, etc.)
+        hinted_data_type will return a type for type hinting. This may be a native python 
+        data type, or may be a custom data type representing a struct
 
         Args:
             param (dict): method parameter for which we want to obtain a native Python data type hint
-
+            forward_reference (bool): if True, then we return our data type inside quotes.
+                We do this as a forward reference, in cases where we are referencing a data type
+                that is not yet recovnized by the the interpreter (eg a custom class type)
+        
         Returns:
             (str): string that represents either an array of form List[typ] or typ, where typ is a native python data type
         """
@@ -292,114 +321,18 @@ class SimbaHintedContract:
             return arrType
         return fullType
 
-    def array_restrictions(self, arr:str):
-        arr_lengths = {}
-        for i in range(self.get_dimensions(arr)):
-            arr_len = arr[arr.find('[')+1:arr.find(']')]
-            arr_lengths[i] = int(arr_len) if arr_len else None 
-            arr = arr[arr.find(']')+1:]
-        return arr_lengths
-
-    def check_array_lengths(self, arr:List[Any], param_name, param_restrictions_dict:Dict, level=0):
-        level_restriction = param_restrictions_dict[param_name][level]
-        if level_restriction is not None:
-            if len(arr) != level_restriction:
-                raise ValueError("array length error")
-        level += 1
-        for i, sub_element in enumerate(arr):
-            # first check to make sure that if one element is list, all elements are lists
-            if i > 0 and type(arr[i]) != type(arr[i-1]):
-                raise TypeError("array element types do not match")
-            # then recursively check each sublist
-            if type(sub_element) == list:
-                self.check_array_lengths(sub_element, param_name, param_restrictions_dict, level=level)
-            else:
-                if param_restrictions_dict[param_name]['contains_uint'] is True:
-                    if type(sub_element) != int:
-                        raise TypeError("final sub array elements must be type int") 
-                    if sub_element < 0:
-                        raise ValueError("final sub array elements must be non-negative")
-        return True
-
-    def check_uint_restriction(self, param_value):
-        if param_value < 0:
-            raise ValueError("parameter value must be >= 0")
-        if type(param_value) != int:
-            raise ValueError("parameter must be type int")
-        
-    def validate_params(self, method_name, inputs):
-        paramRestrictions = self.param_restrictions()
-        method_restrictions = paramRestrictions.get(method_name, None)
-        if not method_restrictions:
-            # this means the method had no array length or uint restrictions
-            return True
-        uint_params = paramRestrictions.get('uint_params', {})
-        array_params = paramRestrictions.get('array_params', {})
-        for param_name, param_value in inputs.items():
-            if param_name in uint_params:
-                self.check_uint_restriction(param_value)
-            if param_name in array_params:
-                self.check_array_lengths(param_value, param_name, array_params)
-        return True
-
-    def param_restrictions(self) -> dict:
+    def sig_and_input_for_method(self, methodName:str, acceptsFiles:bool, itReturns:bool) -> list:
         """
-        This will return a dictionary of methods that have either array parameters with length restrictions,
-        or uint parameters. This includes methods that have dynamic (non-length restricted) parameters for 
-        which the elements are uints.
+        generate a method signature, along with a dictionary of inputs, for a contract method
 
-        If a method does NOT have one of the following:
-            fixed-length (length-restricted) array parameters
-            uint parameters
-            fixed-length or dynamic array parameters whose elements are uints or uint-elemented arrays
-
-            then the method WILL NOT be included in our return array. 
-            This will allow for a quick check when we call each method to ask whether we need to check 
-            param restrictions
-        
-        Note that if a method does not have any params with array length restrictions, then the key 
-        'array_params' will not be populated for that method in our return object
-        Similarly, if a method does not have any params that are uints, then the key 'uint_params'
-        will not be populated for that method in our return object
+        Args:
+            methodName (str): contract method name
+            acceptsFiles (bool): bool that specifies whether a method accepts files
+            itReturns (bool): bool that specifies whether a method has a return value
 
         Returns:
-            [dict]: example return for a contract with methods 'an_arr', 'array_params', and 'bbb':
-
-            {'an_arr': {'array_params': {'first': {0: None, 'contains_uint': True}}},
-            'another_uint_param': {'uint_params': ['another_uint', 'second_uint']},
-            'bbb': {'array_params': {'first': {0: None, 1: None, 'contains_uint': True}}}
-            }
+            [str, str]: list containing [method signature, method input dict as string]
         """
-        md = self.metadata
-        contract = md['contract']
-        paramRestrictions = {}
-        methods = {method: values for method, values in contract['methods'].items()}
-        for method, params in methods.items():
-            for paramDict in params['params']:
-                paramName = paramDict['name']
-                rawType = paramDict['type']
-                contains_or_is_uint = rawType.startswith('uint')
-                # don't do anything if not an array and not contains_or_is_uint
-                # we're only worried about uint type checking and array length checking
-                if not contains_or_is_uint and not self.is_array(paramName):
-                    continue
-                if method not in paramRestrictions:
-                    paramRestrictions[method] = {}
-                if contains_or_is_uint and not self.is_array(rawType):
-                    # we are just keeping a list of paramNames for params that are uint_params
-                    if 'uint_params' not in paramRestrictions[method]:
-                        paramRestrictions[method]['uint_params'] = [paramName]
-                    else:
-                        paramRestrictions[method]['uint_params'].append(paramName)
-                elif self.is_array(rawType):
-                    if 'array_params' not in paramRestrictions[method]:
-                        paramRestrictions[method]['array_params'] = {}
-                    arrRestrictions = self.array_restrictions(rawType)
-                    arrRestrictions['contains_uint'] = contains_or_is_uint
-                    paramRestrictions[method]['array_params'][paramName] = arrRestrictions
-        return paramRestrictions
-
-    def sig_and_input_for_method(self, methodName:str, acceptsFiles:bool, itReturns:bool) -> list:
         params = self.contract_methods[methodName]['params']
         signature = f"def {methodName}(self,"
         inputs = 'inputs= {\n\t'
@@ -409,7 +342,7 @@ class SimbaHintedContract:
             # we should simply include files in our call:
             if paramName == '_bundleHash':
                 continue
-            hint_type = self.native_python_type(param, forward_reference=True)
+            hint_type = self.hinted_data_type(param, forward_reference=True)
             if hint_type in self.struct_names:
                 signature += f' {paramName}: "{hint_type}",'
             else:
