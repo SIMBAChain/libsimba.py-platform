@@ -1,10 +1,9 @@
 
 from libsimba.simba_hinted_contract import SimbaHintedContract
-import os 
 import pprint
 pprint = pprint.PrettyPrinter().pprint 
 
-# new interface used here - just providing example of writing contract as class object in "test_simba_output.py"
+
 app_name = "TestSimbaHinted"
 contract_name = "TestSimbaHinted"
 base_api_url = 'https://api.sep.dev.simbachain.com/'
