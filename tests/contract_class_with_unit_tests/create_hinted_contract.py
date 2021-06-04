@@ -1,8 +1,5 @@
 
 from libsimba.simba_hinted_contract import SimbaHintedContract
-import pprint
-pprint = pprint.PrettyPrinter().pprint 
-
 
 app_name = "TestSimbaHinted"
 contract_name = "TestSimbaHinted"
