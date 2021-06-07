@@ -140,13 +140,21 @@ class SimbaHintedContract:
         """
         if self.is_array(structParam):
             structType = structParam[:structParam.find('[')]
+            newStructType = structType.split('.')[1]
+            newStructType = self.contract_name + '.' + newStructType 
+            structType = newStructType
             if forward_reference:
                 structType = f'"{structType}"'
             return structType
+
+        newStructType = structParam.split('.')[1]
+        newStructType = self.contract_name + '.' + newStructType 
+        structType = newStructType
+
         if forward_reference:
-            structType = f'"{structParam}"'
+            structType = f'"{structType}"'
         else:
-            structType = structParam
+            structType = structType
         return structType
 
     def convert_classes_to_dicts_nested(self):
@@ -204,7 +212,11 @@ class SimbaHintedContract:
         assignments = []
         className = self.struct_names[struct]
         sig = f'class {className}(ClassToDictConverter):\n\t\tdef __init__(self'
-        components = self.contract['types'][struct]['components']
+        structs = self.contract.get('types', {})
+        if not structs:
+            return
+        else:
+            components = structs[struct]['components']
         for component in components:
             name = component['name']
             assignments.append(f"self.{name}={name}")
@@ -235,7 +247,8 @@ class SimbaHintedContract:
             [List[str]]: list of string representations of struct classes
         """
         classStrings = []
-        for struct in self.contract['types']:
+        structs = self.contract.get('types', {})
+        for struct in structs:
             sig, assignments = self.struct_init_signature_with_components(struct)   
             for assigned in assignments:
                 sig += f"\n\t\t\t{assigned}"
@@ -276,7 +289,6 @@ class SimbaHintedContract:
         """
         fullType = param['type']
         if fullType.startswith('struct'):
-            # since API expects dict for struct, we pass 'dict' instead of 'object' as a type hint
             fullType = fullType[7:]
             if self.is_array(fullType):
                 brackets = fullType[fullType.find('['):]
