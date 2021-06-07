@@ -1,9 +1,11 @@
 
-from typing import List, Tuple, Dict, Optional, Union, Any
-from jinja2 import Environment, FileSystemLoader 
+from typing import List, Dict, Optional, Union, Any
+from jinja2 import Template
 import requests
 from libsimba.decorators import auth_required
 from libsimba.utils import build_url
+from libsimba import templates
+import importlib.resources
 
 class SimbaHintedContract:
     def __init__(
@@ -424,9 +426,8 @@ class SimbaHintedContract:
         write_contract will use a jinja template to create a .py formatted version of our 
         smart contract, for which our contract will be represented as a class
         """
-        file_loader = FileSystemLoader(self.template_folder)
-        env = Environment(loader=file_loader)
-        template = env.get_template(self.contract_template)
+        tmplt = importlib.resources.read_text(templates, "contract.tpl")
+        template = Template(tmplt)
         output = template.render(SimbaHintedContractObj=self)
         # following line is to avoid mixing spaces and tabs
         output = output.replace('\t', '    ')

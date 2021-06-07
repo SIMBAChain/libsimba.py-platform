@@ -3,7 +3,7 @@ from libsimba.simba import Simba
 from typing import List, Tuple, Dict, Any, Optional
 from libsimba.class_converter import ClassToDictConverter, convert_classes
 
-class Application:
+class TestSimbaHinted:
     def __init__(self):
         self.app_name = "TestSimbaHinted"
         self.base_api_url = "https://api.sep.dev.simbachain.com/"
@@ -18,13 +18,13 @@ class Application:
             self.town=town
     
     class Person(ClassToDictConverter):
-        def __init__(self, name: str = '', age: int = 0, addr: "Application.Addr" = None):
+        def __init__(self, name: str = '', age: int = 0, addr: "TestSimbaHinted.Addr" = None):
             self.name=name
             self.age=age
             self.addr=addr
     
     class AddressPerson(ClassToDictConverter):
-        def __init__(self, name: str = '', age: int = 0, addrs: List["Application.Addr"] = []):
+        def __init__(self, name: str = '', age: int = 0, addrs: List["TestSimbaHinted.Addr"] = []):
             self.name=name
             self.age=age
             self.addrs=addrs
@@ -164,7 +164,7 @@ class Application:
         else:
             return self.simba_contract.submit_contract_method_with_files("nested_arr_4", inputs, files, opts)
 
-    def structTest_1(self, people: List["Application.Person"], test_bool: bool, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+    def structTest_1(self, people: List["TestSimbaHinted.Person"], test_bool: bool, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
         If query_method == True, then invocations of structTest_1 will be queried. Otherwise structTest_1 will be invoked with inputs.
         """
@@ -179,7 +179,7 @@ class Application:
         else:
             return self.simba_contract.submit_method("structTest_1", inputs, opts, async_method)
 
-    def structTest_2(self, person: "Application.Person", test_bool: bool, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+    def structTest_2(self, person: "TestSimbaHinted.Person", test_bool: bool, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
         If query_method == True, then invocations of structTest_2 will be queried. Otherwise structTest_2 will be invoked with inputs.
         """
@@ -194,7 +194,7 @@ class Application:
         else:
             return self.simba_contract.submit_method("structTest_2", inputs, opts, async_method)
 
-    def structTest_3(self, person: "Application.AddressPerson", files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None):
+    def structTest_3(self, person: "TestSimbaHinted.AddressPerson", files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None):
         """
         If async_method == True, then structTest_3 will be invoked as async, otherwise structTest_3 will be invoked as non async
         """
@@ -208,7 +208,7 @@ class Application:
         else:
             return self.simba_contract.submit_contract_method_with_files("structTest_3", inputs, files, opts)
 
-    def structTest_4(self, persons: List["Application.AddressPerson"], files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None):
+    def structTest_4(self, persons: List["TestSimbaHinted.AddressPerson"], files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None):
         """
         If async_method == True, then structTest_4 will be invoked as async, otherwise structTest_4 will be invoked as non async
         """
@@ -222,7 +222,7 @@ class Application:
         else:
             return self.simba_contract.submit_contract_method_with_files("structTest_4", inputs, files, opts)
 
-    def structTest_5(self, person: "Application.Person", files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None):
+    def structTest_5(self, person: "TestSimbaHinted.Person", files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None):
         """
         If async_method == True, then structTest_5 will be invoked as async, otherwise structTest_5 will be invoked as non async
         """
