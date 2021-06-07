@@ -1,6 +1,5 @@
 
 from typing import List, Tuple, Dict, Optional, Union, Any
-import json 
 from jinja2 import Environment, FileSystemLoader 
 import requests
 from libsimba.decorators import auth_required
@@ -46,6 +45,7 @@ class SimbaHintedContract:
         self.output_file = output_file
         self.template_folder = template_folder
         self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract.get('types', {})}
+        self.write_contract()
 
     @auth_required 
     def get_metadata(self, headers, opts: Optional[dict] = None):
