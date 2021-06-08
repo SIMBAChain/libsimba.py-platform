@@ -13,23 +13,19 @@ class SimbaHintedContract:
         app_name: str, 
         contract_name: str, 
         base_api_url: str = 'https://api.sep.dev.simbachain.com/',
-        contract_template: str ='contract.tpl', 
         output_file: str = 'newContract.py',
-        template_folder: str ='templates',
         ):
         """
         SimbaHintedContract allows us to represent our smart contract as a Python class
-        The purpose of this class is largely to provide an SDK that utilizes type hinting 
-        and exposes method calls instead of python get requests
-        Note that the underlying functionality is still contained in https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py
+        Smart contract methods will be exposed as class methods, and smart contract structs 
+        will be represented as subclasses of our contract class
+        Note that the underlying functionality for method calls is still contained in https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py
 
         Args:
             metadata (str): string formatted json metadata from our smart contract
             app_name (str): name of the app that accesses our smart contract
             base_api_url (str, optional): Defaults to 'https://api.sep.dev.simbachain.com/'.
-            contract_template (str, optional): name of the jinja template used to create .py version of contract code. Defaults to 'contract.tpl'.
             output_file (str, optional): name of .py file we wish to write our .py version of contract to. Defaults to 'newContract.py'.
-            template_folder (str, optional): folder contianing our jinja template. Defaults to 'templates'.
         """
         self.app_name = app_name
         self.contract_name = contract_name
@@ -38,14 +34,8 @@ class SimbaHintedContract:
         self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
         self.metadata = self.get_metadata()
         self.contract = self.metadata['contract']
-        # note that we have to specify the following line, because the contract name passed by the user 
-        # and used for the API may be different than what's specified in the actual contract, and what 
-        # we actually want to use here is the contract name found in the metadata
-        self.contract_name_from_metadata = self.contract['name']
         self.contract_methods = self.contract['methods']
-        self.contract_template = contract_template 
         self.output_file = output_file
-        self.template_folder = template_folder
         self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract.get('types', {})}
         self.write_contract()
 
@@ -158,27 +148,6 @@ class SimbaHintedContract:
         else:
             structType = structType
         return structType
-
-    def convert_classes_to_dicts_nested(self):
-        """
-        function for producing a class that has methods for converting a class instance to a dict
-        this function would be used in our .tpl doc if we wanted to declare the class inside our geneerated contract.py doc
-
-        this function is not currently used. Instead, class definition is now done in libsimba.class_converter
-        """
-        converterFunction = """
-        def class_to_dict_converter_helper(self, class_dict, attr_name, attr_value):
-            if hasattr(attr_value, '__dict__'):
-                class_dict[attr_name] = attr_value.__dict__
-                for att_name, att_val in class_dict[attr_name].items():
-                    self.param_converter_helper(class_dict[attr_name], att_name, att_val)
-    
-        def class_to_dict_converter(self):
-            for att_name, att_value in self.__dict__.items():
-                self.param_converter_helper(self.__dict__, att_name, att_value)"""
-        converterFunction.replace('\t', '    ')
-        converterFunction = converterFunction.rstrip()
-        return converterFunction
 
     def component_default_value(self, component_type:str, def_val: Any = None):
         """
@@ -328,7 +297,7 @@ class SimbaHintedContract:
                 return arrType
             return basicType
 
-        # handle cases not handled above - probably need to add some additional logic here
+        # handle cases not handled above - may need to add some additional logic here
         basicType = fullType
         if self.is_array(fullType):
             arrType = self.handle_array(fullType, basicType)
