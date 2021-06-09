@@ -6,12 +6,14 @@ from libsimba.decorators import auth_required
 from libsimba.utils import build_url
 from libsimba import templates
 import importlib.resources
+import re 
 
 class SimbaHintedContract:
     def __init__(
         self, 
         app_name: str, 
         contract_name: str, 
+        contract_class_name: str = None,
         base_api_url: str = 'https://api.sep.dev.simbachain.com/',
         output_file: str = 'newContract.py',
         ):
@@ -26,9 +28,13 @@ class SimbaHintedContract:
             app_name (str): name of the app that accesses our smart contract
             base_api_url (str, optional): Defaults to 'https://api.sep.dev.simbachain.com/'.
             output_file (str, optional): name of .py file we wish to write our .py version of contract to. Defaults to 'newContract.py'.
+            contract_class_name (str, optional): if we want our python class representation of our contract to have a different name 
+                than contract_name, then we specify it with this parameter
         """
         self.app_name = app_name
         self.contract_name = contract_name
+        self.contract_class_name = contract_class_name or contract_name
+        self.validate_class_name(self.contract_class_name)
         self.base_api_url = base_api_url
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
         self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
@@ -46,6 +52,24 @@ class SimbaHintedContract:
         resp = requests.get(url, headers=headers)
         metadata = resp.json()['metadata']
         return metadata
+
+    def validate_class_name(self, class_name:str):
+        """
+        validates name we wish to give our contract class object
+
+        Args:
+            class_name ([type]): [description]
+
+        Raises:
+            ValueError: if class_name begins with a digit
+            ValueError: if class_name contains nonalpha or non_underscore
+        """
+        if class_name[0].isdigit():
+            raise ValueError("validate_class_name: Class name cannot begin with a digit")
+        match = re.search('[^0-9a-zA-Z_]', class_name)
+        if match is not None:
+            raise ValueError("validate_class_name: Class Name can only contain alphanumeric chars and underscores")
+
     
     def accepts_files(self, method_name:str) -> bool:
         """
@@ -402,6 +426,4 @@ class SimbaHintedContract:
         output = output.replace('\t', '    ')
         with open(self.output_file, 'w') as f:
             f.write(output)
-
-
 

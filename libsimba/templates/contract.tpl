@@ -2,7 +2,7 @@ from libsimba.simba import Simba
 from typing import List, Tuple, Dict, Any, Optional
 from libsimba.class_converter import ClassToDictConverter, convert_classes
 
-class {{SimbaHintedContractObj.contract_name}}:
+class {{SimbaHintedContractObj.contract_class_name}}:
     def __init__(self):
         self.app_name = "{{SimbaHintedContractObj.app_name}}"
         self.base_api_url = "{{SimbaHintedContractObj.base_api_url}}"
