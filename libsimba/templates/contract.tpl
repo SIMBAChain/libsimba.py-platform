@@ -16,7 +16,7 @@ class {{SimbaHintedContractObj.contract_class_name}}:
         return self.simba_contract.get_transactions(opts)
     
     def validate_bundle_hash(self, bundle_hash: str, opts: Optional[dict] = None):
-        return self.simba_contract.get_transactions(bundle_hash, opts)
+        return self.simba_contract.validate_bundle_hash(bundle_hash, opts)
 
     def get_transaction_statuses(self, txn_hashes: List[str] = None, opts: Optional[dict] = None):
         return self.simba_contract.get_transaction_statuses(txn_hashes, opts)
