@@ -1,4 +1,3 @@
-import libsimba
 from libsimba.simba import Simba
 from typing import List, Tuple, Dict, Any, Optional
 from libsimba.class_converter import ClassToDictConverter, convert_classes
