@@ -125,7 +125,7 @@ class SimbaHintedContract:
                 result.append(nativeType)
         return result
 
-    def handle_array(self, fullType:str, basicType:str) -> str:
+    def handle_array(self, fullType: str, basicType: str) -> str:
         """
         handle_array is meant to handle arrays and nested arrays, and return a string formatted version of that nested array
 
@@ -277,10 +277,10 @@ class SimbaHintedContract:
             param (dict): method parameter for which we want to obtain a native Python data type hint
             forward_reference (bool): if True, then we return our data type inside quotes.
                 We do this as a forward reference, in cases where we are referencing a data type
-                that is not yet recovnized by the the interpreter (eg a custom class type)
+                that is not yet recognized by the the interpreter (eg a custom class type, which we used to represent solidity structs)
         
         Returns:
-            (str): string that represents either an array of form List[typ] or typ, where typ is a native python data type
+            (str): string that represents either an array of form List[typ] or typ, where typ is a data type
         """
         fullType = param['type']
         if fullType.startswith('struct'):
@@ -300,16 +300,14 @@ class SimbaHintedContract:
                 arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
-        # will need to add more exhaustive logic for other solidityType -> string conversions here
-        # presumably for datetime, etc.
         if fullType.startswith('string') or fullType.startswith('address'):
             basicType = 'str'
             if self.is_array(fullType):
                 arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
-        if fullType.startswith('number'):
-            basicType = 'Union[int, float]'
+        if fullType.startswith('byte'):
+            basicType = 'bytes'
             if self.is_array(fullType):
                 arrType = self.handle_array(fullType, basicType)
                 return arrType
@@ -320,10 +318,9 @@ class SimbaHintedContract:
                 arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
-
         # handle cases not handled above - may need to add some additional logic here
-        basicType = fullType
         if self.is_array(fullType):
+            basicType = fullType[:fullType.find('[')]
             arrType = self.handle_array(fullType, basicType)
             return arrType
         return fullType
@@ -345,20 +342,20 @@ class SimbaHintedContract:
         inputs = 'inputs= {\n\t'
         for param in params:
             paramName = param['name']
-            # we shouldn't include a parameter in our call as _bundleHash
-            # we should simply include files in our call:
+            # the following line obviates collision between datetime module and our datetime parameter
+            cleanedParamName = 'dateTime' if paramName == 'datetime' else paramName
             if paramName == '_bundleHash':
                 continue
             hint_type = self.hinted_data_type(param, forward_reference=True)
             if hint_type in self.struct_names:
                 signature += f' {paramName}: "{hint_type}",'
             else:
-                signature += f" {paramName}: {hint_type},"
-            inputs += f"\t\t'{paramName}': {paramName},"
+                signature += f" {cleanedParamName}: {hint_type},"
+            inputs += f"\t\t'{paramName}': {cleanedParamName},"
             inputs += '\n\t'
         signature = signature[:-1]
         if acceptsFiles:
-            signature += ', files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None'
+            signature += ', files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None, read_mode = "rb"'
         else:
             signature += ', async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False'
         if itReturns:
@@ -400,7 +397,7 @@ class SimbaHintedContract:
             acceptsFiles = False
             if self.accepts_files(methodName):
                 acceptsFiles = True
-                docStringDetails.append(f'\t"""\n\t\tIf async_method == True, then {methodName} will be invoked as async, otherwise {methodName} will be invoked as non async\n\t\t"""')
+                docStringDetails.append(f'\t"""\n\t\tIf async_method == True, then {methodName} will be invoked as async, otherwise {methodName} will be invoked as non async\n\t\tfiles parameter should be list with tuple elements of form (file_name, file_path) or (file_name, readable_file_like_object).\n\t\t\tsee libsimba.file_handler for further details on what open_files expects as arugments\n\t\t"""')
             else:
                 docStringDetails.append(f'\t"""\n\t\tIf query_method == True, then invocations of {methodName} will be queried. Otherwise {methodName} will be invoked with inputs.\n\t\t"""')
             itReturns = self.return_data_types(methodName, as_dict=False)
@@ -408,7 +405,7 @@ class SimbaHintedContract:
             signatureDetails.append(signature)
             inputDetails.append(inputs)
             if acceptsFiles:
-                returnDetails.append(f'if async_method:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files, opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files, opts)')
+                returnDetails.append(f'files = open_files(files, read_mode=read_mode)\n\n\t\tif async_method:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response\n\t\telse:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response')
             else:
                 returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts, async_method)')
         sigDocInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
