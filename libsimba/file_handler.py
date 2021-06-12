@@ -34,6 +34,7 @@ def open_files(files: List[Tuple], read_mode: str = 'rb') -> List[tuple]:
     for file_name, file_object_or_path in files:
         print(f'opening {file_name}...')
         fileList.append(get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode))
+    print('fileList:', fileList)
     return fileList
 
 def close_files(files:List[tuple]):

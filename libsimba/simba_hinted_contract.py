@@ -397,7 +397,7 @@ class SimbaHintedContract:
             acceptsFiles = False
             if self.accepts_files(methodName):
                 acceptsFiles = True
-                docStringDetails.append(f'\t"""\n\t\tIf async_method == True, then {methodName} will be invoked as async, otherwise {methodName} will be invoked as non async\n\t\tfiles parameter should be list with tuple elements of form (file_name, file_path) or (file_name, readable_file_like_object).\n\t\t\tsee libsimba.file_handler for further details on what open_files expects as arugments\n\t\t"""')
+                docStringDetails.append(f'\t"""\n\t\tIf async_method == True, then {methodName} will be invoked as async, otherwise {methodName} will be invoked as non async\n\t\tfiles parameter should be list with tuple elements of form (file_name, file_path) or (file_name, readable_file_like_object).\n\t\t\tsee libsimba.file_handler for further details on what open_files expects as arguments\n\t\t"""')
             else:
                 docStringDetails.append(f'\t"""\n\t\tIf query_method == True, then invocations of {methodName} will be queried. Otherwise {methodName} will be invoked with inputs.\n\t\t"""')
             itReturns = self.return_data_types(methodName, as_dict=False)
