@@ -53,6 +53,7 @@ class SimbaContract(ParamCheckingContract):
         self.validate_params(method_name, inputs)
         opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(self.contract_uri, method_name), opts)
+        inputs = {key: json.dumps(value) for key, value in inputs.items()}
         if files:
             return requests.post(url, headers=headers, data=inputs, files=files)
         else:
