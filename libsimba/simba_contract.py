@@ -65,7 +65,7 @@ class SimbaContract(ParamCheckingContract):
         self.validate_params(method_name, inputs)
         opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/{}/".format(self.async_contract_uri, method_name), opts)
-        payload = json.dumps(inputs)
+        payload = {key: json.dumps(value) for key, value in inputs.items()}
         if files:
             return requests.post(url, headers=headers, data=payload, files=files)
         else:
