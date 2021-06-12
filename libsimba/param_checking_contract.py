@@ -2,6 +2,7 @@ from typing import List, Optional, Any, Dict
 from libsimba.decorators import auth_required
 from libsimba.utils import build_url
 import requests
+import json
 
 class ParamCheckingContract:
     def __init__(self, base_api_url, app_name, contract_name):
@@ -154,7 +155,7 @@ class ParamCheckingContract:
             # first check to make sure we don't have any type mixing in arrays
             if i > 0 and type(arr[i]) != type(arr[i-1]):
                 raise TypeError("check_array_restrictions: array element types do not match")
-            # then recursively check each sublist
+            # then recursively check each subarray
             if type(element) == list:
                 self.check_array_restrictions(element, param_name, param_restrictions_dict, level=level)
             else:
@@ -205,9 +206,12 @@ class ParamCheckingContract:
         uint_params = paramRestrictions.get(f'{method_name}', {}).get('uint_params', {})
         array_params = paramRestrictions.get(f'{method_name}', {}).get('array_params', {})
         
+
         for param_name, param_value in inputs.items():
             if param_name in uint_params:
                 self.check_uint_restriction(param_value)
             if param_name in array_params:
                 self.check_array_restrictions(param_value, param_name, array_params)
         return True
+
+

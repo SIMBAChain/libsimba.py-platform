@@ -1,4 +1,5 @@
 from typing import Any
+import json
 
 def convert_classes(inputs):
     """
@@ -12,6 +13,7 @@ def convert_classes(inputs):
         if hasattr(attr_value, "class_to_dict_converter"):
             attr_value.class_to_dict_converter()
             inputs[attr_name] = attr_value.__dict__
+    
 
 class ClassToDictConverter:
     def class_to_dict_converter_helper(self, class_dict:dict, attr_name:str, attr_value:Any):
