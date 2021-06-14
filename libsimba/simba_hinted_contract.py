@@ -355,7 +355,7 @@ class SimbaHintedContract:
             inputs += '\n\t'
         signature = signature[:-1]
         if acceptsFiles:
-            signature += ', files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None, read_mode = "rb"'
+            signature += ', files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None'
         else:
             signature += ', async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False'
         if itReturns:
