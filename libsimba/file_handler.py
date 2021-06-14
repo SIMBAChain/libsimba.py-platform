@@ -19,7 +19,7 @@ def get_file_for_upload(file_name:str, file_object_or_path:Any, read_mode: str =
     else:
         return ('file', (file_name, file_object_or_path))
 
-def open_files(files: List[Tuple], read_mode: str = 'rb') -> List[tuple]:
+def open_files(files: List[Tuple]) -> List[tuple]:
     """
     Takes a list of form [(file_name, file_path_or_object),...], and returns a list of tuples in correct format for multipart encoded file
 
@@ -31,7 +31,7 @@ def open_files(files: List[Tuple], read_mode: str = 'rb') -> List[tuple]:
         List[tuple]: list in form [('file', (file_name, readable_file_object)),...]
     """
     fileList = []
-    for file_name, file_object_or_path in files:
+    for file_name, file_object_or_path, read_mode in files:
         fileList.append(get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode))
     print('fileList:', fileList)
     return fileList
