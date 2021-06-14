@@ -1,5 +1,7 @@
 from typing import Any, Tuple, List
 
+from requests.api import get
+
 def get_file_for_upload(file_name:str, file_object_or_path:Any, read_mode: str = 'rb') -> tuple:
     """
     takes file_name and file_object_or_path and formats files in a way that is acceptable to Python
@@ -21,7 +23,9 @@ def get_file_for_upload(file_name:str, file_object_or_path:Any, read_mode: str =
 
 def open_files(files: List[Tuple]) -> List[tuple]:
     """
-    Takes a list of form [(file_name, file_path_or_object),...], and returns a list of tuples in correct format for multipart encoded file
+    Takes a list of form [(file_name, file_path_or_object, 'r'),...], and returns a list of tuples in correct format for multipart encoded file
+    Note that 'r' here is the read mode in which we want to read our file
+    open_files is written so that if a user does not pass a read_mode in any of their tuples in Files, then 'r' is the default read_mode
 
     Args:
         files (List[Tuple]): list of form [(file_name, file_path_or_object),...]
@@ -31,9 +35,14 @@ def open_files(files: List[Tuple]) -> List[tuple]:
         List[tuple]: list in form [('file', (file_name, readable_file_object)),...]
     """
     fileList = []
-    for file_name, file_object_or_path, read_mode in files:
-        fileList.append(get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode))
-    print('fileList:', fileList)
+    for fileTuple in files:
+        if len(fileTuple) == 3:
+            file_name, file_object_or_path, read_mode = fileTuple
+            fileList.append(get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode))
+        elif len(fileTuple) == 2:
+            file_name, file_object_or_path = fileTuple 
+            read_mode = 'r'
+            fileList.append(get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode))
     return fileList
 
 def close_files(files:List[tuple]):
@@ -45,5 +54,3 @@ def close_files(files:List[tuple]):
     """
     for _, (file_name, file_object) in files:
         file_object.close()
-
-
