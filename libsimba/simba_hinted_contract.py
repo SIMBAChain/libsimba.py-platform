@@ -405,7 +405,7 @@ class SimbaHintedContract:
             signatureDetails.append(signature)
             inputDetails.append(inputs)
             if acceptsFiles:
-                returnDetails.append(f'files = open_files(files, read_mode=read_mode)\n\n\t\tif async_method:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response\n\t\telse:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response')
+                returnDetails.append(f'files = open_files(files)\n\n\t\tif async_method:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response\n\t\telse:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response')
             else:
                 returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts, async_method)')
         sigDocInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
