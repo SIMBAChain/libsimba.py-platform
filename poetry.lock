@@ -441,7 +441,7 @@ test = ["pytest"]
 
 [[package]]
 name = "tqdm"
-version = "4.61.0"
+version = "4.61.1"
 description = "Fast, Extensible Progress Meter"
 category = "dev"
 optional = false
@@ -748,8 +748,8 @@ sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
 tqdm = [
-    {file = "tqdm-4.61.0-py2.py3-none-any.whl", hash = "sha256:736524215c690621b06fc89d0310a49822d75e599fcd0feb7cc742b98d692493"},
-    {file = "tqdm-4.61.0.tar.gz", hash = "sha256:cd5791b5d7c3f2f1819efc81d36eb719a38e0906a7380365c556779f585ea042"},
+    {file = "tqdm-4.61.1-py2.py3-none-any.whl", hash = "sha256:aa0c29f03f298951ac6318f7c8ce584e48fa22ec26396e6411e43d038243bdb2"},
+    {file = "tqdm-4.61.1.tar.gz", hash = "sha256:24be966933e942be5f074c29755a95b315c69a91f839a29139bf26ffffe2d3fd"},
 ]
 twine = [
     {file = "twine-3.4.1-py3-none-any.whl", hash = "sha256:16f706f2f1687d7ce30e7effceee40ed0a09b7c33b9abb5ef6434e5551565d83"},
