@@ -12,6 +12,7 @@ class ParamCheckingContract:
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
         self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
         self.metadata = self.get_metatadata()
+        # we call param_restrictions right away, so we have a dictionary of restrictions to reference for methods
         self.params_restricted = self.param_restrictions()
 
     @auth_required 
@@ -29,20 +30,33 @@ class ParamCheckingContract:
         """
         returns a dictionary that maps dimension to array-length restriction
         Our outer-most array is associated with our lowest dimension: 0
+        Since solidity array dimensions are backward (uint256[][4] is 4 dynamically lengthed arrays),
+        we have to reverse our array item first
 
-        for example, 'uint256[5][3][][4]' would get mapped to: {0: '5', 1: '3', 2: None, 3: '4'}
+        for example, 'uint256[5][3][][4]' would get mapped to: {0: '4', 1: None, 2: '3', 3: '5'}
 
         Args:
             arr (str): string formatted solidity style array, eg 'uint256[5][3][][4]'
 
         Returns:
-            [dict]: dict mapping of dimension -> array-length, eg {0: '5', 1: '3', 2: None, 3: '4'}
+            [dict]: dict mapping of dimension -> array-length, eg {0: '4', 1: None, 2: '3', 3: '5'}
         """
+        print('arr:', arr)
+        reverseArray = ''
+        for ch in arr[::-1]:
+            if ch == '[':
+                reverseArray += ']'
+            elif ch == ']':
+                reverseArray += '['
+            else:
+                reverseArray += ch
+        print('reverseArray:', reverseArray)
         arr_lengths = {}
         for i in range(self.get_dimensions(arr)):
-            arr_len = arr[arr.find('[')+1:arr.find(']')]
+            arr_len = reverseArray[reverseArray.find('[')+1:reverseArray.find(']')]
             arr_lengths[i] = int(arr_len) if arr_len else None 
-            arr = arr[arr.find(']')+1:]
+            reverseArray = reverseArray[reverseArray.find(']')+1:]
+        print('arr_lengths:', arr_lengths)
         return arr_lengths
 
     def get_dimensions(self, param:str, dims:Optional[int] = 0) -> int:
@@ -213,5 +227,4 @@ class ParamCheckingContract:
             if param_name in array_params:
                 self.check_array_restrictions(param_value, param_name, array_params)
         return True
-
 
