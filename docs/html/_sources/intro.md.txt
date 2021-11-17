@@ -1,0 +1,142 @@
+# LibSimba.py
+## *INSTALLATION*
+
+Requires Python >= 3.7
+
+```
+pip install libsimba.py-platform
+```
+
+### *Install from package:*
+View our [releases](https://github.com/SIMBAChain/libsimba.py-platform/releases/) and download the tarball for the chosen release.
+```
+pip install libsimba.py-platform-0.1.4.tar.gz
+```
+
+### *Install for development*
+
+```
+git clone https://github.com/SIMBAChain/libsimba.py-platform.git
+cd libsimba.py-platform.git
+poetry env use python3.7
+poetry install
+```
+
+## *CONFIGURATION*
+
+You will need to set the following environment variables so that the SDK can make auth requests and interact with the Simba Enterprise Platform (SEP).
+
+|variable|default|additional notes|
+|---|---|---|
+|LIBSIMBA_BASE_API_URL|`https://api.sep.dev.simbachain.com`||
+|LIBSIMBA_AUTH_FLOW|`client_credentials`|Can be one of: `pkce, client_credentials, or password`|
+|LIBSIMBA_AUTH_APP_CLIENT_SECRET|`None`|Optional. This must be set if using `client_credentials`|
+|LIBSIMBA_AUTH_APP_CLIENT_ID|`None`||
+|LIBSIMBA_AUTH_APP_SCOPE|`api://<client_id>/scaas.access`||
+|LIBSIMBA_AUTH_BASE_URL|`https://login.microsoftonline.com`||
+|LIBSIMBA_AUTH_TENANT_ID|`None`||
+|LIBSIMBA_AUTH_ENDPOINT|`/<tenant_id>/oauth2/v2.0/`||
+
+(Please see [setting up keycloak client credentials flow](#SETTING-UP-FOR-KEYCLOAK-CLIENT-CREDENTIALS-FLOW) for an example on how to setup for keycloak authentication.)
+
+## *USAGE*
+### *Instantiate the SIMBA Enterprise client*
+
+```python
+from libsimba.simba import Simba
+
+simba = Simba() 
+```
+
+### *List all SIMBA applications available to your user*
+```python
+simba.list_applications()
+```
+
+Sample output:
+```
+[{'id': '51974f7a-6076-46c3-a37b-cb948f3e3642', 'display_name': 'My Application', 'name': 'myapi', 'created_on': '2019-12-16T10:00:00Z', 'components': [{'id': 'fd3d9987-fc1e-4d95-8aef-cec18b27f949', 'api_name': 'fabcar-test1', 'created_on': '2021-11-16T17:16:55.265625Z', 'updated_on': '2021-11-16T17:16:55.265635Z'}, {'id': 'ff271d8c-760f-4958-87d7-7c66cd626be0', 'api_name': 'myapi', 'created_on': '2019-12-16T10:00:00Z', 'updated_on': '2020-05-30T10:00:00Z'}], 'organisation': {'id': '51974f7a-6076-46c3-a37b-cb948f3e3641', 'display_name': 'Simbachain', 'name': 'org-1'}, 'metadata': None, 'openapi': 'http://localhost:8000/v2/apps/myapi/'}]
+```
+
+Please note the field `name` in the response. The `name` field is used as the parameter for application specific method calls.
+
+### *List all contracts for a given SIMBA application*
+```python
+simba.list_contracts("myapi")
+```
+
+Sample output:
+```
+ [{'id': 'fd3d9987-fc1e-4d95-8aef-cec18b27f949', 'artifact': {'id': '602d946e-a342-41d6-95f9-19ef8709b13a', 'created_on': '2021-11-16T17:16:55.249408Z', 'updated_on': '2021-11-16T17:16:55.249418Z', 'name': 'FabCar'}, 'has_assets': False, 'blockchain': 'fabric', 'blockchain_type': 'fabric', 'storage': 'no_storage', 'storage_container': 'fabcar-test1', 'created_on': '2021-11-16T17:16:55.265625Z', 'updated_on': '2021-11-16T17:16:55.265635Z', 'address': 'basic', 'version': None, 'display_name': 'fabcar-test1', 'api_name': 'fabcar-test1', 'organisation': '51974f7a-6076-46c3-a37b-cb948f3e3641', 'contract_type': 'SINGLETON', 'asset_type': 'fabcar-test1', 'state': 'No Deployment Info'}]
+```
+
+Please note the `api_name` field. The `api_name` field is used as the parameter for contract specific method calls.
+
+### *Get info on the contract method calls and data types*
+```python
+simba.list_contract_info("myapi", "fabcar-test1")
+```
+
+Sample output:
+```
+{'contract': {'name': 'FabCar', 'enums': {}, 'types': {'Car': {'components': [{'name': 'docType', 'type': 'string'}, {'name': 'color', 'type': 'string'}, {'name': 'make', 'type': 'string'}, {'name': 'model', 'type': 'string'}, {'name': 'owner', 'type': 'string'}]}}, 'assets': {}, 'events': {}, 'source': {'lang': 'hlfts', 'version': '2.2.0'}, 'methods': {'queryCar': {'emits': [], 'params': [{'name': 'carNumber', 'type': 'string'}], 'returns': [{'type': 'string'}], 'accessor': True, 'visibility': 'public'}, 'createCar': {'emits': [], 'params': [{'name': 'carNumber', 'type': 'string'}, {'name': 'make', 'type': 'string'}, {'name': 'model', 'type': 'string'}, {'name': 'color', 'type': 'string'}, {'name': 'owner', 'type': 'string'}], 'returns': [], 'accessor': False, 'visibility': 'public'}, 'initLedger': {'emits': [], 'params': [], 'returns': [], 'accessor': False, 'visibility': 'public'}, 'queryAllCars': {'emits': [], 'params': [], 'returns': [{'type': 'string'}], 'accessor': True, 'visibility': 'public'}, 'changeCarOwner': {'emits': [], 'params': [{'name': 'carNumber', 'type': 'string'}, {'name': 'newOwner', 'type': 'string'}], 'returns': [], 'accessor': False, 'visibility': 'public'}}, 'abstract': False, 'constructor': {'init_method': 'initLedger'}, 'inheritance': ['Contract']}, 'api_name': 'fabcar-test1', 'name': 'fabcar-test1', 'network': 'fabric', 'network_type': 'fabric', 'poa': False, 'faucet': None, 'simba_faucet': False}
+```
+
+The contract information provides details on methods, method parameters and return values. This is useful for constructing the inputs for you method call as demonstrated in the next example.
+
+### *Example method call using the SDK*
+```python
+from libsimba.simba import Simba
+import logging
+log = logging.getLogger(__name__)
+
+simba_app_name = 'myapi'
+simba_app_contract = 'fabcar-test1'
+simba_app_method = 'createCar'
+simba_app_inputs = {
+    'carNumber': 'VIN123345',
+    'make': 'Volkswagon',
+    'model': 'Beetle',
+    'color': 'Yellow',
+    'owner': 'Dale'
+}
+
+simba = Simba()
+contract = simba.get_contract(simba_app_name, simba_app_contract)
+log.info('{} :: {}'.format(simba_app_name, simba_app_contract))
+
+r = contract.submit_method(simba_app_method, simba_app_inputs)
+log.info(r.text)
+assert (r.status_code >= 200 and r.status_code <= 299)
+log.info(r.json())
+
+r = contract.query_method(simba_app_method)
+assert (r.status_code >= 200 and r.status_code <= 299)
+log.info(r.json())
+```
+------------------------------------------------
+
+## *APPENDIX*
+
+### *SETTING UP FOR KEYCLOAK CLIENT CREDENTIALS FLOW*
+
+Create a new client in your Keycloak realm and set the following:
+
+Access Type = confidential\
+Service Accounts Enabled = ON
+
+Save the client. Navigate to the Credentials tab and copy the client secret. \
+Assuming that your realm is named `sep` and that the client is named `sep-client-credentials`, here is an example of how you would configure your environment:
+
+```
+export LIBSIMBA_AUTH_APP_CLIENT_SECRET="4c562d04-b9c8-4b49-95ff-b0aa2620154c"
+export LIBSIMBA_AUTH_APP_CLIENT_ID="sep-client-credentials"
+export LIBSIMBA_AUTH_APP_SCOPE="profile email"
+export LIBSIMBA_AUTH_TENANT_ID="sep"
+export LIBSIMBA_AUTH_BASE_URL="https://keycloak.example.com"
+export LIBSIMBA_AUTH_ENDPOINT="auth/realms/sep/protocol/openid-connect/"
+```
+
+### *GENERATE THE API DOCUMENTATION*
+
+Calling *make github* puts the Sphinx documentation into ./docs so the github pages can find it.

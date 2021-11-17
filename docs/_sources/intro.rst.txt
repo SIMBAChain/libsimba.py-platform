@@ -1,0 +1,4 @@
+Introduction
+============
+
+``libsimba.py`` is an SDK used to interact with the Simba Enterprise Platform.
