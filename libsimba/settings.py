@@ -38,6 +38,11 @@ CLIENT_ID = os.getenv('AZURE_AUTH_APP_CLIENT_ID', None)
 SCOPE = os.getenv('AZURE_APP_ID', "api://{}/scaas.access".format(CLIENT_ID))
 
 BASE_AUTH_URL = os.getenv('BASE_AUTH_URL', "https://login.microsoftonline.com")
-TENANT_ID = os.getenv('AZURE_TENANT', None)
+TENANT_ID = REALM_ID = os.getenv('AZURE_TENANT', None)
 AUTH_ENDPOINT = os.getenv('AUTH_ENDPOINT', "/{}/oauth2/v2.0/".format(TENANT_ID))
 BASE_API_URL = os.getenv('BASE_API_URL', "https://api.sep.dev.simbachain.com")
+
+try:
+    from .local_settings import *
+except e:
+    print(e)

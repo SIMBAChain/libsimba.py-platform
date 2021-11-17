@@ -90,6 +90,9 @@ Calling *make github* puts the Sphinx documentation into ./docs so the github pa
     
 ## Change log
 
+### v0.1.4
+* Enable local_settings to override settings
+
 ### v0.1.3
 * Fix for file submission
 
