@@ -28,14 +28,6 @@ libsimba.exceptions module
    :undoc-members:
    :show-inheritance:
 
-libsimba.local\_settings module
--------------------------------
-
-.. automodule:: libsimba.local_settings
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 libsimba.settings module
 ------------------------
 

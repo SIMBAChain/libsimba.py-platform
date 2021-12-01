@@ -1,6 +1,7 @@
 from typing import List, Optional, Any, Dict
 from libsimba.decorators import auth_required
 from libsimba.utils import build_url
+from libsimba.simba_request import SimbaRequest
 import requests
 import json
 
@@ -15,13 +16,10 @@ class ParamCheckingContract:
         # we call param_restrictions right away, so we have a dictionary of restrictions to reference for methods
         self.params_restricted = self.param_restrictions()
 
-    @auth_required 
-    def get_metadata(self, headers, opts: Optional[dict] = None):
-        opts = opts or {}
-        url = build_url(self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts) 
-        resp = requests.get(url, headers=headers)
-        metadata = resp.json()
-        return metadata
+    def get_metadata(self, query_args: Optional[dict] = None):
+        query_args = query_args or {}
+        resp = SimbaRequest("v2/apps/{}/?format=json".format(self.contract_uri), query_args).send() 
+        return resp.get('metadata')
 
     def is_array(self, param) -> bool:
         return param.endswith(']')

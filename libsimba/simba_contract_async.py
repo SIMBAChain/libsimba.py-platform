@@ -13,14 +13,16 @@ class SimbaContractAsync(SimbaContract):
         query_args = query_args or {}
         return await SimbaRequest("v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args).send_async()
 
-    async def submit_method(self, method_name: str,  inputs: dict, query_args: Optional[dict] = None):
+    async def call_method(self, method_name: str,  inputs: dict, query_args: Optional[dict] = None):
         query_args = query_args or {}
-        return await SimbaRequest("v2/apps/{}/{}/".format(self.async_contract_uri, method_name), query_args).send_async(json_payload=json.dumps(inputs))
+        self.validate_params(method_name, inputs)
+        return await SimbaRequest("v2/apps/{}/{}/".format(self.async_contract_uri, method_name), query_args, method='POST').send_async(json_payload=json.dumps(inputs))
 
     # Example files: files = {'file': open('report.xls', 'rb')}
-    async def submit_contract_method_with_files(self, method_name: str, inputs: dict, files=None, query_args: Optional[dict] = None):
+    async def call_contract_method_with_files(self, method_name: str, inputs: dict, files=None, query_args: Optional[dict] = None):
         query_args = query_args or {}
-        return await SimbaRequest("v2/apps/{}/{}/".format(self.async_contract_uri, method_name), query_args).send_async(json_payload=json.dumps(inputs), files=files)
+        self.validate_params(method_name, inputs)
+        return await SimbaRequest("v2/apps/{}/{}/".format(self.async_contract_uri, method_name), query_args, method='POST').send_async(json_payload=json.dumps(inputs), files=files)
 
     async def get_transactions(self, query_args: Optional[dict] = None):
         query_args = query_args or {}

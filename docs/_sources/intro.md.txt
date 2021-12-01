@@ -48,6 +48,30 @@ from libsimba.simba import Simba
 simba = Simba() 
 ```
 
+Or if you prefer to write asynchronous python code, then you can instantiate the async client:
+
+```python
+from libsimba.simba import SimbaAsync
+
+simba_async = SimbaAsync()
+```
+
+All method signatures for both clients are exactly the same. The only difference being that most async client methods will return a coroutine. The two most accepted ways to write asynchronous python code is to either use `asyncio` or the `async/await` syntax. See example below:
+
+```python
+import asyncio
+
+# Using asyncio
+apps = asyncio.run(simba_async.list_applications())
+# .. do something with apps
+
+# Using async/await
+class Example:
+    async def do_something(self):
+        apps = await simba_async.list_applications()
+        # .. do something with apps
+```
+
 ### *List all SIMBA applications available to your user*
 ```python
 simba.list_applications()
@@ -59,6 +83,18 @@ Sample output:
 ```
 
 Please note the field `name` in the response. The `name` field is used as the parameter for application specific method calls.
+
+### *Use the SearchFilter class to filter the list of results*
+All methods returning a python list may be filtered using the SearchFilter class. Here is an example:
+```python
+from libsimba import SearchFilter
+
+apps = simba.list_applications(
+    search_filter=SearchFilter(name__contains='myappname')
+    )
+```
+
+The SearchFilter may be constructed using [Django's Field Lookup Syntax](https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups)
 
 ### *List all contracts for a given SIMBA application*
 ```python
@@ -82,7 +118,7 @@ Sample output:
 {'contract': {'name': 'FabCar', 'enums': {}, 'types': {'Car': {'components': [{'name': 'docType', 'type': 'string'}, {'name': 'color', 'type': 'string'}, {'name': 'make', 'type': 'string'}, {'name': 'model', 'type': 'string'}, {'name': 'owner', 'type': 'string'}]}}, 'assets': {}, 'events': {}, 'source': {'lang': 'hlfts', 'version': '2.2.0'}, 'methods': {'queryCar': {'emits': [], 'params': [{'name': 'carNumber', 'type': 'string'}], 'returns': [{'type': 'string'}], 'accessor': True, 'visibility': 'public'}, 'createCar': {'emits': [], 'params': [{'name': 'carNumber', 'type': 'string'}, {'name': 'make', 'type': 'string'}, {'name': 'model', 'type': 'string'}, {'name': 'color', 'type': 'string'}, {'name': 'owner', 'type': 'string'}], 'returns': [], 'accessor': False, 'visibility': 'public'}, 'initLedger': {'emits': [], 'params': [], 'returns': [], 'accessor': False, 'visibility': 'public'}, 'queryAllCars': {'emits': [], 'params': [], 'returns': [{'type': 'string'}], 'accessor': True, 'visibility': 'public'}, 'changeCarOwner': {'emits': [], 'params': [{'name': 'carNumber', 'type': 'string'}, {'name': 'newOwner', 'type': 'string'}], 'returns': [], 'accessor': False, 'visibility': 'public'}}, 'abstract': False, 'constructor': {'init_method': 'initLedger'}, 'inheritance': ['Contract']}, 'api_name': 'fabcar-test1', 'name': 'fabcar-test1', 'network': 'fabric', 'network_type': 'fabric', 'poa': False, 'faucet': None, 'simba_faucet': False}
 ```
 
-The contract information provides details on methods, method parameters and return values. This is useful for constructing the inputs for you method call as demonstrated in the next example.
+The contract information provides details on methods, method parameters and return values. This is useful for constructing the inputs for your method call as demonstrated in the next example.
 
 ### *Example method call using the SDK*
 ```python
@@ -101,19 +137,20 @@ simba_app_inputs = {
     'owner': 'Dale'
 }
 
-simba = Simba()
-contract = simba.get_contract(simba_app_name, simba_app_contract)
+contract = simba.smart_contract_client(simba_app_name, simba_app_contract)
 log.info('{} :: {}'.format(simba_app_name, simba_app_contract))
 
-r = contract.submit_method(simba_app_method, simba_app_inputs)
-log.info(r.text)
-assert (r.status_code >= 200 and r.status_code <= 299)
-log.info(r.json())
+r = contract.call_method(simba_app_method, simba_app_inputs)
+log.info(r)
 
 r = contract.query_method(simba_app_method)
-assert (r.status_code >= 200 and r.status_code <= 299)
-log.info(r.json())
+log.info(r)
 ```
+
+## *Use a class-based approach to interacting with your deployed smart contract*
+LibSimba.py-platform has a module called the SimbaHintedContract that can be used to autogenerate a smart contract class containing method calls matching those of the given deployed smart contract. This makes it easier for developers to write applications as they no longer need write and then wire up functions for each smart contract method.
+
+For a complete example on how to use the SimbaHintedContract module please see this [example notebook](https://github.com/SIMBAChain/libsimba.py-platform/blob/docs/notebooks/examples.ipynb).
 ------------------------------------------------
 
 ## *APPENDIX*

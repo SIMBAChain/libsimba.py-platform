@@ -17,7 +17,7 @@ sys.path.append(os.path.abspath('/home/abrinckm/dev/libsimba.py-platform/'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'LibSimba.py'
+project = 'LibSimba.py-platform'
 copyright = '2021, Ian Harvey, Adam Brinckman'
 author = 'Ian Harvey, Adam Brinckman'
 

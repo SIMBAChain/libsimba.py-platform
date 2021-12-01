@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to LibSimba.py's documentation!
-=======================================
+Welcome to LibSimba.py for SIMBA Enterprise Platform documentation!
+===================================================================
 
 .. toctree::
    :maxdepth: 2

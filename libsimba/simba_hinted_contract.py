@@ -375,13 +375,21 @@ class SimbaHintedContract:
         NOTE: in this method, once we reach the logic section of 'if accepts_files', we handle two
         different cases. If the method accepts files, then we allow the developer to specify whether
         the method they are calling is async or not. 
+<<<<<<< HEAD
             (ie, we invoke either submit_contract_method_with_files or submit_contract_method_with_files_async
+=======
+            (ie, we invoke either call_contract_method_with_files or call_contract_method_with_files_async
+>>>>>>> 8abf244... [PLAT-164] Overhaul documentation; fixed various things
             from https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py)
         
         If the method does not accept files, then
         we allow the developer to specify whether they want to invoke the method, or query invocations
         of the method. 
+<<<<<<< HEAD
             (ie, we invoke either submit_method or query_method
+=======
+            (ie, we invoke either call_method or query_method
+>>>>>>> 8abf244... [PLAT-164] Overhaul documentation; fixed various things
             from https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py) 
 
         Returns:
@@ -405,9 +413,15 @@ class SimbaHintedContract:
             signatureDetails.append(signature)
             inputDetails.append(inputs)
             if acceptsFiles:
+<<<<<<< HEAD
                 returnDetails.append(f'files = open_files(files)\n\n\t\tif async_method:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response\n\t\telse:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response')
             else:
                 returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts, async_method)')
+=======
+                returnDetails.append(f'files = open_files(files)\n\n\t\tif async_method:\n\t\t\tresponse = self.simba_contract.call_contract_method_with_files_async("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response\n\t\telse:\n\t\t\tresponse = self.simba_contract.call_contract_method_with_files("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response')
+            else:
+                returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts)\n\t\telse:\n\t\t\treturn self.simba_contract.call_method("{methodName}", inputs, opts, async_method)')
+>>>>>>> 8abf244... [PLAT-164] Overhaul documentation; fixed various things
         sigDocInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
         return sigDocInputReturn
 

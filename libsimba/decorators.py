@@ -1,3 +1,4 @@
+from functools import wraps
 from libsimba.auth.pkce import Pkce
 from libsimba.auth.client_credentials import ClientCredentials
 from libsimba.settings import AUTH_FLOW
@@ -13,6 +14,7 @@ auth_flow = AUTH_FLOW.lower()
 
 
 def auth_required_static(func):
+    @wraps(func)
     def _auth_required_fn_wrapper(*args, **kwargs):
         try:
             check_creds()
@@ -24,6 +26,7 @@ def auth_required_static(func):
 
 
 def auth_required(func):
+    @wraps(func)
     def _auth_required_fn_wrapper(self, *args, **kwargs):
         try:
             check_creds()
@@ -51,10 +54,11 @@ def check_creds():
         )
 
 def filter_set(func):
-    def _filter_set_fn_wrapper(self, search_filter: SearchFilter = None, page_size: int = 1000, *args, **kwargs):
+    @wraps(func)
+    def _filter_set_fn_wrapper(self, *args, search_filter: SearchFilter = None, page_size: int = 1000):
         query_args = dict()
         query_args.update({'limit': page_size})
         if search_filter is not None:
             query_args.update(search_filter.query_args)
-        return func(self, query_args=query_args, *args, **kwargs)
+        return func(self, query_args, *args)
     return _filter_set_fn_wrapper
