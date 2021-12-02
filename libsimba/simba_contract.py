@@ -2,14 +2,17 @@ import json
 from typing import List, Optional, Any, Dict
 from libsimba.decorators import filter_set
 from libsimba.simba_request import SimbaRequest
+from libsimba.param_checking_contract import ParamCheckingContract
 
 
-class SimbaContract:
+class SimbaContract(ParamCheckingContract):
     def __init__(self, base_api_url: str, app_name: str, contract_name: str):
         self.app_name = app_name
         self.contract_name = contract_name
         SimbaRequest.base_api_url = base_api_url
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
+        self.metadata = self.get_metadata()
+        self.params_restricted = self.param_restrictions()
 
     @filter_set
     def query_method(self, query_args: dict, method_name: str):

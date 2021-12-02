@@ -61,17 +61,6 @@ class Simba:
     list Application
     """
     @filter_set
-<<<<<<< HEAD
-    def list_applications(self, query_args: dict):
-        return SimbaRequest('/v2/apps/', query_args).send()
-
-    """
-    GET
-    /v2/apps/{application}/
-    retrieve Application
-    """
-    def retrieve_application(self, app_id: str, query_args: Optional[dict] = {}):
-=======
     def list_applications(self, query_args: QueryArgs):
         """
         GET /v2/apps/
@@ -105,7 +94,6 @@ class Simba:
         :rtype: json
         """
         query_args = query_args or {}
->>>>>>> 96a3087... [PLAT-164] Overhaul documentation; fixed various things
         return SimbaRequest("/v2/apps/{}/".format(app_id), query_args).send()
 
     @filter_set
