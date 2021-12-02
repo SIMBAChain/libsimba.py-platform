@@ -448,11 +448,7 @@ test = ["pytest"]
 
 [[package]]
 name = "tqdm"
-<<<<<<< HEAD
 version = "4.62.3"
-=======
-version = "4.61.1"
->>>>>>> 743e2cb... fixed array length checking so that we're accounting for reverse dimensions in solidity arrays
 description = "Fast, Extensible Progress Meter"
 category = "dev"
 optional = false
@@ -819,13 +815,8 @@ sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
 tqdm = [
-<<<<<<< HEAD
     {file = "tqdm-4.62.3-py2.py3-none-any.whl", hash = "sha256:8dd278a422499cd6b727e6ae4061c40b48fce8b76d1ccbf5d34fca9b7f925b0c"},
     {file = "tqdm-4.62.3.tar.gz", hash = "sha256:d359de7217506c9851b7869f3708d8ee53ed70a1b8edbba4dbcb47442592920d"},
-=======
-    {file = "tqdm-4.61.1-py2.py3-none-any.whl", hash = "sha256:aa0c29f03f298951ac6318f7c8ce584e48fa22ec26396e6411e43d038243bdb2"},
-    {file = "tqdm-4.61.1.tar.gz", hash = "sha256:24be966933e942be5f074c29755a95b315c69a91f839a29139bf26ffffe2d3fd"},
->>>>>>> 743e2cb... fixed array length checking so that we're accounting for reverse dimensions in solidity arrays
 ]
 twine = [
     {file = "twine-3.7.0-py3-none-any.whl", hash = "sha256:5a3e3fb52b926827c99e050f0c1e5d8ae599848f3eb27764f19b886c09134590"},
