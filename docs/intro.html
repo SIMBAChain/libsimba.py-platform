@@ -87,13 +87,13 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">LibSimba.py</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation"><em>INSTALLATION</em></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation"><em>Installation</em></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#install-from-package"><em>Install from package:</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-for-development"><em>Install for development</em></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#configuration"><em>CONFIGURATION</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage"><em>USAGE</em></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration"><em>Configuration</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage"><em>Usage</em></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#instantiate-the-simba-enterprise-client"><em>Instantiate the SIMBA Enterprise client</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#list-all-simba-applications-available-to-your-user"><em>List all SIMBA applications available to your user</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use-the-searchfilter-class-to-filter-the-list-of-results"><em>Use the SearchFilter class to filter the list of results</em></a></li>
@@ -102,16 +102,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#example-method-call-using-the-sdk"><em>Example method call using the SDK</em></a></li>
 </ul>
 </li>
-<<<<<<< HEAD
-<li class="toctree-l2"><a class="reference internal" href="#appendix"><em>APPENDIX</em></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#setting-up-for-keycloak-client-credentials-flow"><em>SETTING UP FOR KEYCLOAK CLIENT CREDENTIALS FLOW</em></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generate-the-api-documentation"><em>GENERATE THE API DOCUMENTATION</em></a></li>
-=======
 <li class="toctree-l2"><a class="reference internal" href="#use-a-class-based-approach-to-interacting-with-your-deployed-smart-contract"><em>Use a class-based approach to interacting with your deployed smart contract</em></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#for-a-complete-example-on-how-to-use-the-simbahintedcontract-module-please-see-this-example-notebook">For a complete example on how to use the SimbaHintedContract module please see this example notebook.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#appendix"><em>Appendix</em></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#setting-up-for-keycloak-client-credentials-flow"><em>Setting up for Keycloak client credentials flow</em></a></li>
->>>>>>> 96a3087... [PLAT-164] Overhaul documentation; fixed various things
 </ul>
 </li>
 </ul>
@@ -187,7 +181,7 @@
   <div class="tex2jax_ignore mathjax_ignore section" id="libsimba-py">
 <h1>LibSimba.py<a class="headerlink" href="#libsimba-py" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="installation">
-<h2><em>INSTALLATION</em><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<h2><em>Installation</em><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Requires Python &gt;= 3.7</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">libsimba</span><span class="o">.</span><span class="n">py</span><span class="o">-</span><span class="n">platform</span>
 </pre></div>
@@ -210,7 +204,7 @@
 </div>
 </div>
 <div class="section" id="configuration">
-<h2><em>CONFIGURATION</em><a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<h2><em>Configuration</em><a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
 <p>You will need to set the following environment variables so that the SDK can make auth requests and interact with the Simba Enterprise Platform (SEP).</p>
 <table class="colwidths-auto docutils align-default">
 <thead>
@@ -257,7 +251,7 @@
 <p>(Please see <a class="reference external" href="#SETTING-UP-FOR-KEYCLOAK-CLIENT-CREDENTIALS-FLOW">setting up keycloak client credentials flow</a> for an example on how to setup for keycloak authentication.)</p>
 </div>
 <div class="section" id="usage">
-<h2><em>USAGE</em><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2><em>Usage</em><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="instantiate-the-simba-enterprise-client">
 <h3><em>Instantiate the SIMBA Enterprise client</em><a class="headerlink" href="#instantiate-the-simba-enterprise-client" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">Simba</span>
@@ -368,9 +362,9 @@
 <h2>For a complete example on how to use the SimbaHintedContract module please see this <a class="reference external" href="https://github.com/SIMBAChain/libsimba.py-platform/blob/docs/notebooks/examples.ipynb">example notebook</a>.<a class="headerlink" href="#for-a-complete-example-on-how-to-use-the-simbahintedcontract-module-please-see-this-example-notebook" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="appendix">
-<h2><em>APPENDIX</em><a class="headerlink" href="#appendix" title="Permalink to this headline">¶</a></h2>
+<h2><em>Appendix</em><a class="headerlink" href="#appendix" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="setting-up-for-keycloak-client-credentials-flow">
-<h3><em>SETTING UP FOR KEYCLOAK CLIENT CREDENTIALS FLOW</em><a class="headerlink" href="#setting-up-for-keycloak-client-credentials-flow" title="Permalink to this headline">¶</a></h3>
+<h3><em>Setting up for Keycloak client credentials flow</em><a class="headerlink" href="#setting-up-for-keycloak-client-credentials-flow" title="Permalink to this headline">¶</a></h3>
 <p>Create a new client in your Keycloak realm and set the following:</p>
 <p>Access Type = confidential<br />
 Service Accounts Enabled = ON</p>
@@ -384,10 +378,6 @@ Assuming that your realm is named <code class="docutils literal notranslate"><sp
 <span class="n">export</span> <span class="n">LIBSIMBA_AUTH_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;auth/realms/sep/protocol/openid-connect/&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="generate-the-api-documentation">
-<h3><em>GENERATE THE API DOCUMENTATION</em><a class="headerlink" href="#generate-the-api-documentation" title="Permalink to this headline">¶</a></h3>
-<p>Calling <em>make github</em> puts the Sphinx documentation into ./docs so the github pages can find it.</p>
 </div>
 </div>
 </div>

@@ -286,7 +286,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 
 <dl class="py class">
 <dt id="libsimba.simba.Simba">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.simba.</span></code><code class="sig-name descname"><span class="pre">Simba</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_api_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://api.sep.dev.simbachain.com'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.simba.</span></code><code class="sig-name descname"><span class="pre">Simba</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_api_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:8000/'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="libsimba.simba.Simba.create_contract_instance">
@@ -737,11 +737,6 @@ If using filter sets, you should use the SearchFilter object instead</p>
 </dd></dl>
 
 <dl class="py method">
-<<<<<<< HEAD
-<dt id="libsimba.simba.Simba.retrieve_application">
-<code class="sig-name descname"><span class="pre">retrieve_application</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.retrieve_application" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-=======
 <dt id="libsimba.simba.Simba.list_transactions_by_address">
 <code class="sig-name descname"><span class="pre">list_transactions_by_address</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.list_transactions_by_address" title="Permalink to this definition">¶</a></dt>
 <dd><p>GET
@@ -770,7 +765,6 @@ If using filter sets, you should use the SearchFilter object instead</p>
 </dd>
 </dl>
 </dd></dl>
->>>>>>> 96a3087... [PLAT-164] Overhaul documentation; fixed various things
 
 <dl class="py method">
 <dt id="libsimba.simba.Simba.list_transactions_by_asset">
@@ -1743,11 +1737,6 @@ If using filter sets, you should use the SearchFilter object instead</p>
 </dd></dl>
 
 <dl class="py method">
-<<<<<<< HEAD
-<dt id="libsimba.simba_async.SimbaAsync.retrieve_application">
-<em class="property"><span class="pre">async</span> </em><code class="sig-name descname"><span class="pre">retrieve_application</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba_async.SimbaAsync.retrieve_application" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-=======
 <dt id="libsimba.simba_async.SimbaAsync.submit_transaction_by_address">
 <em class="property"><span class="pre">async</span> </em><code class="sig-name descname"><span class="pre">submit_transaction_by_address</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba_async.SimbaAsync.submit_transaction_by_address" title="Permalink to this definition">¶</a></dt>
 <dd><p>POST
@@ -1777,7 +1766,6 @@ If using filter sets, you should use the SearchFilter object instead</p>
 </dd>
 </dl>
 </dd></dl>
->>>>>>> 96a3087... [PLAT-164] Overhaul documentation; fixed various things
 
 <dl class="py method">
 <dt id="libsimba.simba_async.SimbaAsync.submit_transaction_by_address_async">
@@ -1924,7 +1912,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <dl class="py class">
 <dt id="libsimba.simba_contract.SimbaContract">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.simba_contract.</span></code><code class="sig-name descname"><span class="pre">SimbaContract</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_api_url</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba_contract.SimbaContract" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">libsimba.param_checking_contract.ParamCheckingContract</span></code></p>
 <dl class="py method">
 <dt id="libsimba.simba_contract.SimbaContract.call_contract_method_with_files">
 <code class="sig-name descname"><span class="pre">call_contract_method_with_files</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba_contract.SimbaContract.call_contract_method_with_files" title="Permalink to this definition">¶</a></dt>
@@ -2247,7 +2235,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
 <dt id="libsimba.simba_request.SimbaRequest.base_api_url">
-<code class="sig-name descname"><span class="pre">base_api_url</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'https://api.sep.dev.simbachain.com'</span></em><a class="headerlink" href="#libsimba.simba_request.SimbaRequest.base_api_url" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">base_api_url</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'http://localhost:8000/'</span></em><a class="headerlink" href="#libsimba.simba_request.SimbaRequest.base_api_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

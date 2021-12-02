@@ -1,5 +1,5 @@
 # LibSimba.py
-## *INSTALLATION*
+## *Installation*
 
 Requires Python >= 3.7
 
@@ -22,7 +22,7 @@ poetry env use python3.7
 poetry install
 ```
 
-## *CONFIGURATION*
+## *Configuration*
 
 You will need to set the following environment variables so that the SDK can make auth requests and interact with the Simba Enterprise Platform (SEP).
 
@@ -39,7 +39,7 @@ You will need to set the following environment variables so that the SDK can mak
 
 (Please see [setting up keycloak client credentials flow](#SETTING-UP-FOR-KEYCLOAK-CLIENT-CREDENTIALS-FLOW) for an example on how to setup for keycloak authentication.)
 
-## *USAGE*
+## *Usage*
 ### *Instantiate the SIMBA Enterprise client*
 
 ```python
@@ -153,9 +153,9 @@ LibSimba.py-platform has a module called the SimbaHintedContract that can be use
 For a complete example on how to use the SimbaHintedContract module please see this [example notebook](https://github.com/SIMBAChain/libsimba.py-platform/blob/docs/notebooks/examples.ipynb).
 ------------------------------------------------
 
-## *APPENDIX*
+## *Appendix*
 
-### *SETTING UP FOR KEYCLOAK CLIENT CREDENTIALS FLOW*
+### *Setting up for Keycloak client credentials flow*
 
 Create a new client in your Keycloak realm and set the following:
 
@@ -173,7 +173,3 @@ export LIBSIMBA_AUTH_TENANT_ID="sep"
 export LIBSIMBA_AUTH_BASE_URL="https://keycloak.example.com"
 export LIBSIMBA_AUTH_ENDPOINT="auth/realms/sep/protocol/openid-connect/"
 ```
-
-### *GENERATE THE API DOCUMENTATION*
-
-Calling *make github* puts the Sphinx documentation into ./docs so the github pages can find it.
