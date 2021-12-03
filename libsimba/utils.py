@@ -7,14 +7,25 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 
-def token_expired(token_data: dict, offset: int = 60):
+class SearchFilter(dict):
+    def __init__(self, **kwargs):
+        self.update(dict(**kwargs))
+
+    @property
+    def query_args(self):
+        search_terms = self.keys()
+        query_args = dict()
+        [query_args.update({'filter[{}]'.format(search_term.replace('__','.')): self.get(search_term)}) for search_term in search_terms]
+        return query_args
+
+
+def token_expired(token_data: dict, offset: int=60):
     """
     Checks to see if a token has expired, by checking the 'expires' key
     Adds an offset to allow for delays when performing auth processes
 
     :param token_data: the data dict to check for expiry. Should contain an 'expires' key
-    :param offset: To allow for delays in auth processes,
-    this number of seconds is added to the expiry time
+    :param offset: To allow for delays in auth processes, this number of seconds is added to the expiry time
     :return:
     """
     if 'expires' in token_data:
@@ -29,7 +40,6 @@ def token_expired(token_data: dict, offset: int = 60):
     else:
         log.info('No expiry date stored for token, assume expired')
         return True
-
 
 def save_token(client_id: str, token_data: dict):
     """
@@ -90,10 +100,9 @@ def get_saved_token(client_id: str):
         raise Exception('Token file not found')
     raise Exception('Token dir not found')
 
-
-def build_url(baseurl, path, args_dict):
+def build_url(base_api_url, path, args_dict):
     # Returns a list in the structure of urlparse.ParseResult
-    url_parts = list(urlparse(baseurl))
+    url_parts = list(urlparse(base_api_url))
     url_parts[2] = path
     url_parts[4] = urlencode(args_dict)
     return urlunparse(url_parts)

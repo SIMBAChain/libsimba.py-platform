@@ -2,6 +2,8 @@
 **__pycache__**
 **local_**
 /dist/
-/build/
+**/build/
 
 **_token.json
+
+**.env
