@@ -1,4 +1,5 @@
 
+import keyword
 from typing import List, Dict, Optional, Union, Any
 from jinja2 import Template
 import requests
@@ -7,6 +8,9 @@ from libsimba.utils import build_url
 from libsimba import templates
 import importlib.resources
 import re 
+import logging
+log = logging.getLogger(__name__)
+from libsimba.python_keyword_conversion import paramKeywordConversion, methodKeyWordConversion
 
 class SimbaHintedContract:
     def __init__(
@@ -15,7 +19,7 @@ class SimbaHintedContract:
         contract_name: str, 
         contract_class_name: str = None,
         base_api_url: str = 'https://api.sep.dev.simbachain.com/',
-        output_file: str = 'newContract.py',
+        output_file: str = 'new_contract.py',
         ):
         """
         SimbaHintedContract allows us to represent our smart contract as a Python class
@@ -39,10 +43,14 @@ class SimbaHintedContract:
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
         self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
         self.metadata = self.get_metadata()
-        self.contract = self.metadata['contract']
-        self.contract_methods = self.contract['methods']
-        self.output_file = output_file
+        self.contract = self.metadata.get('contract', {})
+        self.contract_methods = self.contract.get('methods', {})
+        self.contract_inheritance = self.contract.get('inheritance', [])
+        self.contract_inheritance_string = self.inheritance_string()
+        self.inheritance_file_names = [inh.lower() for inh in self.contract_inheritance]
+        self.zipped_inheritance = list(zip(self.contract_inheritance, self.inheritance_file_names))
         self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract.get('types', {})}
+        self.output_file = output_file
         self.write_contract()
 
     @auth_required 
@@ -51,7 +59,23 @@ class SimbaHintedContract:
         url = build_url(self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts) 
         resp = requests.get(url, headers=headers)
         metadata = resp.json()['metadata']
+        for item in metadata['contract']:
+            print(f'{item}: {metadata["contract"][item]}\n\n')
+        # log.info(f'metadata: {metadata}')
         return metadata
+
+    def inheritance_string(self):
+        """
+        creates a tuple of inheritences for inherited contracts
+        """
+        if self.contract_inheritance != []:
+            inh = "("
+            for dep in self.contract_inheritance:
+                inh += f'{dep},'
+            inh = inh[:len(inh)-1]
+            inh += ")"
+            return inh
+        return ""
 
     def validate_class_name(self, class_name:str):
         """
@@ -318,6 +342,12 @@ class SimbaHintedContract:
                 arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
+        if fullType.startswith("mapping"):
+            basicType = "Dict"
+            if self.is_array(fullType):
+                arrType = self.handle_array(fullType, basicType)
+                return arrType
+            return basicType
         # handle cases not handled above - may need to add some additional logic here
         if self.is_array(fullType):
             basicType = fullType[:fullType.find('[')]
@@ -338,6 +368,8 @@ class SimbaHintedContract:
             [str, str]: list containing [method signature, method input dict as string]
         """
         params = self.contract_methods[methodName]['params']
+        if methodName in methodKeyWordConversion:
+            methodName = methodKeyWordConversion[methodName]
         signature = f"def {methodName}(self,"
         inputs = 'inputs= {\n\t'
         for param in params:
@@ -350,8 +382,8 @@ class SimbaHintedContract:
             if hint_type in self.struct_names:
                 signature += f' {paramName}: "{hint_type}",'
             else:
-                signature += f" {cleanedParamName}: {hint_type},"
-            inputs += f"\t\t'{paramName}': {cleanedParamName},"
+                signature += f" {cleanedParamName if cleanedParamName not in paramKeywordConversion else paramKeywordConversion[cleanedParamName]}: {hint_type},"
+            inputs += f"\t\t'{paramName}': {cleanedParamName if cleanedParamName not in paramKeywordConversion else paramKeywordConversion[cleanedParamName]},"
             inputs += '\n\t'
         signature = signature[:-1]
         if acceptsFiles:

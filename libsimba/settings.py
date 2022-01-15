@@ -1,6 +1,7 @@
 import json
 import os
 from os.path import join, dirname
+from decouple import config
 
 DEBUG = True
 
@@ -41,3 +42,24 @@ BASE_AUTH_URL = os.getenv('BASE_AUTH_URL', "https://login.microsoftonline.com")
 TENANT_ID = os.getenv('AZURE_TENANT', None)
 AUTH_ENDPOINT = os.getenv('AUTH_ENDPOINT', "/{}/oauth2/v2.0/".format(TENANT_ID))
 BASE_API_URL = os.getenv('BASE_API_URL', "https://api.sep.dev.simbachain.com")
+
+# using config library
+# to use this approach, create a .env file in the same directory as this file:
+# $ touch .env
+# then set these variables using nano:
+# $ nano .env
+# then within nano:
+# AZURE_AUTH_APP_CLIENT_SECRET=<value>
+# AZURE_AUTH_APP_CLIENT_ID-<value>
+# ...
+CLIENT_SECRET = config('AZURE_AUTH_APP_CLIENT_SECRET', default = None)
+CLIENT_ID = config('AZURE_AUTH_APP_CLIENT_ID', default = None)
+
+BASE_AUTH_URL = config('BASE_AUTH_URL', default = "https://login.microsoftonline.com")
+TENANT_ID = config('AZURE_TENANT', default = None)
+SEP_RESOURCE_PRINCIPAL_ID= config('SEP_RESOURCE_PRINCIPAL_ID')
+SCOPE = config('AZURE_APP_ID', default = "api://{}/.default".format(SEP_RESOURCE_PRINCIPAL_ID))
+AUTH_ENDPOINT = config('AUTH_ENDPOINT', default = "/{}/oauth2/v2.0/".format(TENANT_ID))
+BASE_API_URL = config('BASE_API_URL', default = "https://api.sep.dev.simbachain.com")
+
+

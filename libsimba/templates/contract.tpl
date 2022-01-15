@@ -2,8 +2,10 @@ from libsimba.simba import Simba
 from typing import List, Tuple, Dict, Any, Optional
 from libsimba.class_converter import ClassToDictConverter, convert_classes
 from libsimba.file_handler import open_files, close_files
+{% for class_name, file_name in SimbaHintedContractObj.zipped_inheritance %}from {{file_name}} import {{class_name}}
+{% endfor %}
 
-class {{SimbaHintedContractObj.contract_class_name}}:
+class {{SimbaHintedContractObj.contract_class_name}}{{SimbaHintedContractObj.contract_inheritance_string}}:
     def __init__(self):
         self.app_name = "{{SimbaHintedContractObj.app_name}}"
         self.base_api_url = "{{SimbaHintedContractObj.base_api_url}}"
