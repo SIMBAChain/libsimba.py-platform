@@ -23,7 +23,7 @@ class TitleERC721M8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burna
     def __init__(self):
         self.app_name = "titles"
         self.base_api_url = "https://api.sep.dev.simbachain.com/"
-        self.contract_name = "CarERC721M8"
+        self.contract_name = "TitleERC721M8"
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     
@@ -37,7 +37,7 @@ class TitleERC721M8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burna
             self._indexes=_indexes
     
     class UintSet(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "TitleERC721M8.Set" = None):
             self._inner=_inner
     
     class RoleData(ClassToDictConverter):
@@ -46,11 +46,11 @@ class TitleERC721M8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burna
             self.adminRole=adminRole
     
     class AddressSet(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "TitleERC721M8.Set" = None):
             self._inner=_inner
     
     class Bytes32Set(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "TitleERC721M8.Set" = None):
             self._inner=_inner
     
     class OnChainMetadata(ClassToDictConverter):
@@ -115,7 +115,7 @@ class TitleERC721M8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burna
         else:
             return self.simba_contract.submit_method("burn", inputs, opts, async_method)
 
-    def mint(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+    def mint(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, salvage: bool, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
         If query_method == True, then invocations of mint will be queried. Otherwise mint will be invoked with inputs.
         """
@@ -127,6 +127,7 @@ class TitleERC721M8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burna
             'description': description,
             'image': image,
             'imageHash': imageHash,
+            'salvage': salvage,
         }
         convert_classes(inputs)
         if query_method:

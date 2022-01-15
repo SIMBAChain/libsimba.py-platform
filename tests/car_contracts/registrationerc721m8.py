@@ -23,7 +23,7 @@ class RegistrationERC721M8(Context,AccessControlEnumerable,ERC721Enumerable,ERC7
     def __init__(self):
         self.app_name = "titles"
         self.base_api_url = "https://api.sep.dev.simbachain.com/"
-        self.contract_name = "CarERC721M8"
+        self.contract_name = "RegistrationERC721M8"
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     
@@ -37,7 +37,7 @@ class RegistrationERC721M8(Context,AccessControlEnumerable,ERC721Enumerable,ERC7
             self._indexes=_indexes
     
     class UintSet(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "RegistrationERC721M8.Set" = None):
             self._inner=_inner
     
     class RoleData(ClassToDictConverter):
@@ -46,11 +46,11 @@ class RegistrationERC721M8(Context,AccessControlEnumerable,ERC721Enumerable,ERC7
             self.adminRole=adminRole
     
     class AddressSet(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "RegistrationERC721M8.Set" = None):
             self._inner=_inner
     
     class Bytes32Set(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "RegistrationERC721M8.Set" = None):
             self._inner=_inner
     
     class OnChainMetadata(ClassToDictConverter):

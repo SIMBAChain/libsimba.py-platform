@@ -2,28 +2,20 @@ from libsimba.simba import Simba
 from typing import List, Tuple, Dict, Any, Optional
 from libsimba.class_converter import ClassToDictConverter, convert_classes
 from libsimba.file_handler import open_files, close_files
-from context import Context
 from accesscontrolenumerable import AccessControlEnumerable
-from erc721enumerable import ERC721Enumerable
-from erc721burnable import ERC721Burnable
-from erc721pausable import ERC721Pausable
 from iaccesscontrolenumerable import IAccessControlEnumerable
 from accesscontrol import AccessControl
 from iaccesscontrol import IAccessControl
+from context import Context
 from erc165 import ERC165
 from ierc165 import IERC165
-from erc721 import ERC721
-from ierc721enumerable import IERC721Enumerable
-from ierc721 import IERC721
-from ierc721metadata import IERC721Metadata
-from pausable import Pausable
 
 
-class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burnable,ERC721Pausable,IAccessControlEnumerable,AccessControl,IAccessControl,ERC165,IERC165,ERC721,IERC721Enumerable,IERC721,IERC721Metadata,Pausable):
+class DMVInterfaceM8(AccessControlEnumerable,IAccessControlEnumerable,AccessControl,IAccessControl,Context,ERC165,IERC165):
     def __init__(self):
         self.app_name = "titles"
         self.base_api_url = "https://api.sep.dev.simbachain.com/"
-        self.contract_name = "CarERC721M8"
+        self.contract_name = "DMVInterfaceM8"
         self.simba = Simba(self.base_api_url)
         self.simba_contract = self.simba.get_contract(self.app_name, self.contract_name)
     
@@ -37,7 +29,7 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
             self._indexes=_indexes
     
     class UintSet(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "DMVInterfaceM8.Set" = None):
             self._inner=_inner
     
     class RoleData(ClassToDictConverter):
@@ -46,11 +38,11 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
             self.adminRole=adminRole
     
     class AddressSet(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "DMVInterfaceM8.Set" = None):
             self._inner=_inner
     
     class Bytes32Set(ClassToDictConverter):
-        def __init__(self, _inner: "CarERC721M8.Set" = None):
+        def __init__(self, _inner: "DMVInterfaceM8.Set" = None):
             self._inner=_inner
     
     class OnChainMetadata(ClassToDictConverter):
@@ -102,112 +94,31 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
     def get_transaction_statuses(self, txn_hashes: List[str] = None, opts: Optional[dict] = None):
         return self.simba_contract.get_transaction_statuses(txn_hashes, opts)
 
-    def burn(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+    def getVIN(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
         """
-        If query_method == True, then invocations of burn will be queried. Otherwise burn will be invoked with inputs.
-        """
-        inputs= {
-            'tokenId': tokenId,
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("burn", opts)
-        else:
-            return self.simba_contract.submit_method("burn", inputs, opts, async_method)
-
-    def mint(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
-        """
-        If query_method == True, then invocations of mint will be queried. Otherwise mint will be invoked with inputs.
-        """
-        inputs= {
-            'to': to,
-            'tokenId': tokenId,
-            'contentHash': contentHash,
-            'name': name,
-            'description': description,
-            'image': image,
-            'imageHash': imageHash,
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("mint", opts)
-        else:
-            return self.simba_contract.submit_method("mint", inputs, opts, async_method)
-
-    def name(self, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
-        """
-        If query_method == True, then invocations of name will be queried. Otherwise name will be invoked with inputs.
-        """
-        inputs= {
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("name", opts)
-        else:
-            return self.simba_contract.submit_method("name", inputs, opts, async_method)
-
-    def pause(self, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
-        """
-        If query_method == True, then invocations of pause will be queried. Otherwise pause will be invoked with inputs.
-        """
-        inputs= {
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("pause", opts)
-        else:
-            return self.simba_contract.submit_method("pause", inputs, opts, async_method)
-
-    def paused(self, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
-        """
-        If query_method == True, then invocations of paused will be queried. Otherwise paused will be invoked with inputs.
-        """
-        inputs= {
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("paused", opts)
-        else:
-            return self.simba_contract.submit_method("paused", inputs, opts, async_method)
-
-    def symbol(self, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
-        """
-        If query_method == True, then invocations of symbol will be queried. Otherwise symbol will be invoked with inputs.
-        """
-        inputs= {
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("symbol", opts)
-        else:
-            return self.simba_contract.submit_method("symbol", inputs, opts, async_method)
-
-    def approve(self, to: str, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
-        """
-        If query_method == True, then invocations of approve will be queried. Otherwise approve will be invoked with inputs.
-        """
-        inputs= {
-            'to': to,
-            'tokenId': tokenId,
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("approve", opts)
-        else:
-            return self.simba_contract.submit_method("approve", inputs, opts, async_method)
-
-    def getName(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
-        """
-        If query_method == True, then invocations of getName will be queried. Otherwise getName will be invoked with inputs.
+        If query_method == True, then invocations of getVIN will be queried. Otherwise getVIN will be invoked with inputs.
         """
         inputs= {
             'tokenId': tokenId,
         }
         convert_classes(inputs)
         if query_method:
-            return self.simba_contract.query_method("getName", opts)
+            return self.simba_contract.query_method("getVIN", opts)
         else:
-            return self.simba_contract.submit_method("getName", inputs, opts, async_method)
+            return self.simba_contract.submit_method("getVIN", inputs, opts, async_method)
+
+    def burnCar(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of burnCar will be queried. Otherwise burnCar will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("burnCar", opts)
+        else:
+            return self.simba_contract.submit_method("burnCar", inputs, opts, async_method)
 
     def hasRole(self, role: bytes, account: str, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
         """
@@ -223,56 +134,37 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
         else:
             return self.simba_contract.submit_method("hasRole", inputs, opts, async_method)
 
-    def ownerOf(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+    def burnTitle(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
-        If query_method == True, then invocations of ownerOf will be queried. Otherwise ownerOf will be invoked with inputs.
-        """
-        inputs= {
-            'tokenId': tokenId,
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("ownerOf", opts)
-        else:
-            return self.simba_contract.submit_method("ownerOf", inputs, opts, async_method)
-
-    def unpause(self, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
-        """
-        If query_method == True, then invocations of unpause will be queried. Otherwise unpause will be invoked with inputs.
-        """
-        inputs= {
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("unpause", opts)
-        else:
-            return self.simba_contract.submit_method("unpause", inputs, opts, async_method)
-
-    def tokenURI(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
-        """
-        If query_method == True, then invocations of tokenURI will be queried. Otherwise tokenURI will be invoked with inputs.
+        If query_method == True, then invocations of burnTitle will be queried. Otherwise burnTitle will be invoked with inputs.
         """
         inputs= {
             'tokenId': tokenId,
         }
         convert_classes(inputs)
         if query_method:
-            return self.simba_contract.query_method("tokenURI", opts)
+            return self.simba_contract.query_method("burnTitle", opts)
         else:
-            return self.simba_contract.submit_method("tokenURI", inputs, opts, async_method)
+            return self.simba_contract.submit_method("burnTitle", inputs, opts, async_method)
 
-    def balanceOf(self, owner: str, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+    def createCar(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
-        If query_method == True, then invocations of balanceOf will be queried. Otherwise balanceOf will be invoked with inputs.
+        If query_method == True, then invocations of createCar will be queried. Otherwise createCar will be invoked with inputs.
         """
         inputs= {
-            'owner': owner,
+            'to': to,
+            'tokenId': tokenId,
+            'contentHash': contentHash,
+            'name': name,
+            'description': description,
+            'image': image,
+            'imageHash': imageHash,
         }
         convert_classes(inputs)
         if query_method:
-            return self.simba_contract.query_method("balanceOf", opts)
+            return self.simba_contract.query_method("createCar", opts)
         else:
-            return self.simba_contract.submit_method("balanceOf", inputs, opts, async_method)
+            return self.simba_contract.submit_method("createCar", inputs, opts, async_method)
 
     def grantRole(self, role: bytes, account: str, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
@@ -288,6 +180,18 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
         else:
             return self.simba_contract.submit_method("grantRole", inputs, opts, async_method)
 
+    def getDMVImpl(self, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+        """
+        If query_method == True, then invocations of getDMVImpl will be queried. Otherwise getDMVImpl will be invoked with inputs.
+        """
+        inputs= {
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("getDMVImpl", opts)
+        else:
+            return self.simba_contract.submit_method("getDMVImpl", inputs, opts, async_method)
+
     def revokeRole(self, role: bytes, account: str, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
         If query_method == True, then invocations of revokeRole will be queried. Otherwise revokeRole will be invoked with inputs.
@@ -302,45 +206,40 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
         else:
             return self.simba_contract.submit_method("revokeRole", inputs, opts, async_method)
 
-    def getApproved(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+    def createTitle(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, salvage: bool, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
-        If query_method == True, then invocations of getApproved will be queried. Otherwise getApproved will be invoked with inputs.
+        If query_method == True, then invocations of createTitle will be queried. Otherwise createTitle will be invoked with inputs.
         """
         inputs= {
+            'to': to,
             'tokenId': tokenId,
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("getApproved", opts)
-        else:
-            return self.simba_contract.submit_method("getApproved", inputs, opts, async_method)
-
-    def totalSupply(self, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
-        """
-        If query_method == True, then invocations of totalSupply will be queried. Otherwise totalSupply will be invoked with inputs.
-        """
-        inputs= {
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("totalSupply", opts)
-        else:
-            return self.simba_contract.submit_method("totalSupply", inputs, opts, async_method)
-
-    def updateImage(self, tokenId: int, image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
-        """
-        If query_method == True, then invocations of updateImage will be queried. Otherwise updateImage will be invoked with inputs.
-        """
-        inputs= {
-            'tokenId': tokenId,
+            'contentHash': contentHash,
+            'name': name,
+            'description': description,
             'image': image,
             'imageHash': imageHash,
+            'salvage': salvage,
         }
         convert_classes(inputs)
         if query_method:
-            return self.simba_contract.query_method("updateImage", opts)
+            return self.simba_contract.query_method("createTitle", opts)
         else:
-            return self.simba_contract.submit_method("updateImage", inputs, opts, async_method)
+            return self.simba_contract.submit_method("createTitle", inputs, opts, async_method)
+
+    def transferCar(self, fromParam: str, to: str, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of transferCar will be queried. Otherwise transferCar will be invoked with inputs.
+        """
+        inputs= {
+            'from': fromParam,
+            'to': to,
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("transferCar", opts)
+        else:
+            return self.simba_contract.submit_method("transferCar", inputs, opts, async_method)
 
     def getRoleAdmin(self, role: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
         """
@@ -369,34 +268,6 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
         else:
             return self.simba_contract.submit_method("renounceRole", inputs, opts, async_method)
 
-    def tokenByIndex(self, index: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
-        """
-        If query_method == True, then invocations of tokenByIndex will be queried. Otherwise tokenByIndex will be invoked with inputs.
-        """
-        inputs= {
-            'index': index,
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("tokenByIndex", opts)
-        else:
-            return self.simba_contract.submit_method("tokenByIndex", inputs, opts, async_method)
-
-    def transferFrom(self, fromParam: str, to: str, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
-        """
-        If query_method == True, then invocations of transferFrom will be queried. Otherwise transferFrom will be invoked with inputs.
-        """
-        inputs= {
-            'from': fromParam,
-            'to': to,
-            'tokenId': tokenId,
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("transferFrom", opts)
-        else:
-            return self.simba_contract.submit_method("transferFrom", inputs, opts, async_method)
-
     def getRoleMember(self, role: bytes, index: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
         """
         If query_method == True, then invocations of getRoleMember will be queried. Otherwise getRoleMember will be invoked with inputs.
@@ -411,23 +282,9 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
         else:
             return self.simba_contract.submit_method("getRoleMember", inputs, opts, async_method)
 
-    def isApprovedForAll(self, owner: str, operator: str, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+    def transferTitle(self, fromParam: str, to: str, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
         """
-        If query_method == True, then invocations of isApprovedForAll will be queried. Otherwise isApprovedForAll will be invoked with inputs.
-        """
-        inputs= {
-            'owner': owner,
-            'operator': operator,
-        }
-        convert_classes(inputs)
-        if query_method:
-            return self.simba_contract.query_method("isApprovedForAll", opts)
-        else:
-            return self.simba_contract.submit_method("isApprovedForAll", inputs, opts, async_method)
-
-    def safeTransferFrom(self, fromParam: str, to: str, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
-        """
-        If query_method == True, then invocations of safeTransferFrom will be queried. Otherwise safeTransferFrom will be invoked with inputs.
+        If query_method == True, then invocations of transferTitle will be queried. Otherwise transferTitle will be invoked with inputs.
         """
         inputs= {
             'from': fromParam,
@@ -436,23 +293,78 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
         }
         convert_classes(inputs)
         if query_method:
-            return self.simba_contract.query_method("safeTransferFrom", opts)
+            return self.simba_contract.query_method("transferTitle", opts)
         else:
-            return self.simba_contract.submit_method("safeTransferFrom", inputs, opts, async_method)
+            return self.simba_contract.submit_method("transferTitle", inputs, opts, async_method)
 
-    def setApprovalForAll(self, operator: str, approved: bool, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+    def getCarMetadata(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
         """
-        If query_method == True, then invocations of setApprovalForAll will be queried. Otherwise setApprovalForAll will be invoked with inputs.
+        If query_method == True, then invocations of getCarMetadata will be queried. Otherwise getCarMetadata will be invoked with inputs.
         """
         inputs= {
-            'operator': operator,
-            'approved': approved,
+            'tokenId': tokenId,
         }
         convert_classes(inputs)
         if query_method:
-            return self.simba_contract.query_method("setApprovalForAll", opts)
+            return self.simba_contract.query_method("getCarMetadata", opts)
         else:
-            return self.simba_contract.submit_method("setApprovalForAll", inputs, opts, async_method)
+            return self.simba_contract.submit_method("getCarMetadata", inputs, opts, async_method)
+
+    def updateCarImage(self, tokenId: int, image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of updateCarImage will be queried. Otherwise updateCarImage will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+            'image': image,
+            'imageHash': imageHash,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("updateCarImage", opts)
+        else:
+            return self.simba_contract.submit_method("updateCarImage", inputs, opts, async_method)
+
+    def burnRegistration(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of burnRegistration will be queried. Otherwise burnRegistration will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("burnRegistration", opts)
+        else:
+            return self.simba_contract.submit_method("burnRegistration", inputs, opts, async_method)
+
+    def getTitleMetadata(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+        """
+        If query_method == True, then invocations of getTitleMetadata will be queried. Otherwise getTitleMetadata will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("getTitleMetadata", opts)
+        else:
+            return self.simba_contract.submit_method("getTitleMetadata", inputs, opts, async_method)
+
+    def updateTitleImage(self, tokenId: int, image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of updateTitleImage will be queried. Otherwise updateTitleImage will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+            'image': image,
+            'imageHash': imageHash,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("updateTitleImage", opts)
+        else:
+            return self.simba_contract.submit_method("updateTitleImage", inputs, opts, async_method)
 
     def supportsInterface(self, interfaceId: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
         """
@@ -467,6 +379,44 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
         else:
             return self.simba_contract.submit_method("supportsInterface", inputs, opts, async_method)
 
+    def createRegistration(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of createRegistration will be queried. Otherwise createRegistration will be invoked with inputs.
+        """
+        inputs= {
+            'to': to,
+            'tokenId': tokenId,
+            'contentHash': contentHash,
+            'name': name,
+            'description': description,
+            'image': image,
+            'imageHash': imageHash,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("createRegistration", opts)
+        else:
+            return self.simba_contract.submit_method("createRegistration", inputs, opts, async_method)
+
+    def createSalvageTitle(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of createSalvageTitle will be queried. Otherwise createSalvageTitle will be invoked with inputs.
+        """
+        inputs= {
+            'to': to,
+            'tokenId': tokenId,
+            'contentHash': contentHash,
+            'name': name,
+            'description': description,
+            'image': image,
+            'imageHash': imageHash,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("createSalvageTitle", opts)
+        else:
+            return self.simba_contract.submit_method("createSalvageTitle", inputs, opts, async_method)
+
     def getRoleMemberCount(self, role: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
         """
         If query_method == True, then invocations of getRoleMemberCount will be queried. Otherwise getRoleMemberCount will be invoked with inputs.
@@ -480,16 +430,191 @@ class DMVInterfaceM8(Context,AccessControlEnumerable,ERC721Enumerable,ERC721Burn
         else:
             return self.simba_contract.submit_method("getRoleMemberCount", inputs, opts, async_method)
 
-    def tokenOfOwnerByIndex(self, owner: str, index: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+    def getTitleDocumentID(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
         """
-        If query_method == True, then invocations of tokenOfOwnerByIndex will be queried. Otherwise tokenOfOwnerByIndex will be invoked with inputs.
+        If query_method == True, then invocations of getTitleDocumentID will be queried. Otherwise getTitleDocumentID will be invoked with inputs.
         """
         inputs= {
-            'owner': owner,
-            'index': index,
+            'tokenId': tokenId,
         }
         convert_classes(inputs)
         if query_method:
-            return self.simba_contract.query_method("tokenOfOwnerByIndex", opts)
+            return self.simba_contract.query_method("getTitleDocumentID", opts)
         else:
-            return self.simba_contract.submit_method("tokenOfOwnerByIndex", inputs, opts, async_method)
+            return self.simba_contract.submit_method("getTitleDocumentID", inputs, opts, async_method)
+
+    def setDMVImplementation(self, _dmvImplementation: str, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of setDMVImplementation will be queried. Otherwise setDMVImplementation will be invoked with inputs.
+        """
+        inputs= {
+            '_dmvImplementation': _dmvImplementation,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("setDMVImplementation", opts)
+        else:
+            return self.simba_contract.submit_method("setDMVImplementation", inputs, opts, async_method)
+
+    def transferRegistration(self, fromParam: str, to: str, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of transferRegistration will be queried. Otherwise transferRegistration will be invoked with inputs.
+        """
+        inputs= {
+            'from': fromParam,
+            'to': to,
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("transferRegistration", opts)
+        else:
+            return self.simba_contract.submit_method("transferRegistration", inputs, opts, async_method)
+
+    def createNonSalvageTitle(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of createNonSalvageTitle will be queried. Otherwise createNonSalvageTitle will be invoked with inputs.
+        """
+        inputs= {
+            'to': to,
+            'tokenId': tokenId,
+            'contentHash': contentHash,
+            'name': name,
+            'description': description,
+            'image': image,
+            'imageHash': imageHash,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("createNonSalvageTitle", opts)
+        else:
+            return self.simba_contract.submit_method("createNonSalvageTitle", inputs, opts, async_method)
+
+    def getRegistrationMetadata(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+        """
+        If query_method == True, then invocations of getRegistrationMetadata will be queried. Otherwise getRegistrationMetadata will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("getRegistrationMetadata", opts)
+        else:
+            return self.simba_contract.submit_method("getRegistrationMetadata", inputs, opts, async_method)
+
+    def updateRegistrationImage(self, tokenId: int, image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of updateRegistrationImage will be queried. Otherwise updateRegistrationImage will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+            'image': image,
+            'imageHash': imageHash,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("updateRegistrationImage", opts)
+        else:
+            return self.simba_contract.submit_method("updateRegistrationImage", inputs, opts, async_method)
+
+    def burnCertificateOfSalvage(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of burnCertificateOfSalvage will be queried. Otherwise burnCertificateOfSalvage will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("burnCertificateOfSalvage", opts)
+        else:
+            return self.simba_contract.submit_method("burnCertificateOfSalvage", inputs, opts, async_method)
+
+    def getRegistrationDocumentID(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+        """
+        If query_method == True, then invocations of getRegistrationDocumentID will be queried. Otherwise getRegistrationDocumentID will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("getRegistrationDocumentID", opts)
+        else:
+            return self.simba_contract.submit_method("getRegistrationDocumentID", inputs, opts, async_method)
+
+    def createCertificateOfSalvage(self, to: str, tokenId: int, contentHash: bytes, name: bytes, description: List[bytes], image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of createCertificateOfSalvage will be queried. Otherwise createCertificateOfSalvage will be invoked with inputs.
+        """
+        inputs= {
+            'to': to,
+            'tokenId': tokenId,
+            'contentHash': contentHash,
+            'name': name,
+            'description': description,
+            'image': image,
+            'imageHash': imageHash,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("createCertificateOfSalvage", opts)
+        else:
+            return self.simba_contract.submit_method("createCertificateOfSalvage", inputs, opts, async_method)
+
+    def transferCertificateOfSalvage(self, fromParam: str, to: str, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of transferCertificateOfSalvage will be queried. Otherwise transferCertificateOfSalvage will be invoked with inputs.
+        """
+        inputs= {
+            'from': fromParam,
+            'to': to,
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("transferCertificateOfSalvage", opts)
+        else:
+            return self.simba_contract.submit_method("transferCertificateOfSalvage", inputs, opts, async_method)
+
+    def getCertificateOfSalvageMetadata(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+        """
+        If query_method == True, then invocations of getCertificateOfSalvageMetadata will be queried. Otherwise getCertificateOfSalvageMetadata will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("getCertificateOfSalvageMetadata", opts)
+        else:
+            return self.simba_contract.submit_method("getCertificateOfSalvageMetadata", inputs, opts, async_method)
+
+    def updateCertificateOfSalvageImage(self, tokenId: int, image: List[bytes], imageHash: bytes, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False):
+        """
+        If query_method == True, then invocations of updateCertificateOfSalvageImage will be queried. Otherwise updateCertificateOfSalvageImage will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+            'image': image,
+            'imageHash': imageHash,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("updateCertificateOfSalvageImage", opts)
+        else:
+            return self.simba_contract.submit_method("updateCertificateOfSalvageImage", inputs, opts, async_method)
+
+    def getCertificateOfSalvageDocumentID(self, tokenId: int, async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False) -> List[Any]:
+        """
+        If query_method == True, then invocations of getCertificateOfSalvageDocumentID will be queried. Otherwise getCertificateOfSalvageDocumentID will be invoked with inputs.
+        """
+        inputs= {
+            'tokenId': tokenId,
+        }
+        convert_classes(inputs)
+        if query_method:
+            return self.simba_contract.query_method("getCertificateOfSalvageDocumentID", opts)
+        else:
+            return self.simba_contract.submit_method("getCertificateOfSalvageDocumentID", inputs, opts, async_method)
