@@ -64,19 +64,6 @@ class SimbaHintedContract:
         # log.info(f'metadata: {metadata}')
         return metadata
 
-    def inheritance_string(self):
-        """
-        creates a tuple of inheritences for inherited contracts
-        """
-        if self.contract_inheritance != []:
-            inh = "("
-            for dep in self.contract_inheritance:
-                inh += f'{dep},'
-            inh = inh[:len(inh)-1]
-            inh += ")"
-            return inh
-        return ""
-
     def validate_class_name(self, class_name:str):
         """
         validates name we wish to give our contract class object
