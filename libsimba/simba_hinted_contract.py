@@ -1,5 +1,3 @@
-
-import keyword
 from typing import List, Dict, Optional, Union, Any
 from jinja2 import Template
 import requests
@@ -8,9 +6,6 @@ from libsimba.utils import build_url
 from libsimba import templates
 import importlib.resources
 import re 
-import logging
-log = logging.getLogger(__name__)
-from libsimba.python_keyword_conversion import paramKeywordConversion, methodKeyWordConversion
 
 class SimbaHintedContract:
     def __init__(
@@ -19,14 +14,13 @@ class SimbaHintedContract:
         contract_name: str, 
         contract_class_name: str = None,
         base_api_url: str = 'https://api.sep.dev.simbachain.com/',
-        output_file: str = 'new_contract.py',
+        output_file: str = 'newContract.py',
         ):
         """
         SimbaHintedContract allows us to represent our smart contract as a Python class
         Smart contract methods will be exposed as class methods, and smart contract structs 
         will be represented as subclasses of our contract class
         Note that the underlying functionality for method calls is still contained in https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py
-
         Args:
             metadata (str): string formatted json metadata from our smart contract
             app_name (str): name of the app that accesses our smart contract
@@ -43,14 +37,10 @@ class SimbaHintedContract:
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
         self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
         self.metadata = self.get_metadata()
-        self.contract = self.metadata.get('contract', {})
-        self.contract_methods = self.contract.get('methods', {})
-        self.contract_inheritance = self.contract.get('inheritance', [])
-        self.contract_inheritance_string = self.inheritance_string()
-        self.inheritance_file_names = [inh.lower() for inh in self.contract_inheritance]
-        self.zipped_inheritance = list(zip(self.contract_inheritance, self.inheritance_file_names))
-        self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract.get('types', {})}
+        self.contract = self.metadata['contract']
+        self.contract_methods = self.contract['methods']
         self.output_file = output_file
+        self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract.get('types', {})}
         self.write_contract()
 
     @auth_required 
@@ -59,18 +49,13 @@ class SimbaHintedContract:
         url = build_url(self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts) 
         resp = requests.get(url, headers=headers)
         metadata = resp.json()['metadata']
-        for item in metadata['contract']:
-            print(f'{item}: {metadata["contract"][item]}\n\n')
-        # log.info(f'metadata: {metadata}')
         return metadata
 
     def validate_class_name(self, class_name:str):
         """
         validates name we wish to give our contract class object
-
         Args:
             class_name ([type]): [description]
-
         Raises:
             ValueError: if class_name begins with a digit
             ValueError: if class_name contains nonalpha or non_underscore
@@ -86,10 +71,8 @@ class SimbaHintedContract:
         """
         returns a bool indicating whether method_name accepts files or not, as indicated by whether
         _bundleHash is present as a parameter name in method_name's parameters
-
         Args:
             method_name (str): method_name for which we want to determine if files are accepted or not
-
         Returns:
             bool: 
         """
@@ -103,7 +86,6 @@ class SimbaHintedContract:
         returns a list of method names that accept files. 
         
         Not currently used.
-
         Returns:
             List[str]: list of contract methods that accept files
         """
@@ -112,11 +94,9 @@ class SimbaHintedContract:
     def return_data_types(self, method_name:str, as_dict=False) -> Union[List, Dict]:
         """
         get the native Python data types for return values from contract methods
-
         Args:
             method_name (str): method_name to obtain return data type for
             as_dict (bool, optional): [description]. Defaults to False.
-
         Returns:
             [type]: [description]
         """
@@ -139,11 +119,9 @@ class SimbaHintedContract:
     def handle_array(self, fullType: str, basicType: str) -> str:
         """
         handle_array is meant to handle arrays and nested arrays, and return a string formatted version of that nested array
-
         Args:
             param (app_metadata.DataType): method parameter, of type DataType, for which we want to obtain a native Python data type hint
             paramType (str): native Python type obtained in hinted_data_type (int, str, etc.)
-
         Returns:
             arrType (str): string formatted version of array or nested array
         """
@@ -158,10 +136,8 @@ class SimbaHintedContract:
     def handle_struct(self, structParam: str, forward_reference:bool = True):
         """
         gives us custom struct type, accounting for array
-
         Args:
             structParam (str): struct in either Contract.Struct or Contract.Struct[]...[] format
-
         Returns:
             [str]: string in either 'libsimba.Contract.Struct' or 'List[libsimba.Contract.Struct]'form
         """
@@ -188,11 +164,9 @@ class SimbaHintedContract:
         """
         All classes that we use to represent classes should default to empty values
         for their respective data types, to mimic solidity behavior
-
         Args:
             component_type (str): string representing data type ('int', 'str', etc.)
             def_val (str): default value that should be assigned to variable of component_type. Detafults to None.
-
         Returns:
             [Any]: default value for component_type
         """
@@ -208,10 +182,8 @@ class SimbaHintedContract:
         """
         struct_init_signature_with_components will produce a signature for the __init__
         method for our classes that represent structs, with parameters (components) and default values
-
         Args:
             struct (str): name of struct that we want to create a class object for
-
         Returns:
             [str, list]: list containing a signature and attribute assignments for struct class
         """
@@ -248,7 +220,6 @@ class SimbaHintedContract:
     def classes_from_structs(self):
         """
         generates class object strings for each of our contract's structs
-
         Returns:
             [List[str]]: list of string representations of struct classes
         """
@@ -265,11 +236,9 @@ class SimbaHintedContract:
     def get_dimensions(self, param:str, dims:Optional[int] = 0) -> int:
         """
         Recursive function to determine dimensions of array type
-
         Args:
             param (str): string formatted parameter (eg 'str[][]')
             dims (Optional[int], optional): [description]. Defaults to 0.
-
         Returns:
             [int]: number of dimensions in array
         """
@@ -283,7 +252,6 @@ class SimbaHintedContract:
         """
         hinted_data_type will return a type for type hinting. This may be a native python 
         data type, or may be a custom data type representing a struct
-
         Args:
             param (dict): method parameter for which we want to obtain a native Python data type hint
             forward_reference (bool): if True, then we return our data type inside quotes.
@@ -329,12 +297,6 @@ class SimbaHintedContract:
                 arrType = self.handle_array(fullType, basicType)
                 return arrType
             return basicType
-        if fullType.startswith("mapping"):
-            basicType = "Dict"
-            if self.is_array(fullType):
-                arrType = self.handle_array(fullType, basicType)
-                return arrType
-            return basicType
         # handle cases not handled above - may need to add some additional logic here
         if self.is_array(fullType):
             basicType = fullType[:fullType.find('[')]
@@ -345,18 +307,14 @@ class SimbaHintedContract:
     def sig_and_input_for_method(self, methodName:str, acceptsFiles:bool, itReturns:bool) -> list:
         """
         generate a method signature, along with a dictionary of inputs, for a contract method
-
         Args:
             methodName (str): contract method name
             acceptsFiles (bool): bool that specifies whether a method accepts files
             itReturns (bool): bool that specifies whether a method has a return value
-
         Returns:
             [str, str]: list containing [method signature, method input dict as string]
         """
         params = self.contract_methods[methodName]['params']
-        if methodName in methodKeyWordConversion:
-            methodName = methodKeyWordConversion[methodName]
         signature = f"def {methodName}(self,"
         inputs = 'inputs= {\n\t'
         for param in params:
@@ -369,14 +327,14 @@ class SimbaHintedContract:
             if hint_type in self.struct_names:
                 signature += f' {paramName}: "{hint_type}",'
             else:
-                signature += f" {cleanedParamName if cleanedParamName not in paramKeywordConversion else paramKeywordConversion[cleanedParamName]}: {hint_type},"
-            inputs += f"\t\t'{paramName}': {cleanedParamName if cleanedParamName not in paramKeywordConversion else paramKeywordConversion[cleanedParamName]},"
+                signature += f" {cleanedParamName}: {hint_type},"
+            inputs += f"\t\t'{paramName}': {cleanedParamName},"
             inputs += '\n\t'
         signature = signature[:-1]
         if acceptsFiles:
-            signature += ', files: List[Tuple], async_method: Optional[bool] = False, opts: Optional[dict] = None'
+            signature += ', files: List[Tuple], query_args: Optional[dict] = None'
         else:
-            signature += ', async_method: Optional[bool] = False, opts: Optional[dict] = None, query_method: Optional[bool] = False'
+            signature += ', query_args: Optional[dict] = None, qry_mth: Optional[bool] = False'
         if itReturns:
             signature += ') -> List[Any]:'
         else:
@@ -390,19 +348,17 @@ class SimbaHintedContract:
         sig_doc_input_return will return a list of list(zip) form, with the three items in that 
         zipped list being a list of method signatures, method body inputs, and method return statements
         for each method in our contract
-
         NOTE: in this method, once we reach the logic section of 'if accepts_files', we handle two
         different cases. If the method accepts files, then we allow the developer to specify whether
         the method they are calling is async or not. 
-            (ie, we invoke either submit_contract_method_with_files or submit_contract_method_with_files_async
+            (ie, we invoke either call_contract_method_with_files or call_contract_method_with_files_async
             from https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py)
         
         If the method does not accept files, then
         we allow the developer to specify whether they want to invoke the method, or query invocations
         of the method. 
-            (ie, we invoke either submit_method or query_method
+            (ie, we invoke either call_method or query_method
             from https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py) 
-
         Returns:
             sigInputReturn List[str]: list of list(zip) form, with the four items in that 
         zipped list being lists of: method signatures, docStrings, method body inputs, and method return statements
@@ -418,15 +374,15 @@ class SimbaHintedContract:
                 acceptsFiles = True
                 docStringDetails.append(f'\t"""\n\t\tIf async_method == True, then {methodName} will be invoked as async, otherwise {methodName} will be invoked as non async\n\t\tfiles parameter should be list with tuple elements of form (file_name, file_path) or (file_name, readable_file_like_object).\n\t\t\tsee libsimba.file_handler for further details on what open_files expects as arguments\n\t\t"""')
             else:
-                docStringDetails.append(f'\t"""\n\t\tIf query_method == True, then invocations of {methodName} will be queried. Otherwise {methodName} will be invoked with inputs.\n\t\t"""')
+                docStringDetails.append(f'\t"""\n\t\tIf qry_mth == True, then invocations of {methodName} will be queried. Otherwise {methodName} will be invoked with inputs.\n\t\t"""')
             itReturns = self.return_data_types(methodName, as_dict=False)
             signature, inputs = self.sig_and_input_for_method(methodName, acceptsFiles, itReturns)
             signatureDetails.append(signature)
             inputDetails.append(inputs)
             if acceptsFiles:
-                returnDetails.append(f'files = open_files(files)\n\n\t\tif async_method:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files_async("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response\n\t\telse:\n\t\t\tresponse = self.simba_contract.submit_contract_method_with_files("{methodName}", inputs, files, opts)\n\t\t\tclose_files(files)\n\t\t\treturn response')
+                returnDetails.append(f'files = open_files(files)\n\t\tresponse = self.simba_contract.call_contract_method_with_files("{methodName}", inputs, files, query_args)\n\t\tclose_files(files)\n\t\treturn response')
             else:
-                returnDetails.append(f'if query_method:\n\t\t\treturn self.simba_contract.query_method("{methodName}", opts)\n\t\telse:\n\t\t\treturn self.simba_contract.submit_method("{methodName}", inputs, opts, async_method)')
+                returnDetails.append(f'if qry_mth:\n\t\t\treturn self.simba_contract.query_method(query_args, "{methodName}")\n\t\telse:\n\t\t\treturn self.simba_contract.call_method("{methodName}", inputs, query_args)')
         sigDocInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
         return sigDocInputReturn
 
@@ -442,4 +398,3 @@ class SimbaHintedContract:
         output = output.replace('\t', '    ')
         with open(self.output_file, 'w') as f:
             f.write(output)
-

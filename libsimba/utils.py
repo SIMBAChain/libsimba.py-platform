@@ -7,14 +7,24 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 
-def token_expired(token_data: dict, offset: int = 60):
+class SearchFilter(dict):
+    def __init__(self, **kwargs):
+        self.update(dict(**kwargs))
+
+    @property
+    def query_args(self):
+        search_terms = self.keys()
+        query_args = dict()
+        [query_args.update({'filter[{}]'.format(search_term.replace('__','.')): self.get(search_term)}) for search_term in search_terms]
+        return query_args
+
+
+def token_expired(token_data: dict, offset: int=60):
     """
     Checks to see if a token has expired, by checking the 'expires' key
     Adds an offset to allow for delays when performing auth processes
-
     :param token_data: the data dict to check for expiry. Should contain an 'expires' key
-    :param offset: To allow for delays in auth processes,
-    this number of seconds is added to the expiry time
+    :param offset: To allow for delays in auth processes, this number of seconds is added to the expiry time
     :return:
     """
     if 'expires' in token_data:
@@ -30,21 +40,15 @@ def token_expired(token_data: dict, offset: int = 60):
         log.info('No expiry date stored for token, assume expired')
         return True
 
-
 def save_token(client_id: str, token_data: dict):
     """
     Saves the token data to a file.
-
     Checks the TOKEN_DIR environment variable for alternative token storage locations,
     otherwise uses the current working path
-
     Creates the token directory if it doesn't already exist.
-
     Adds an "expires" key to the auth token data, set to time "now" added to the expires_in time
     This is used later to discover if the token has expired
-
     Token files are named <client_id>_token.json
-
     :param client_id: The ID for the client, token files are named <client_id>_token.json
     :param token_data: The tokeauth data to save
     :return:
@@ -63,16 +67,12 @@ def get_saved_token(client_id: str):
     """
     Checks a local directory for a file containing an auth token
     If present, check the token hasn't expired, otherwise return it
-
     Raises exceptions if the token directory is missing,
     or if there is no token file,
     or if the token has expired, see def token_expired(token_data)
-
     Checks the TOKEN_DIR environment variable for alternative token storage locations,
     otherwise uses the current working path
-
     Token files are named <client_id>_token.json
-
     :param client_id: The ID for the client, token files are named <client_id>_token.json
     :return: a dict of the token data, retrieved from the token file.
     """
@@ -90,10 +90,9 @@ def get_saved_token(client_id: str):
         raise Exception('Token file not found')
     raise Exception('Token dir not found')
 
-
-def build_url(baseurl, path, args_dict):
+def build_url(base_api_url, path, args_dict):
     # Returns a list in the structure of urlparse.ParseResult
-    url_parts = list(urlparse(baseurl))
+    url_parts = list(urlparse(base_api_url))
     url_parts[2] = path
     url_parts[4] = urlencode(args_dict)
     return urlunparse(url_parts)

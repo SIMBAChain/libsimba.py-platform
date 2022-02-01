@@ -1,7 +1,9 @@
+from functools import wraps
 from libsimba.auth.pkce import Pkce
 from libsimba.auth.client_credentials import ClientCredentials
 from libsimba.settings import AUTH_FLOW
 from libsimba.settings import CLIENT_ID, CLIENT_SECRET, SCOPE, AUTH_FLOW, TENANT_ID
+from libsimba.utils import SearchFilter
 
 _ = {
   'pkce': Pkce,
@@ -12,26 +14,27 @@ auth_flow = AUTH_FLOW.lower()
 
 
 def auth_required_static(func):
-    def _auth_required_fn_wrapper(*args):
+    @wraps(func)
+    def _auth_required_fn_wrapper(*args, **kwargs):
         try:
             check_creds()
         except Exception as e1:
             raise e1
         access_token = _[auth_flow].login()
-        return func({'Authorization': "Bearer {}".format(access_token)}, *args)
+        return func({'Authorization': "Bearer {}".format(access_token)}, *args, **kwargs)
     return _auth_required_fn_wrapper
 
 
 def auth_required(func):
-    def _auth_required_fn_wrapper(self, *args):
+    @wraps(func)
+    def _auth_required_fn_wrapper(self, *args, **kwargs):
         try:
             check_creds()
         except Exception as e1:
             raise e1
         access_token = _[auth_flow].login()
-        return func(self, {'Authorization': "Bearer {}".format(access_token)}, *args)
+        return func(self, {'Authorization': "Bearer {}".format(access_token)}, *args, **kwargs)
     return _auth_required_fn_wrapper
-
 
 def check_creds():
     if (
@@ -49,3 +52,13 @@ def check_creds():
             AZURE_TENANT
             """
         )
+
+def filter_set(func):
+    @wraps(func)
+    def _filter_set_fn_wrapper(self, *args, search_filter: SearchFilter = None, page_size: int = 1000):
+        query_args = dict()
+        query_args.update({'limit': page_size})
+        if search_filter is not None:
+            query_args.update(search_filter.query_args)
+        return func(self, query_args, *args)
+    return _filter_set_fn_wrapper

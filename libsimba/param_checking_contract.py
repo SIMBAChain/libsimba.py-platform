@@ -1,6 +1,7 @@
 from typing import List, Optional, Any, Dict
 from libsimba.decorators import auth_required
 from libsimba.utils import build_url
+from libsimba.simba_request import SimbaRequest
 import requests
 import json
 
@@ -15,13 +16,10 @@ class ParamCheckingContract:
         # we call param_restrictions right away, so we have a dictionary of restrictions to reference for methods
         self.params_restricted = self.param_restrictions()
 
-    @auth_required 
-    def get_metadata(self, headers, opts: Optional[dict] = None):
-        opts = opts or {}
-        url = build_url(self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts) 
-        resp = requests.get(url, headers=headers)
-        metadata = resp.json()
-        return metadata
+    def get_metadata(self, query_args: Optional[dict] = None):
+        query_args = query_args or {}
+        resp = SimbaRequest("v2/apps/{}/?format=json".format(self.contract_uri), query_args).send() 
+        return resp.get('metadata')
 
     def is_array(self, param) -> bool:
         return param.endswith(']')
@@ -32,12 +30,9 @@ class ParamCheckingContract:
         Our outer-most array is associated with our lowest dimension: 0
         Since solidity array dimensions are backward (uint256[][4] is 4 dynamically lengthed arrays),
         we have to reverse our array item first
-
         for example, 'uint256[5][3][][4]' would get mapped to: {0: '4', 1: None, 2: '3', 3: '5'}
-
         Args:
             arr (str): string formatted solidity style array, eg 'uint256[5][3][][4]'
-
         Returns:
             [dict]: dict mapping of dimension -> array-length, eg {0: '4', 1: None, 2: '3', 3: '5'}
         """
@@ -62,11 +57,9 @@ class ParamCheckingContract:
     def get_dimensions(self, param:str, dims:Optional[int] = 0) -> int:
         """
         Recursive function to determine dimensions of array type
-
         Args:
             param (str): string formatted parameter (eg 'str[][]' will return 2)
             dims (Optional[int], optional): [description]. Defaults to 0.
-
         Returns:
             [int]: number of dimensions in array
         """
@@ -81,12 +74,10 @@ class ParamCheckingContract:
         This will return a dictionary of methods that have either array parameters with length restrictions,
         or uint parameters. This includes methods that have dynamic (non-length restricted) parameters for 
         which the elements are uints.
-
         If a method does NOT have one of the following:
             fixed-length (length-restricted) array parameters
             uint parameters
             fixed-length or dynamic array parameters whose elements are uints or uint-elemented arrays
-
             then the method WILL NOT be included in our return array. 
             This will allow for a quick check when we call each method to ask whether we need to check 
             param restrictions
@@ -95,11 +86,9 @@ class ParamCheckingContract:
         'array_params' will not be populated for that method in our return object
         Similarly, if a method does not have any params that are uints, then the key 'uint_params'
         will not be populated for that method in our return object
-
         Returns:
             [dict]: 
             example return for a contract with methods 'an_arr', 'array_params', and 'bbb':
-
             {'an_arr': {'array_params': {'first': {0: None, 'contains_uint': True}}},
             'another_uint_param': {'uint_params': ['another_uint', 'second_uint']},
             'bbb': {'array_params': {'first': {0: None, 1: None, 'contains_uint': True}}}
@@ -139,22 +128,18 @@ class ParamCheckingContract:
         recursively checks lengths of arrays and sub-arrays for parameter
         if element of an array is not an array, and there are uint restrictions for the parameter,
         then we check to make sure that the element is an int >= 0
-
         we also compare elements in each array to make sure there is no element mixing
-
         Args:
             arr (List[Any]): list to have lengths and elements checked
             param_name ([type]): parameter name - required to look up array dimension requirements
             param_restrictions_dict (Dict): restriction dict derived from a particular method's key in self.param_restrictions() call
                 eg  {'first': {0: None, 'contains_uint': True}}
             level (int, optional): recursively increases for increasing dimensions. Defaults to 0.
-
         Raises:
             ValueError: [description]
             TypeError: [description]
             TypeError: [description]
             ValueError: [description]
-
         Returns:
             [bool]: True if no exceptions raised
         """
@@ -183,14 +168,11 @@ class ParamCheckingContract:
     def check_uint_restriction(self, param_value:int):
         """
         check that parameter value is int >= 0
-
         Args:
             param_value (int): [description]
-
         Raises:
             ValueError: [description]
             ValueError: [description]
-
         Returns:
             [bool]: True if no exceptions are raised
         """
@@ -204,11 +186,9 @@ class ParamCheckingContract:
         """
         should be called at any method call that requires inputs
         calls check_uint_restrictions and check_array_restrictions
-
         Args:
             method_name (str): method name for which we are checking validating parameters
             inputs (dict): dict of inputs of {'param_name_string': param_value} form
-
         Returns:
             [bool]: True if no exceptions are raised
         """
@@ -227,4 +207,3 @@ class ParamCheckingContract:
             if param_name in array_params:
                 self.check_array_restrictions(param_value, param_name, array_params)
         return True
-
