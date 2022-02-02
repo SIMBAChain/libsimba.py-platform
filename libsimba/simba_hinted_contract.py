@@ -325,16 +325,17 @@ class SimbaHintedContract:
                 continue
             hint_type = self.hinted_data_type(param, forward_reference=True)
             if hint_type in self.struct_names:
-                signature += f' {paramName}: "{hint_type}",'
+                signature += f' {paramName}: "{hint_type}" = None,'
             else:
-                signature += f" {cleanedParamName}: {hint_type},"
+                signature += f" {cleanedParamName}: {hint_type} = None,"
             inputs += f"\t\t'{paramName}': {cleanedParamName},"
             inputs += '\n\t'
         signature = signature[:-1]
         if acceptsFiles:
-            signature += ', files: List[Tuple], query_args: Optional[dict] = None'
+            signature += ', files: List[Tuple] = None, query_args: Optional[dict] = None'
         else:
             signature += ', query_args: Optional[dict] = None, qry_mth: Optional[bool] = False'
+        signature += ", search_filter: SearchFilter = None"
         if itReturns:
             signature += ') -> List[Any]:'
         else:
@@ -382,7 +383,7 @@ class SimbaHintedContract:
             if acceptsFiles:
                 returnDetails.append(f'files = open_files(files)\n\t\tresponse = self.simba_contract.call_contract_method_with_files("{methodName}", inputs, files, query_args)\n\t\tclose_files(files)\n\t\treturn response')
             else:
-                returnDetails.append(f'if qry_mth:\n\t\t\treturn self.simba_contract.query_method(query_args, "{methodName}")\n\t\telse:\n\t\t\treturn self.simba_contract.call_method("{methodName}", inputs, query_args)')
+                returnDetails.append(f'if qry_mth:\n\t\t\treturn self.simba_contract.query_method("{methodName}", query_args=query_args, search_filter=search_filter)\n\t\telse:\n\t\t\treturn self.simba_contract.call_method("{methodName}", inputs, query_args=query_args)')
         sigDocInputReturn = list(zip(signatureDetails, docStringDetails, inputDetails, returnDetails))
         return sigDocInputReturn
 

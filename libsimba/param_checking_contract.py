@@ -36,7 +36,6 @@ class ParamCheckingContract:
         Returns:
             [dict]: dict mapping of dimension -> array-length, eg {0: '4', 1: None, 2: '3', 3: '5'}
         """
-        print('arr:', arr)
         reverseArray = ''
         for ch in arr[::-1]:
             if ch == '[':
@@ -45,13 +44,11 @@ class ParamCheckingContract:
                 reverseArray += '['
             else:
                 reverseArray += ch
-        print('reverseArray:', reverseArray)
         arr_lengths = {}
         for i in range(self.get_dimensions(arr)):
             arr_len = reverseArray[reverseArray.find('[')+1:reverseArray.find(']')]
             arr_lengths[i] = int(arr_len) if arr_len else None 
             reverseArray = reverseArray[reverseArray.find(']')+1:]
-        print('arr_lengths:', arr_lengths)
         return arr_lengths
 
     def get_dimensions(self, param:str, dims:Optional[int] = 0) -> int:

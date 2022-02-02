@@ -57,7 +57,7 @@ class Simba:
     list Application
     """
     @filter_set
-    def list_applications(self, query_args: QueryArgs):
+    def list_applications(self, query_args: Optional[QueryArgs] = None):
         """
         GET /v2/apps/
         
@@ -89,7 +89,7 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/".format(app_id), query_args).send()
 
     @filter_set
-    def list_application_transactions(self, query_args: QueryArgs, app_id: str):
+    def list_application_transactions(self, app_id: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/transactions/
@@ -125,7 +125,7 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/contract/{}/".format(app_id, contract_name), query_args).send()
 
     @filter_set
-    def list_contract_transactions(self, query_args: QueryArgs, app_id: str, contract_name: str):
+    def list_contract_transactions(self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/transactions/
@@ -301,7 +301,7 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/contract/{}/contracts/{}/".format(app_id, contract_name, contract_id), query_args).send()
 
     @filter_set
-    def list_contract_instances(self, query_args: QueryArgs, app_id: str, contract_name: str):
+    def list_contract_instances(self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/contracts/
@@ -322,7 +322,7 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/contract/{}/contracts/".format(app_id, contract_name), query_args).send()
 
     @filter_set
-    def list_events(self, query_args: QueryArgs, app_id: str, contract_name: str, event_name: str):
+    def list_events(self, app_id: str, contract_name: str, event_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/events/{event_name}/
@@ -391,7 +391,7 @@ class Simba:
             app_id, contract_name, transaction_hash), query_args).send()
 
     @filter_set
-    def list_transactions_by_address(self, query_args: QueryArgs, app_id: str, contract_name: str, identifier: str, method_name: str):
+    def list_transactions_by_address(self, app_id: str, contract_name: str, identifier: str, method_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
@@ -443,7 +443,7 @@ class Simba:
             app_id, contract_name, identifier, method_name), query_args, method="POST").send(json_payload=inputs)
 
     @filter_set
-    def list_transactions_by_asset(self, query_args: QueryArgs, app_id: str, contract_name: str, identifier: str, method_name: str):
+    def list_transactions_by_asset(self, app_id: str, contract_name: str, identifier: str, method_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
@@ -495,7 +495,7 @@ class Simba:
             app_id, contract_name, identifier, method_name), query_args, method="POST").send(json_payload=inputs)
 
     @filter_set
-    def list_transactions_by_method(self, query_args: QueryArgs, app_id: str, contract_name: str, method_name: str):
+    def list_transactions_by_method(self, app_id: str, contract_name: str, method_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/{method_name}/
