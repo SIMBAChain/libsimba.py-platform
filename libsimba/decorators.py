@@ -72,7 +72,6 @@ def filter_set(func):
         query_args.update({'limit': page_size})
         if search_filter is not None:
             query_args.update(search_filter.query_args)
-        print(f'query_args: {query_args}, args: {kwargs}')
         kwargs['query_args'] = query_args
         return func(self, *args, **kwargs)
     return _filter_set_fn_wrapper

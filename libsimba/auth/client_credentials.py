@@ -28,13 +28,11 @@ class ClientCredentials(AuthProvider):
             "client_secret": CLIENT_SECRET,
             "scope": SCOPE
         }
-
         access_token = None
         try:
             log.info('Redoing auth')
             auth_url = build_url(BASE_AUTH_URL, "{}token".format(AUTH_ENDPOINT), {})
-            r = requests.post(auth_url, data=payload, allow_redirects=True)    
-
+            r = requests.post(auth_url, data=payload, allow_redirects=True)
             access_token = r.json()['access_token']
         except Exception as e:
             log.error(e)

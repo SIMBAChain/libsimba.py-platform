@@ -15,7 +15,7 @@ class SimbaContract(ParamCheckingContract):
         self.params_restricted = self.param_restrictions()
 
     @filter_set
-    def query_method(self, query_args: dict, method_name: str):
+    def query_method(self, method_name: str, query_args: dict = None):
         """
         Query transactions by method
         :param method_name: The method name

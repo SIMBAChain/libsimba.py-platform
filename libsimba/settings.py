@@ -52,14 +52,17 @@ BASE_API_URL = os.getenv('BASE_API_URL', "https://api.sep.dev.simbachain.com")
 # AZURE_AUTH_APP_CLIENT_SECRET=<value>
 # AZURE_AUTH_APP_CLIENT_ID-<value>
 # ...
-CLIENT_SECRET = config('AZURE_AUTH_APP_CLIENT_SECRET', default = None)
-CLIENT_ID = config('AZURE_AUTH_APP_CLIENT_ID', default = None)
+USE_GETENV_OR_CONFIG = "<enter 'CONFIG' or 'GETENV' here>"
 
-BASE_AUTH_URL = config('BASE_AUTH_URL', default = "https://login.microsoftonline.com")
-TENANT_ID = config('AZURE_TENANT', default = None)
-SEP_RESOURCE_PRINCIPAL_ID= config('SEP_RESOURCE_PRINCIPAL_ID')
-SCOPE = config('AZURE_APP_ID', default = "api://{}/.default".format(SEP_RESOURCE_PRINCIPAL_ID))
-AUTH_ENDPOINT = config('AUTH_ENDPOINT', default = "/{}/oauth2/v2.0/".format(TENANT_ID))
-BASE_API_URL = config('BASE_API_URL', default = "https://api.sep.dev.simbachain.com")
+if USE_GETENV_OR_CONFIG == "CONFIG":
+    CLIENT_SECRET = config('AZURE_AUTH_APP_CLIENT_SECRET', default = None)
+    CLIENT_ID = config('AZURE_AUTH_APP_CLIENT_ID', default = None)
+
+    BASE_AUTH_URL = config('BASE_AUTH_URL', default = "https://login.microsoftonline.com")
+    TENANT_ID = config('AZURE_TENANT', default = None)
+    SEP_RESOURCE_PRINCIPAL_ID= config('SEP_RESOURCE_PRINCIPAL_ID')
+    SCOPE = config('AZURE_APP_ID', default = "api://{}/.default".format(SEP_RESOURCE_PRINCIPAL_ID))
+    AUTH_ENDPOINT = config('AUTH_ENDPOINT', default = "/{}/oauth2/v2.0/".format(TENANT_ID))
+    BASE_API_URL = config('BASE_API_URL', default = "https://api.sep.dev.simbachain.com")
 
 
