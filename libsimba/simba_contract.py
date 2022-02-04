@@ -2,10 +2,9 @@ import json
 from typing import List, Optional, Any, Dict
 from libsimba.decorators import filter_set
 from libsimba.simba_request import SimbaRequest
-from libsimba.param_checking_contract import ParamCheckingContract
 
 
-class SimbaContract(ParamCheckingContract):
+class SimbaContract:
     def __init__(self, base_api_url: str, app_name: str, contract_name: str):
         self.app_name = app_name
         self.contract_name = contract_name
@@ -46,7 +45,6 @@ class SimbaContract(ParamCheckingContract):
         :rtype: json
         """
         query_args = query_args or {}
-        self.validate_params(method_name, inputs)
         return SimbaRequest("v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args, method='POST').send(json_payload=json.dumps(inputs))
 
     # Example files: files = {'file': open('report.xls', 'rb')}
@@ -67,7 +65,6 @@ class SimbaContract(ParamCheckingContract):
         :rtype: json
         """
         query_args = query_args or {}
-        self.validate_params(method_name, inputs)
         return SimbaRequest("v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args, method='POST').send(json_payload=json.dumps(inputs), files=files)
 
     @filter_set
