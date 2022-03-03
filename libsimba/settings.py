@@ -7,10 +7,15 @@ DEBUG = True
 
 PROJECT_PATH = dirname(__file__)
 
-TEST_APP = "<set in local settings>"
-TEST_CONTRACT = "<set in local settings>"
-TEST_METHOD = "<set in local settings>"
-TEST_INPUTS = []
+#Default settings
+BASE_API_URL = "https://api.sep.dev.simbachain.com"
+AUTH_FLOW = "client_credentials"
+CLIENT_SECRET = ""
+CLIENT_ID = ""
+SCOPE = "api://{}/scaas.access".format(CLIENT_ID)
+BASE_AUTH_URL = "https://login.microsoftonline.com"
+TENANT_ID = ""
+AUTH_ENDPOINT = "/{}/oauth2/v2.0/".format(TENANT_ID)
 
 # Use the env to override local_settings
 # So load local_settings first
@@ -20,18 +25,12 @@ except ModuleNotFoundError as e1:
     # Ignore if the local_settings file is missing
     pass
 
-# Load from local_setting, then override with env var if present
-TEST_APP = os.getenv('SIMBA_APP', TEST_APP)
-TEST_CONTRACT = os.getenv('SIMBA_CONTRACT', TEST_CONTRACT)
-TEST_METHOD = os.getenv('SIMBA_METHOD', TEST_METHOD)
-test_input_json = os.getenv('SIMBA_INPUTS', None)
-if test_input_json:
-    TEST_INPUTS = json.loads(test_input_json)
-
 # SCAAS API & Auth settings
+# Load from local_setting, then override with env var if present
+BASE_API_URL = os.getenv('LIBSIMBA_BASE_API_URL', BASE_API_URL)
 
 # Options: client_credentials (Default), pkce, password
-AUTH_FLOW = os.getenv('AUTH_FLOW', "client_credentials")
+AUTH_FLOW = os.getenv('LIBSIMBA_AUTH_FLOW', AUTH_FLOW)
 
 # [Optional] CLIENT_SECRET is only needed if using the client credentials flow.
 CLIENT_SECRET = os.getenv('AZURE_AUTH_APP_CLIENT_SECRET', None)
@@ -52,7 +51,7 @@ BASE_API_URL = os.getenv('BASE_API_URL', "https://api.sep.dev.simbachain.com")
 # AZURE_AUTH_APP_CLIENT_SECRET=<value>
 # AZURE_AUTH_APP_CLIENT_ID-<value>
 # ...
-USE_GETENV_OR_CONFIG = "<enter 'CONFIG' or 'GETENV' here>"
+USE_GETENV_OR_CONFIG = "<enter 'CONFIG' or 'GETENV' here. use 'CONFIG' if you want to use the config library from decouple>"
 
 if USE_GETENV_OR_CONFIG == "CONFIG":
     CLIENT_SECRET = config('AZURE_AUTH_APP_CLIENT_SECRET', default = None)
