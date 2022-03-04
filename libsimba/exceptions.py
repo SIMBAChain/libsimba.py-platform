@@ -6,7 +6,6 @@ class ErrorType(Enum):
     Define error codes here and run main to validate your additions.
     If you're good, it will output markdown of codes. If not it should
     tell you what is not right.
-
     That may include adding to the error_type_GROUPS dict. This stores
     the known groups and the ranges of numeric codes allowed.
     """

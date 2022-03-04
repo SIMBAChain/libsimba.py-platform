@@ -56,9 +56,9 @@ class SimbaRequest:
                 headers.update({'content-type': 'application/json'})
                 json_payload = json_payload or {}
                 if files is not None:
-                    response = await async_client.post(self.url, headers=headers, data=payload, follow_redirects=True, files=files)
+                    response = await async_client.post(self.url, headers=headers, data=json_payload, follow_redirects=True, files=files)
                 else:
-                    response = await async_client.post(self.url, headers=headers, data=payload, follow_redirects=True)
+                    response = await async_client.post(self.url, headers=headers, data=json_payload, follow_redirects=True)
                 return await self._process_response_async(async_client, response, headers)
 
 
@@ -97,7 +97,7 @@ class SimbaRequest:
         next_page_url = json_response.get('next')
         
         while next_page_url is not None:
-            r = request.get(next_page_url, headers=headers, follow_redirects=True)
+            r = httpx.get(next_page_url, headers=headers, follow_redirects=True)
             json_response = r.json()
             results += json_response.get('results')
             next_page_url = json_response.get('next')

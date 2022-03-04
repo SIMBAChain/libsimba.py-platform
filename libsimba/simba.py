@@ -13,7 +13,6 @@ class QueryArgs(dict):
     """
     A python dict that may be passed to any of the simba client method calls
     If using filter sets, you should use the SearchFilter object instead
-
     :param format: "json"
     :type format: str
     :param limit: page size
@@ -31,9 +30,7 @@ class Simba:
     def whoami(self):
         """
         GET /user/whoami
-
         Retrieves information on the currently logged in user.
-
         :returns: User info as json
         :rtype: json
         """
@@ -42,7 +39,6 @@ class Simba:
     def smart_contract_client(self, app_name: str, contract_name: str):
         """
         Instantiates a SimbaContract client which may be used to interact with the application smart contract and submit transactions to the blockchain.
-
         :param app_name: Name of the application. This must the common name and not the application UUID.
         :type app_name: str
         :type contract_name: str
@@ -61,15 +57,13 @@ class Simba:
     list Application
     """
     @filter_set
-    def list_applications(self, query_args: QueryArgs):
+    def list_applications(self, query_args: Optional[QueryArgs] = None):
         """
         GET /v2/apps/
         
         List all applications
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: List of applications
@@ -80,14 +74,12 @@ class Simba:
     def get_application(self, app_id: str, query_args: Optional[QueryArgs] = None):
         """
         GET /v2/apps/{application}/
-
         Get application information
         
         :param app_id: Application id or name
         :type app_id: str
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: application information
@@ -97,18 +89,15 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/".format(app_id), query_args).send()
 
     @filter_set
-    def list_application_transactions(self, query_args: QueryArgs, app_id: str):
+    def list_application_transactions(self, app_id: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/transactions/
-
         List all transactions that have been submitted for the given application
-
         :param app_id: Application id or name
         :type app_id: str
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: List of transactions
@@ -119,9 +108,7 @@ class Simba:
     def get_application_contract(self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET /v2/apps/{application}/contract/{contract_name}/
-
         Get contract metadata
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -129,7 +116,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Information on the application contract
@@ -139,13 +125,11 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/contract/{}/".format(app_id, contract_name), query_args).send()
 
     @filter_set
-    def list_contract_transactions(self, query_args: QueryArgs, app_id: str, contract_name: str):
+    def list_contract_transactions(self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/transactions/
-
         List contract transactions
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -153,7 +137,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: List of cached transactions made against the contract
@@ -166,15 +149,12 @@ class Simba:
         """
         GET
         /v2/apps/{application}/contracts/
-
         List contracts
-
         :param app_id: Application name
         :type app_id: str
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: Information on the application contract
@@ -186,9 +166,7 @@ class Simba:
         """
         GET
         /v2/apps/{application}/validate/{contract_name}/{bundle_hash}/
-
         Validate a previously created bundle using the contract name and bundle hash. This will examine the bundle manifest and the file hashes defined in it against the files in off chain storage, ensuring that all the referenced data has not been tampered with. The errors element will contain any validation errors encountered.
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -198,7 +176,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: An object containing any errors if the validation has failed.
@@ -212,9 +189,7 @@ class Simba:
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/bundle/{bundle_hash}/
-
         get bundle BundleData
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -224,7 +199,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Get bundle associated with the bundle hash
@@ -238,9 +212,7 @@ class Simba:
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/bundle/{bundle_hash}/filename/{file_name}/
-
         get bundle file BundleData
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -252,7 +224,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Contents of the file
@@ -267,9 +238,7 @@ class Simba:
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/bundle/{bundle_hash}/manifest/
-
         list bundle manifest BundleManifest
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -279,7 +248,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Manifest object itemizing the files associated with the bundle hash
@@ -293,9 +261,7 @@ class Simba:
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/info/
-
         Retrieve the Metadata Description for the contract
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -303,7 +269,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Contract metadata
@@ -316,11 +281,8 @@ class Simba:
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/contracts/{contract_id}/
-
         Get detailed information about an instance of a given parent contract
-
         A deployed contract instance is a contract that is typically stateful, i.e., maintains properties or maps of data which has a parent contract. The parent provides the entry point for querying transactions that are submitted to instances that share the same parent. The parent contract API exposes a new endpoint which allows creating instances based on the parent. Instances can be invoked via the API endpoints that allow address or assetId identification. If an instance is created with an assetId constructor parameter, this can be used to identify the contract via the asset id value.
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The parent contract name
@@ -330,7 +292,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Contract metadata
@@ -340,15 +301,12 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/contract/{}/contracts/{}/".format(app_id, contract_name, contract_id), query_args).send()
 
     @filter_set
-    def list_contract_instances(self, query_args: QueryArgs, app_id: str, contract_name: str):
+    def list_contract_instances(self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/contracts/
-
         List contract instances
-
         A deployed contract instance is a contract that is typically stateful, i.e., maintains properties or maps of data which has a parent contract. The parent provides the entry point for querying transactions that are submitted to instances that share the same parent. The parent contract API exposes a new endpoint which allows creating instances based on the parent. Instances can be invoked via the API endpoints that allow address or assetId identification. If an instance is created with an assetId constructor parameter, this can be used to identify the contract via the asset id value.
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -356,7 +314,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: A list of contract instances contained in the application
@@ -365,13 +322,11 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/contract/{}/contracts/".format(app_id, contract_name), query_args).send()
 
     @filter_set
-    def list_events(self, query_args: QueryArgs, app_id: str, contract_name: str, event_name: str):
+    def list_events(self, app_id: str, contract_name: str, event_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/events/{event_name}/
-
         List all cached events for the given contract and event name
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -381,7 +336,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: A list of contract instances contained in the application
@@ -394,9 +348,7 @@ class Simba:
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/receipt/{hash}/
-
         Get the receipt for a transaction
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -406,7 +358,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction Receipt
@@ -420,9 +371,7 @@ class Simba:
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/transaction/{hash}/
-
         Get transaction details
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -432,7 +381,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction details
@@ -443,13 +391,11 @@ class Simba:
             app_id, contract_name, transaction_hash), query_args).send()
 
     @filter_set
-    def list_transactions_by_address(self, query_args: QueryArgs, app_id: str, contract_name: str, identifier: str, method_name: str):
+    def list_transactions_by_address(self, app_id: str, contract_name: str, identifier: str, method_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
-
         List Transactions by address        
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -461,7 +407,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: List of transaction details
@@ -475,9 +420,7 @@ class Simba:
         """
         POST
         /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
-
         Submit instance address method 
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -488,10 +431,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction detail
@@ -502,13 +443,11 @@ class Simba:
             app_id, contract_name, identifier, method_name), query_args, method="POST").send(json_payload=inputs)
 
     @filter_set
-    def list_transactions_by_asset(self, query_args: QueryArgs, app_id: str, contract_name: str, identifier: str, method_name: str):
+    def list_transactions_by_asset(self, app_id: str, contract_name: str, identifier: str, method_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
-
         List transactions by asset 
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -520,7 +459,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: List of transaction details
@@ -534,9 +472,7 @@ class Simba:
         """
         POST
         /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
-
         Submit instance asset method 
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -547,10 +483,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction detail
@@ -561,13 +495,11 @@ class Simba:
             app_id, contract_name, identifier, method_name), query_args, method="POST").send(json_payload=inputs)
 
     @filter_set
-    def list_transactions_by_method(self, query_args: QueryArgs, app_id: str, contract_name: str, method_name: str):
+    def list_transactions_by_method(self, app_id: str, contract_name: str, method_name: str, query_args: Optional[QueryArgs] = None):
         """
         GET
         /v2/apps/{application}/contract/{contract_name}/{method_name}/
-
         List contract methods
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -577,7 +509,6 @@ class Simba:
         
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *search_filter* (``SearchFilter``) - Optional
         :return: List of transaction details
@@ -591,9 +522,7 @@ class Simba:
         """
         POST
         /v2/apps/{application}/contract/{contract_name}/{method_name}/
-
         Submit a transaction to a contract method 
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -602,10 +531,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction detail
@@ -620,9 +547,7 @@ class Simba:
         """
         POST
         /v2/apps/{application}/async/contract/{contract_name}/address/{identifier}/{method_name}/
-
         Submit async instance address method 
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -633,10 +558,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction detail
@@ -651,9 +574,7 @@ class Simba:
         """
         POST
         /v2/apps/{application}/async/contract/{contract_name}/asset/{identifier}/{method_name}/
-
         Submit async instance asset method 
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -664,10 +585,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction detail
@@ -682,9 +601,7 @@ class Simba:
         """
         POST
         /v2/apps/{application}/async/contract/{contract_name}/{method_name}/
-
         post async method 
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
@@ -693,10 +610,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction detail
@@ -706,21 +621,17 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/async/contract/{}/{}/".format(
             app_id, contract_name, method_name), query_args, method="POST").send(json_payload=inputs)
 
-    def create_contract_instance(self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None):
+    def create_contract_instance(self, app_id: str, contract_name: str, inputs: dict, query_args: Optional[QueryArgs] = None):
         """
         POST
         /v2/apps/{application}/new/{contract_name}/
-
         create contract instance 
-
         :param app_id: Application name
         :type app_id: str
         :param contract_name: The contract name
         :type contract_name: str
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction detail
@@ -730,23 +641,19 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/new/{}/".format(app_id, contract_name), query_args, method="POST").send(json_payload=inputs)
 
     #TODO(Adam): Make a transaction object to assist the user. Right now it's just a dict
-    def submit_signed_transaction(self, app_id: str, txn_id: str, txn: dict, query_args: Optional[QueryArgs] = None):
+    def submit_signed_transaction(self, app_id: str, txn_id: str, inputs: dict, txn: dict, query_args: Optional[QueryArgs] = None):
         """
         POST
         /v2/apps/{application}/transactions/{identifier}/
-
         Submit signed transaction 
-
         :param app_id: Application name
         :type app_id: str
         :param txn_id: The transaction Id that exists in the DB
         :type txn_id: str
         :param txn: The raw signed transaction
         :type txn: dict
-
         :param \**kwargs:
             See below
-
         :Keyword Arguments:
             * *query_args* (``QueryArgs``) - Optional
         :return: Transaction detail
@@ -754,10 +661,3 @@ class Simba:
         """
         query_args = query_args or {}
         return SimbaRequest(" /v2/apps/{}/transactions/{}/".format(app_id, txn_id), query_args, method="POST").send(json_payload=inputs)
-
-    """
-    POST
-    /v2/apps/{application}/contract/{contract_name}/graphql/
-    post gql search Application
-    """
-    #TODO(Adam): Add this library function for gql search

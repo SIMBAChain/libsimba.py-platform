@@ -55,10 +55,11 @@ def check_creds():
 
 def filter_set(func):
     @wraps(func)
-    def _filter_set_fn_wrapper(self, *args, search_filter: SearchFilter = None, page_size: int = 1000):
-        query_args = dict()
+    def _filter_set_fn_wrapper(self, *args, search_filter: SearchFilter = None, page_size: int = 1000, **kwargs):
+        query_args = kwargs['query_args']
         query_args.update({'limit': page_size})
         if search_filter is not None:
             query_args.update(search_filter.query_args)
-        return func(self, query_args, *args)
+        kwargs['query_args'] = query_args
+        return func(self, *args, **kwargs)
     return _filter_set_fn_wrapper

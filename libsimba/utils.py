@@ -23,7 +23,6 @@ def token_expired(token_data: dict, offset: int=60):
     """
     Checks to see if a token has expired, by checking the 'expires' key
     Adds an offset to allow for delays when performing auth processes
-
     :param token_data: the data dict to check for expiry. Should contain an 'expires' key
     :param offset: To allow for delays in auth processes, this number of seconds is added to the expiry time
     :return:
@@ -44,17 +43,12 @@ def token_expired(token_data: dict, offset: int=60):
 def save_token(client_id: str, token_data: dict):
     """
     Saves the token data to a file.
-
     Checks the TOKEN_DIR environment variable for alternative token storage locations,
     otherwise uses the current working path
-
     Creates the token directory if it doesn't already exist.
-
     Adds an "expires" key to the auth token data, set to time "now" added to the expires_in time
     This is used later to discover if the token has expired
-
     Token files are named <client_id>_token.json
-
     :param client_id: The ID for the client, token files are named <client_id>_token.json
     :param token_data: The tokeauth data to save
     :return:
@@ -73,16 +67,12 @@ def get_saved_token(client_id: str):
     """
     Checks a local directory for a file containing an auth token
     If present, check the token hasn't expired, otherwise return it
-
     Raises exceptions if the token directory is missing,
     or if there is no token file,
     or if the token has expired, see def token_expired(token_data)
-
     Checks the TOKEN_DIR environment variable for alternative token storage locations,
     otherwise uses the current working path
-
     Token files are named <client_id>_token.json
-
     :param client_id: The ID for the client, token files are named <client_id>_token.json
     :return: a dict of the token data, retrieved from the token file.
     """

@@ -1,6 +1,7 @@
 import json
 import os
 from os.path import join, dirname
+from decouple import config
 
 DEBUG = True
 
@@ -32,26 +33,35 @@ BASE_API_URL = os.getenv('LIBSIMBA_BASE_API_URL', BASE_API_URL)
 AUTH_FLOW = os.getenv('LIBSIMBA_AUTH_FLOW', AUTH_FLOW)
 
 # [Optional] CLIENT_SECRET is only needed if using the client credentials flow.
-CLIENT_SECRET = os.getenv('LIBSIMBA_AUTH_APP_CLIENT_SECRET', CLIENT_SECRET)
+CLIENT_SECRET = os.getenv('AZURE_AUTH_APP_CLIENT_SECRET', None)
+CLIENT_ID = os.getenv('AZURE_AUTH_APP_CLIENT_ID', None)
+SCOPE = os.getenv('AZURE_APP_ID', "api://{}/scaas.access".format(CLIENT_ID))
 
-CLIENT_ID = os.getenv('LIBSIMBA_AUTH_APP_CLIENT_ID', CLIENT_ID)
+BASE_AUTH_URL = os.getenv('BASE_AUTH_URL', "https://login.microsoftonline.com")
+TENANT_ID = os.getenv('AZURE_TENANT', None)
+AUTH_ENDPOINT = os.getenv('AUTH_ENDPOINT', "/{}/oauth2/v2.0/".format(TENANT_ID))
+BASE_API_URL = os.getenv('BASE_API_URL', "https://api.sep.dev.simbachain.com")
 
-SCOPE = os.getenv('LIBSIMBA_AUTH_APP_SCOPE', SCOPE)
+# using config library
+# to use this approach, create a .env file in the same directory as this file:
+# $ touch .env
+# then set these variables using nano:
+# $ nano .env
+# then within nano:
+# AZURE_AUTH_APP_CLIENT_SECRET=<value>
+# AZURE_AUTH_APP_CLIENT_ID-<value>
+# ...
+USE_GETENV_OR_CONFIG = "<enter 'CONFIG' or 'GETENV' here. use 'CONFIG' if you want to use the config library from decouple>"
 
-BASE_AUTH_URL = os.getenv('LIBSIMBA_AUTH_BASE_URL', BASE_AUTH_URL)
+if USE_GETENV_OR_CONFIG == "CONFIG":
+    CLIENT_SECRET = config('AZURE_AUTH_APP_CLIENT_SECRET', default = None)
+    CLIENT_ID = config('AZURE_AUTH_APP_CLIENT_ID', default = None)
 
-TENANT_ID = REALM_ID = os.getenv('LIBSIMBA_AUTH_TENANT_ID', TENANT_ID)
+    BASE_AUTH_URL = config('BASE_AUTH_URL', default = "https://login.microsoftonline.com")
+    TENANT_ID = config('AZURE_TENANT', default = None)
+    SEP_RESOURCE_PRINCIPAL_ID= config('SEP_RESOURCE_PRINCIPAL_ID')
+    SCOPE = config('AZURE_APP_ID', default = "api://{}/.default".format(SEP_RESOURCE_PRINCIPAL_ID))
+    AUTH_ENDPOINT = config('AUTH_ENDPOINT', default = "/{}/oauth2/v2.0/".format(TENANT_ID))
+    BASE_API_URL = config('BASE_API_URL', default = "https://api.sep.dev.simbachain.com")
 
-AUTH_ENDPOINT = os.getenv('LIBSIMBA_AUTH_ENDPOINT', AUTH_ENDPOINT)
 
-# Test settings
-TEST_APP = "<set in local settings>"
-TEST_CONTRACT = "<set in local settings>"
-TEST_METHOD = "<set in local settings>"
-TEST_INPUTS = []
-TEST_APP = os.getenv('LIBSIMBA_APP', TEST_APP)
-TEST_CONTRACT = os.getenv('LIBSIMBA_CONTRACT', TEST_CONTRACT)
-TEST_METHOD = os.getenv('LIBSIMBA_METHOD', TEST_METHOD)
-test_input_json = os.getenv('LIBSIMBA_INPUTS', None)
-if test_input_json:
-    TEST_INPUTS = json.loads(test_input_json)
