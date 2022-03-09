@@ -38,11 +38,12 @@ class SimbaRequest:
             response = httpx.get(self.url, headers=headers, follow_redirects=True)
             return self._process_response(response, headers, fetch_all)
         elif self.method == 'post':
-            headers.update({'content-type': 'application/json'})
             json_payload = json_payload or {}
             if files is not None:
-                response = httpx.post(self.url, headers=headers, data=json.dumps(json_payload), files=files, follow_redirects=True)
+                string_keys_and_vals = {str(key): str(val) for key, val in json_payload.items()}
+                response = httpx.post(self.url, headers=headers, data=string_keys_and_vals, files=files, follow_redirects=True)
             else:
+                headers.update({'content-type': 'application/json'})
                 response = httpx.post(self.url, headers=headers, data=json.dumps(json_payload), follow_redirects=True)
             return self._process_response(response, headers)
 
@@ -53,11 +54,12 @@ class SimbaRequest:
                 response = await async_client.get(self.url, headers=headers, follow_redirects=True)
                 return await self._process_response_async(async_client, response, headers, fetch_all)
             elif self.method == 'post':
-                headers.update({'content-type': 'application/json'})
                 json_payload = json_payload or {}
                 if files is not None:
-                    response = await async_client.post(self.url, headers=headers, data=json_payload, follow_redirects=True, files=files)
+                    string_keys_and_vals = {str(key): str(val) for key, val in json_payload.items()}
+                    response = await async_client.post(self.url, headers=headers, data=string_keys_and_vals, follow_redirects=True, files=files)
                 else:
+                    headers.update({'content-type': 'application/json'})
                     response = await async_client.post(self.url, headers=headers, data=json_payload, follow_redirects=True)
                 return await self._process_response_async(async_client, response, headers)
 
