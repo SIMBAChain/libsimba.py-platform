@@ -65,7 +65,7 @@ class SimbaContract:
         :rtype: json
         """
         query_args = query_args or {}
-        return SimbaRequest("v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args, method='POST').send(json_payload=json.dumps(inputs), files=files)
+        return SimbaRequest("v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args, method='POST').send(json_payload=inputs, files=files)
 
     @filter_set
     def get_transactions(self, query_args: Optional[dict] = None):
