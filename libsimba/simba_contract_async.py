@@ -22,7 +22,7 @@ class SimbaContractAsync(SimbaContract):
     async def call_contract_method_with_files(self, method_name: str, inputs: dict, files=None, query_args: Optional[dict] = None):
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
-        return await SimbaRequest("v2/apps/{}/{}/".format(self.async_contract_uri, method_name), query_args, method='POST').send_async(json_payload=json.dumps(inputs), files=files)
+        return await SimbaRequest("v2/apps/{}/{}/".format(self.async_contract_uri, method_name), query_args, method='POST').send_async(json_payload=inputs, files=files)
 
     async def get_transactions(self, query_args: Optional[dict] = None):
         query_args = query_args or {}

@@ -57,10 +57,10 @@ class SimbaRequest:
                 json_payload = json_payload or {}
                 if files is not None:
                     string_keys_and_vals = {str(key): str(val) for key, val in json_payload.items()}
-                    response = await async_client.post(self.url, headers=headers, data=string_keys_and_vals, follow_redirects=True, files=files)
+                    response = await async_client.post(self.url, headers=headers, data=string_keys_and_vals,  files=files, follow_redirects=True)
                 else:
                     headers.update({'content-type': 'application/json'})
-                    response = await async_client.post(self.url, headers=headers, data=json_payload, follow_redirects=True)
+                    response = await async_client.post(self.url, headers=headers, data=json.dumps(json_payload), follow_redirects=True)
                 return await self._process_response_async(async_client, response, headers)
 
 
