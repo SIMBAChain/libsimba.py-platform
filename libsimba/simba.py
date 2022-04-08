@@ -37,7 +37,7 @@ class Simba:
         :returns: User info as json
         :rtype: json
         """
-        return SimbaRequest('user/whoami/').send()
+        return SimbaRequest('user/whoami/',{}).send()
 
     def smart_contract_client(self, app_name: str, contract_name: str):
         """
