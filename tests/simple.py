@@ -17,6 +17,13 @@ log = logging.getLogger(__name__)
 # }
 
 simba = Simba()
+
+whoami = simba.whoami()
+log.info(whoami)
+
+apps = simba.list_applications()
+log.info(apps)
+
 # simba_contract = simba.smart_contract_client('myapi', 'fabcar-test1')
 # contract = simba.get_contract(TEST_APP, TEST_CONTRACT)
 # log.info('{} :: {} :: {}'.format(BASE_API_URL, TEST_APP, TEST_CONTRACT))
@@ -34,25 +41,25 @@ simba = Simba()
 # r = simba.list_contract_info("myapi", "fabcar-test1")
 # log.info(r)
 
-simba_app_name = 'myapi'
-simba_app_contract = 'fabcar-test1'
-simba_app_method = 'createCar'
-simba_app_inputs = {
-    'carNumber': 'VIN123345',
-    'make': 'Volkswagon',
-    'model': 'Beetle',
-    'color': 'Yellow',
-    'owner': 'Dale'
-}
+# simba_app_name = 'myapi'
+# simba_app_contract = 'fabcar-test1'
+# simba_app_method = 'createCar'
+# simba_app_inputs = {
+#     'carNumber': 'VIN123345',
+#     'make': 'Volkswagon',
+#     'model': 'Beetle',
+#     'color': 'Yellow',
+#     'owner': 'Dale'
+# }
 
-contract = simba.smart_contract_client(simba_app_name, simba_app_contract)
-log.info('{} :: {}'.format(simba_app_name, simba_app_contract))
+# contract = simba.smart_contract_client(simba_app_name, simba_app_contract)
+# log.info('{} :: {}'.format(simba_app_name, simba_app_contract))
 
-r = contract.call_method(simba_app_method, simba_app_inputs)
-log.info(r)
+# r = contract.call_method(simba_app_method, simba_app_inputs)
+# log.info(r)
 
-r = contract.query_method(simba_app_method)
-log.info(r)
+# r = contract.query_method(simba_app_method)
+# log.info(r)
 
 # app_name = r.json()['results'][0]['name']
 # r = simba.list_contracts(app_name)
