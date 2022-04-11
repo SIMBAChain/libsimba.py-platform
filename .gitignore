@@ -7,3 +7,7 @@
 **_token.json
 
 **.env
+
+# Vim
+*.*~
+*.*.swp
