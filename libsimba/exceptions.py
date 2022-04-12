@@ -32,6 +32,24 @@ class ErrorType(Enum):
         'doc_link': 'https://github.com/simbachain/libsimba.py'
     }
 
+    SIMBA_INVALID_MNEMONIC_EXCEPTION = {
+        'title': 'Simba Invalid Mnemonic Exception',
+        'expanded_message': 'Please ensure that the provided mnemonic is valid.',
+        'doc_link': 'https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki'
+    }
+
+    SIMBA_INVALID_PRIVATE_KEY_EXCEPTION = {
+        'title': 'Simba Invalid Private Key Exception',
+        'expanded_message': 'Please ensure that the provided private key is valid.',
+        'doc_link': ''
+    }
+
+    SIMBA_WALLET_NOT_FOUND_EXCEPTION = {
+        'title': 'Simba Wallet Not Found Exception',
+        'expanded_message': 'Please ensure that you have loaded a wallet before',
+        'doc_link': ''
+    }
+
 
 class LibSimbaException(Exception):
     def __init__(self, error_type=None, message=''):
@@ -51,3 +69,15 @@ class SimbaInvalidURLException(LibSimbaException):
 class SimbaRequestException(LibSimbaException):
     def __init__(self, *args, **kwargs):
         super().__init__(ErrorType.SIMBA_REQUEST_EXCEPTION, *args, **kwargs)
+
+class SimbaMnemonicException(LibSimbaException):
+    def __init__(self, *args, **kwargs):
+        super().__init__(ErrorType.SIMBA_INVALID_MNEMONIC_EXCEPTION, *args, **kwargs)
+
+class SimbaPrivateKeyException(LibSimbaException):
+    def __init__(self, *args, **kwargs):
+        super().__init__(ErrorType.SIMBA_INVALID_PRIVATE_KEY_EXCEPTION, *args, **kwargs)
+
+class SimbaWalletNotFoundException(LibSimbaException):
+    def __init__(self, *args, **kwargs):
+        super().__init__(ErrorType.SIMBA_WALLET_NOT_FOUND_EXCEPTION, *args, **kwargs)
