@@ -471,7 +471,7 @@ class Simba:
             app_id, contract_name, identifier, method_name), query_args).send()
 
     def submit_transaction_by_address(self, app_id: str, contract_name: str, identifier: str, method_name: str, inputs: dict,
-                               query_args: Optional[QueryArgs] = None):
+                               query_args: Optional[QueryArgs] = None, sender_address: str = None):
         """
         POST
         /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
@@ -488,6 +488,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
+        :param sender_address: The user address for self signing
+        :type sender_address: str
 
         :param \**kwargs:
             See below
@@ -497,9 +499,13 @@ class Simba:
         :return: Transaction detail
         :rtype: json
         """
+        headers = {}
+        if sender_address:
+            headers['txn-sender'] = sender_address
+
         query_args = query_args or {}
         return SimbaRequest("/v2/apps/{}/contract/{}/address/{}/{}/".format(
-            app_id, contract_name, identifier, method_name), query_args, method="POST").send(json_payload=inputs)
+            app_id, contract_name, identifier, method_name), query_args, method="POST").send(headers=headers, json_payload=inputs)
 
     @filter_set
     def list_transactions_by_asset(self, query_args: QueryArgs, app_id: str, contract_name: str, identifier: str, method_name: str):
@@ -530,7 +536,7 @@ class Simba:
             app_id, contract_name, identifier, method_name), query_args).send()
 
     def submit_transaction_by_asset(self, app_id: str, contract_name: str, identifier: str, method_name: str, inputs: dict,
-                              query_args: Optional[QueryArgs] = None):
+                              query_args: Optional[QueryArgs] = None, sender_address: str = None):
         """
         POST
         /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
@@ -547,6 +553,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
+        :param sender_address: The user address for self signing
+        :type sender_address: str
 
         :param \**kwargs:
             See below
@@ -556,9 +564,13 @@ class Simba:
         :return: Transaction detail
         :rtype: json
         """
+        headers = {}
+        if sender_address:
+            headers['txn-sender'] = sender_address
+
         query_args = query_args or {}
         return SimbaRequest("/v2/apps/{}/contract/{}/asset/{}/{}/".format(
-            app_id, contract_name, identifier, method_name), query_args, method="POST").send(json_payload=inputs)
+            app_id, contract_name, identifier, method_name), query_args, method="POST").send(headers=headers, json_payload=inputs)
 
     @filter_set
     def list_transactions_by_method(self, query_args: QueryArgs, app_id: str, contract_name: str, method_name: str):
@@ -587,12 +599,12 @@ class Simba:
         return SimbaRequest("/v2/apps/{}/contract/{}/{}/".format(
             app_id, contract_name, method_name), query_args).send()
 
-    def submit_contract_method(self, app_id: str, contract_name: str, method_name: str, inputs: dict, query_args: Optional[QueryArgs] = None):
+    def submit_contract_method(self, app_id: str, contract_name: str, method_name: str, inputs: dict, query_args: Optional[QueryArgs] = None, sender_address: str = None):
         """
         POST
         /v2/apps/{application}/contract/{contract_name}/{method_name}/
 
-        Submit a transaction to a contract method 
+        Submit a transaction to a contract method
 
         :param app_id: Application name
         :type app_id: str
@@ -602,6 +614,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
+        :param sender_address: The user address for self signing
+        :type sender_address: str
 
         :param \**kwargs:
             See below
@@ -611,12 +625,17 @@ class Simba:
         :return: Transaction detail
         :rtype: json
         """
+        headers = {}
+        if sender_address:
+            headers['txn-sender'] = sender_address
+
         query_args = query_args or {}
         return SimbaRequest("/v2/apps/{}/contract/{}/{}/".format(
-            app_id, contract_name, method_name), query_args, method="POST").send(json_payload=inputs)
+            app_id, contract_name, method_name), query_args, method="POST").send(headers=headers, json_payload=inputs)
 
-    def submit_transaction_by_address_async(self, app_id: str, contract_name: str, identifier: str, method_name: str, inputs: dict,
-                                     query_args: Optional[QueryArgs] = None):
+    def submit_transaction_by_address_async(
+        self, app_id: str, contract_name: str, identifier: str, method_name: str, inputs: dict,
+        query_args: Optional[QueryArgs] = None, sender_address: str = None):
         """
         POST
         /v2/apps/{application}/async/contract/{contract_name}/address/{identifier}/{method_name}/
@@ -633,6 +652,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
+        :param sender_address: The user address for self signing
+        :type sender_address: str
 
         :param \**kwargs:
             See below
@@ -642,12 +663,16 @@ class Simba:
         :return: Transaction detail
         :rtype: json
         """
+        headers = {}
+        if sender_address:
+            headers['txn-sender'] = sender_address
+
         query_args = query_args or {}
         return SimbaRequest("/v2/apps/{}/async/contract/{}/address/{}/{}/".format(
-            app_id, contract_name, identifier, method_name), query_args, method="POST").send(json_payload=inputs)
+            app_id, contract_name, identifier, method_name), query_args, method="POST").send(headers=headers, json_payload=inputs)
 
     def submit_transaction_by_asset_async(self, app_id: str, contract_name: str, identifier: str, method_name: str, inputs: dict,
-                                    query_args: Optional[QueryArgs] = None):
+                                    query_args: Optional[QueryArgs] = None, sender_address: str = None):
         """
         POST
         /v2/apps/{application}/async/contract/{contract_name}/asset/{identifier}/{method_name}/
@@ -664,6 +689,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
+        :param sender_address: The user address for self signing
+        :type sender_address: str
 
         :param \**kwargs:
             See below
@@ -673,12 +700,16 @@ class Simba:
         :return: Transaction detail
         :rtype: json
         """
+        headers = {}
+        if sender_address:
+            headers['txn-sender'] = sender_address
+
         query_args = query_args or {}
         return SimbaRequest("/v2/apps/{}/async/contract/{}/asset/{}/{}/".format(
-            app_id, contract_name, identifier, method_name), query_args, method="POST").send(json_payload=inputs)
+            app_id, contract_name, identifier, method_name), query_args, method="POST").send(headers=headers, json_payload=inputs)
 
     def submit_contract_method_async(self, app_id: str, contract_name: str, method_name: str, inputs: dict,
-                                     query_args: Optional[QueryArgs] = None):
+                                     query_args: Optional[QueryArgs] = None, sender_address: str = None):
         """
         POST
         /v2/apps/{application}/async/contract/{contract_name}/{method_name}/
@@ -693,6 +724,8 @@ class Simba:
         :type method_name: str
         :param inputs: Method arguments
         :type inputs: dict
+        :param sender_address: The user address for self signing
+        :type sender_address: str
 
         :param \**kwargs:
             See below
@@ -702,11 +735,15 @@ class Simba:
         :return: Transaction detail
         :rtype: json
         """
+        headers = {}
+        if sender_address:
+            headers['txn-sender'] = sender_address
+
         query_args = query_args or {}
         return SimbaRequest("/v2/apps/{}/async/contract/{}/{}/".format(
-            app_id, contract_name, method_name), query_args, method="POST").send(json_payload=inputs)
+            app_id, contract_name, method_name), query_args, method="POST").send(headers=headers, json_payload=inputs)
 
-    def create_contract_instance(self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None):
+    def create_contract_instance(self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None, sender_address: str = None):
         """
         POST
         /v2/apps/{application}/new/{contract_name}/
@@ -717,6 +754,8 @@ class Simba:
         :type app_id: str
         :param contract_name: The contract name
         :type contract_name: str
+        :param sender_address: The user address for self signing
+        :type sender_address: str
 
         :param \**kwargs:
             See below
@@ -726,10 +765,13 @@ class Simba:
         :return: Transaction detail
         :rtype: json
         """
-        query_args = query_args or {}
-        return SimbaRequest("/v2/apps/{}/new/{}/".format(app_id, contract_name), query_args, method="POST").send(json_payload=inputs)
+        headers = {}
+        if sender_address:
+            headers['txn-sender'] = sender_address
 
-    #TODO(Adam): Make a transaction object to assist the user. Right now it's just a dict
+        query_args = query_args or {}
+        return SimbaRequest("/v2/apps/{}/new/{}/".format(app_id, contract_name), query_args, method="POST").send(headers=headers)
+
     def submit_signed_transaction(self, app_id: str, txn_id: str, txn: dict, query_args: Optional[QueryArgs] = None):
         """
         POST
@@ -753,7 +795,7 @@ class Simba:
         :rtype: json
         """
         query_args = query_args or {}
-        return SimbaRequest(" /v2/apps/{}/transactions/{}/".format(app_id, txn_id), query_args, method="POST").send(json_payload=inputs)
+        return SimbaRequest("/v2/apps/{}/transactions/{}/".format(app_id, txn_id), query_args, method="POST").send(json_payload={"transaction": txn})
 
     """
     POST

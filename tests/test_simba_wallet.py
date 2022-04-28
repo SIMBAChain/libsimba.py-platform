@@ -77,10 +77,15 @@ class TestWallet(unittest.TestCase):
             "nonce": "0x2",
         }
         signature = wallet.sign_transaction(transaction_payload)
-        self.assertEqual(
-            signature,
-            "0xf86b02843b9aca00825d6a94dea35e452b7367c43330e0065ec22538f545333b8088db7eff7c000000001ba0b4985b74787ac27bb1bde40adc97dabdb97a38623dd6150e8ec3b3fa5581e95aa00809c0633c1d03db77f7fbaf357da964c93d9d4a6f041b0aa92d83bb9481ab9a",
-        )
+
+        expected_sig = {
+            'rawTransaction': '0xf86b02843b9aca00825d6a94dea35e452b7367c43330e0065ec22538f545333b8088db7eff7c000000001ba0b4985b74787ac27bb1bde40adc97dabdb97a38623dd6150e8ec3b3fa5581e95aa00809c0633c1d03db77f7fbaf357da964c93d9d4a6f041b0aa92d83bb9481ab9a',
+            'hash': '0x5458728331d56f0b1279fc050f0f4488fef6f8c19ab19a95c2676f33545a73d9',
+            'r': 81685504697793611067721356979325529201491251746049320434783832819291893393754,
+            's': 3635732222913114008708416452560996557652025348427230851023132220765216287642,
+            'v': 27,
+        }
+        self.assertEqual(signature, expected_sig)
 
     def test_wallet_sign_transaction_no_wallet(self):
         wallet = Wallet()
