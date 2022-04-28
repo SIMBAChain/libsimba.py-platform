@@ -147,6 +147,24 @@ r = contract.query_method(simba_app_method)
 log.info(r)
 ```
 
+### *Self-signing transaction*
+It's also possible to sign the transaction with a locally loaded wallet.
+```python
+from libsimba.simba import Simba
+from libsimba.simba_wallet import Wallet
+
+simba = Simba()
+wallet = Wallet()
+wallet.generate_from_private_key("private_key")
+
+contract = simba.smart_contract_client(simba_app_name, simba_app_contract)
+unsigned_transaction = contract.call_method(simba_app_method, simba_app_inputs)
+signed_transaction = wallet.sign_transaction(unsigned_transaction['raw_transaction'])
+
+response = simba.submit_signed_transaction(
+    app_id=simba_app_name, txn_id=unsigned_transaction['id'], txn=signed_transaction)
+```
+
 ## *Use a class-based approach to interacting with your deployed smart contract*
 LibSimba.py-platform has a module called the SimbaHintedContract that can be used to autogenerate a smart contract class containing method calls matching those of the given deployed smart contract. This makes it easier for developers to write applications as they no longer need write and then wire up functions for each smart contract method.
 

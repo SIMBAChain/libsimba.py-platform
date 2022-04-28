@@ -100,6 +100,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#list-all-contracts-for-a-given-simba-application"><em>List all contracts for a given SIMBA application</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-info-on-the-contract-method-calls-and-data-types"><em>Get info on the contract method calls and data types</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#example-method-call-using-the-sdk"><em>Example method call using the SDK</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#self-signing-transaction"><em>Self-signing transaction</em></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#use-a-class-based-approach-to-interacting-with-your-deployed-smart-contract"><em>Use a class-based approach to interacting with your deployed smart contract</em></a></li>
@@ -350,6 +351,25 @@
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">contract</span><span class="o">.</span><span class="n">query_method</span><span class="p">(</span><span class="n">simba_app_method</span><span class="p">)</span>
 <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="self-signing-transaction">
+<h3><em>Self-signing transaction</em><a class="headerlink" href="#self-signing-transaction" title="Permalink to this headline">¶</a></h3>
+<p>It’s also possible to sign the transaction with a locally loaded wallet.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">Simba</span>
+<span class="kn">from</span> <span class="nn">libsimba.simba_wallet</span> <span class="kn">import</span> <span class="n">Wallet</span>
+
+<span class="n">simba</span> <span class="o">=</span> <span class="n">Simba</span><span class="p">()</span>
+<span class="n">wallet</span> <span class="o">=</span> <span class="n">Wallet</span><span class="p">()</span>
+<span class="n">wallet</span><span class="o">.</span><span class="n">generate_from_private_key</span><span class="p">(</span><span class="s2">&quot;private_key&quot;</span><span class="p">)</span>
+
+<span class="n">contract</span> <span class="o">=</span> <span class="n">simba</span><span class="o">.</span><span class="n">smart_contract_client</span><span class="p">(</span><span class="n">simba_app_name</span><span class="p">,</span> <span class="n">simba_app_contract</span><span class="p">)</span>
+<span class="n">unsigned_transaction</span> <span class="o">=</span> <span class="n">contract</span><span class="o">.</span><span class="n">call_method</span><span class="p">(</span><span class="n">simba_app_method</span><span class="p">,</span> <span class="n">simba_app_inputs</span><span class="p">)</span>
+<span class="n">signed_transaction</span> <span class="o">=</span> <span class="n">wallet</span><span class="o">.</span><span class="n">sign_transaction</span><span class="p">(</span><span class="n">unsigned_transaction</span><span class="p">[</span><span class="s1">&#39;raw_transaction&#39;</span><span class="p">])</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">simba</span><span class="o">.</span><span class="n">submit_signed_transaction</span><span class="p">(</span>
+    <span class="n">app_id</span><span class="o">=</span><span class="n">simba_app_name</span><span class="p">,</span> <span class="n">txn_id</span><span class="o">=</span><span class="n">unsigned_transaction</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">txn</span><span class="o">=</span><span class="n">signed_transaction</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

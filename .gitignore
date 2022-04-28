@@ -3,6 +3,7 @@
 **local_**
 /dist/
 **/build/
+docs/.doctrees
 
 **_token.json
 

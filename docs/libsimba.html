@@ -227,6 +227,16 @@ tell you what is not right.</p>
 <p>That may include adding to the error_type_GROUPS dict. This stores
 the known groups and the ranges of numeric codes allowed.</p>
 <dl class="py attribute">
+<dt id="libsimba.exceptions.ErrorType.SIMBA_INVALID_MNEMONIC_EXCEPTION">
+<code class="sig-name descname"><span class="pre">SIMBA_INVALID_MNEMONIC_EXCEPTION</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'doc_link':</span> <span class="pre">'https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki',</span> <span class="pre">'expanded_message':</span> <span class="pre">'Please</span> <span class="pre">ensure</span> <span class="pre">that</span> <span class="pre">the</span> <span class="pre">provided</span> <span class="pre">mnemonic</span> <span class="pre">is</span> <span class="pre">valid.',</span> <span class="pre">'title':</span> <span class="pre">'Simba</span> <span class="pre">Invalid</span> <span class="pre">Mnemonic</span> <span class="pre">Exception'}</span></em><a class="headerlink" href="#libsimba.exceptions.ErrorType.SIMBA_INVALID_MNEMONIC_EXCEPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="libsimba.exceptions.ErrorType.SIMBA_INVALID_PRIVATE_KEY_EXCEPTION">
+<code class="sig-name descname"><span class="pre">SIMBA_INVALID_PRIVATE_KEY_EXCEPTION</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'doc_link':</span> <span class="pre">'',</span> <span class="pre">'expanded_message':</span> <span class="pre">'Please</span> <span class="pre">ensure</span> <span class="pre">that</span> <span class="pre">the</span> <span class="pre">provided</span> <span class="pre">private</span> <span class="pre">key</span> <span class="pre">is</span> <span class="pre">valid.',</span> <span class="pre">'title':</span> <span class="pre">'Simba</span> <span class="pre">Invalid</span> <span class="pre">Private</span> <span class="pre">Key</span> <span class="pre">Exception'}</span></em><a class="headerlink" href="#libsimba.exceptions.ErrorType.SIMBA_INVALID_PRIVATE_KEY_EXCEPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt id="libsimba.exceptions.ErrorType.SIMBA_INVALID_URL_EXCEPTION">
 <code class="sig-name descname"><span class="pre">SIMBA_INVALID_URL_EXCEPTION</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'doc_link':</span> <span class="pre">'https://github.com/simbachain/libsimba.py',</span> <span class="pre">'expanded_message':</span> <span class="pre">'Please</span> <span class="pre">ensure</span> <span class="pre">that</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">properly</span> <span class="pre">configured</span> <span class="pre">the</span> <span class="pre">LIBSIMBA_BASE_API_URL',</span> <span class="pre">'title':</span> <span class="pre">'Simba</span> <span class="pre">Invalid</span> <span class="pre">URL</span> <span class="pre">Exception'}</span></em><a class="headerlink" href="#libsimba.exceptions.ErrorType.SIMBA_INVALID_URL_EXCEPTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -234,6 +244,11 @@ the known groups and the ranges of numeric codes allowed.</p>
 <dl class="py attribute">
 <dt id="libsimba.exceptions.ErrorType.SIMBA_REQUEST_EXCEPTION">
 <code class="sig-name descname"><span class="pre">SIMBA_REQUEST_EXCEPTION</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'doc_link':</span> <span class="pre">'https://github.com/simbachain/libsimba.py',</span> <span class="pre">'expanded_message':</span> <span class="pre">'Please</span> <span class="pre">check</span> <span class="pre">the</span> <span class="pre">inputs</span> <span class="pre">or</span> <span class="pre">query</span> <span class="pre">params</span> <span class="pre">and</span> <span class="pre">that</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">properly</span> <span class="pre">configured</span> <span class="pre">the</span> <span class="pre">SDK</span> <span class="pre">according</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">documentation.',</span> <span class="pre">'title':</span> <span class="pre">'Simba</span> <span class="pre">Request</span> <span class="pre">Exception'}</span></em><a class="headerlink" href="#libsimba.exceptions.ErrorType.SIMBA_REQUEST_EXCEPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="libsimba.exceptions.ErrorType.SIMBA_WALLET_NOT_FOUND_EXCEPTION">
+<code class="sig-name descname"><span class="pre">SIMBA_WALLET_NOT_FOUND_EXCEPTION</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'doc_link':</span> <span class="pre">'',</span> <span class="pre">'expanded_message':</span> <span class="pre">'Please</span> <span class="pre">ensure</span> <span class="pre">that</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">loaded</span> <span class="pre">a</span> <span class="pre">wallet</span> <span class="pre">before',</span> <span class="pre">'title':</span> <span class="pre">'Simba</span> <span class="pre">Wallet</span> <span class="pre">Not</span> <span class="pre">Found</span> <span class="pre">Exception'}</span></em><a class="headerlink" href="#libsimba.exceptions.ErrorType.SIMBA_WALLET_NOT_FOUND_EXCEPTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -256,8 +271,26 @@ the known groups and the ranges of numeric codes allowed.</p>
 </dd></dl>
 
 <dl class="py exception">
+<dt id="libsimba.exceptions.SimbaMnemonicException">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.exceptions.</span></code><code class="sig-name descname"><span class="pre">SimbaMnemonicException</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.exceptions.SimbaMnemonicException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#libsimba.exceptions.LibSimbaException" title="libsimba.exceptions.LibSimbaException"><code class="xref py py-class docutils literal notranslate"><span class="pre">libsimba.exceptions.LibSimbaException</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="libsimba.exceptions.SimbaPrivateKeyException">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.exceptions.</span></code><code class="sig-name descname"><span class="pre">SimbaPrivateKeyException</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.exceptions.SimbaPrivateKeyException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#libsimba.exceptions.LibSimbaException" title="libsimba.exceptions.LibSimbaException"><code class="xref py py-class docutils literal notranslate"><span class="pre">libsimba.exceptions.LibSimbaException</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
 <dt id="libsimba.exceptions.SimbaRequestException">
 <em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.exceptions.</span></code><code class="sig-name descname"><span class="pre">SimbaRequestException</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.exceptions.SimbaRequestException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#libsimba.exceptions.LibSimbaException" title="libsimba.exceptions.LibSimbaException"><code class="xref py py-class docutils literal notranslate"><span class="pre">libsimba.exceptions.LibSimbaException</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="libsimba.exceptions.SimbaWalletNotFoundException">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.exceptions.</span></code><code class="sig-name descname"><span class="pre">SimbaWalletNotFoundException</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.exceptions.SimbaWalletNotFoundException" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#libsimba.exceptions.LibSimbaException" title="libsimba.exceptions.LibSimbaException"><code class="xref py py-class docutils literal notranslate"><span class="pre">libsimba.exceptions.LibSimbaException</span></code></a></p>
 </dd></dl>
 
@@ -286,11 +319,11 @@ If using filter sets, you should use the SearchFilter object instead</p>
 
 <dl class="py class">
 <dt id="libsimba.simba.Simba">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.simba.</span></code><code class="sig-name descname"><span class="pre">Simba</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_api_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'http://localhost:8000/'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">libsimba.simba.</span></code><code class="sig-name descname"><span class="pre">Simba</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_api_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://api.sep.dev.simbachain.com'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="libsimba.simba.Simba.create_contract_instance">
-<code class="sig-name descname"><span class="pre">create_contract_instance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.create_contract_instance" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">create_contract_instance</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.create_contract_instance" title="Permalink to this definition">¶</a></dt>
 <dd><p>POST
 /v2/apps/{application}/new/{contract_name}/</p>
 <p>create contract instance</p>
@@ -299,6 +332,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>app_id</strong> (<em>str</em>) – Application name</p></li>
 <li><p><strong>contract_name</strong> (<em>str</em>) – The contract name</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -847,7 +881,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 
 <dl class="py method">
 <dt id="libsimba.simba.Simba.submit_contract_method">
-<code class="sig-name descname"><span class="pre">submit_contract_method</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_contract_method" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">submit_contract_method</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_contract_method" title="Permalink to this definition">¶</a></dt>
 <dd><p>POST
 /v2/apps/{application}/contract/{contract_name}/{method_name}/</p>
 <p>Submit a transaction to a contract method</p>
@@ -858,6 +892,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>contract_name</strong> (<em>str</em>) – The contract name</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -877,7 +912,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 
 <dl class="py method">
 <dt id="libsimba.simba.Simba.submit_contract_method_async">
-<code class="sig-name descname"><span class="pre">submit_contract_method_async</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_contract_method_async" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">submit_contract_method_async</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_contract_method_async" title="Permalink to this definition">¶</a></dt>
 <dd><p>POST
 /v2/apps/{application}/async/contract/{contract_name}/{method_name}/</p>
 <p>post async method</p>
@@ -888,6 +923,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>contract_name</strong> (<em>str</em>) – The contract name</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -936,7 +972,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 
 <dl class="py method">
 <dt id="libsimba.simba.Simba.submit_transaction_by_address">
-<code class="sig-name descname"><span class="pre">submit_transaction_by_address</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_transaction_by_address" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">submit_transaction_by_address</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_transaction_by_address" title="Permalink to this definition">¶</a></dt>
 <dd><p>POST
 /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/</p>
 <p>Submit instance address method</p>
@@ -948,6 +984,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>identifier</strong> (<em>str</em>) – The contract address</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -967,7 +1004,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 
 <dl class="py method">
 <dt id="libsimba.simba.Simba.submit_transaction_by_address_async">
-<code class="sig-name descname"><span class="pre">submit_transaction_by_address_async</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_transaction_by_address_async" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">submit_transaction_by_address_async</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_transaction_by_address_async" title="Permalink to this definition">¶</a></dt>
 <dd><p>POST
 /v2/apps/{application}/async/contract/{contract_name}/address/{identifier}/{method_name}/</p>
 <p>Submit async instance address method</p>
@@ -979,6 +1016,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>identifier</strong> (<em>str</em>) – The contract address</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -998,7 +1036,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 
 <dl class="py method">
 <dt id="libsimba.simba.Simba.submit_transaction_by_asset">
-<code class="sig-name descname"><span class="pre">submit_transaction_by_asset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_transaction_by_asset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">submit_transaction_by_asset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_transaction_by_asset" title="Permalink to this definition">¶</a></dt>
 <dd><p>POST
 /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/</p>
 <p>Submit instance asset method</p>
@@ -1010,6 +1048,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>identifier</strong> (<em>str</em>) – The asset identifier</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -1029,7 +1068,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 
 <dl class="py method">
 <dt id="libsimba.simba.Simba.submit_transaction_by_asset_async">
-<code class="sig-name descname"><span class="pre">submit_transaction_by_asset_async</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_transaction_by_asset_async" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">submit_transaction_by_asset_async</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contract_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_args</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#libsimba.simba.QueryArgs" title="libsimba.simba.QueryArgs"><span class="pre">libsimba.simba.QueryArgs</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sender_address</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#libsimba.simba.Simba.submit_transaction_by_asset_async" title="Permalink to this definition">¶</a></dt>
 <dd><p>POST
 /v2/apps/{application}/async/contract/{contract_name}/asset/{identifier}/{method_name}/</p>
 <p>Submit async instance asset method</p>
@@ -1041,6 +1080,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>identifier</strong> (<em>str</em>) – The asset identifier</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -1122,6 +1162,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>app_id</strong> (<em>str</em>) – Application name</p></li>
 <li><p><strong>contract_name</strong> (<em>str</em>) – The contract name</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -1660,6 +1701,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>contract_name</strong> (<em>str</em>) – The contract name</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -1690,6 +1732,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>contract_name</strong> (<em>str</em>) – The contract name</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -1750,6 +1793,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>identifier</strong> (<em>str</em>) – The contract address</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -1781,6 +1825,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>identifier</strong> (<em>str</em>) – The contract address</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -1812,6 +1857,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>identifier</strong> (<em>str</em>) – The asset identifier</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -1843,6 +1889,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <li><p><strong>identifier</strong> (<em>str</em>) – The asset identifier</p></li>
 <li><p><strong>method_name</strong> (<em>str</em>) – The method name</p></li>
 <li><p><strong>inputs</strong> (<em>dict</em>) – Method arguments</p></li>
+<li><p><strong>sender_address</strong> (<em>str</em>) – The user address for self signing</p></li>
 <li><p><strong>**kwargs</strong> – See below</p></li>
 </ul>
 </dd>
@@ -2235,7 +2282,7 @@ If using filter sets, you should use the SearchFilter object instead</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
 <dt id="libsimba.simba_request.SimbaRequest.base_api_url">
-<code class="sig-name descname"><span class="pre">base_api_url</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'http://localhost:8000/'</span></em><a class="headerlink" href="#libsimba.simba_request.SimbaRequest.base_api_url" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">base_api_url</span></code><em class="property"> <span class="pre">=</span> <span class="pre">'https://api.sep.dev.simbachain.com'</span></em><a class="headerlink" href="#libsimba.simba_request.SimbaRequest.base_api_url" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
