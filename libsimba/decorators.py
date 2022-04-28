@@ -33,7 +33,10 @@ def auth_required(func):
         except Exception as e1:
             raise e1
         access_token = _[auth_flow].login()
-        return func(self, {'Authorization': "Bearer {}".format(access_token)}, *args, **kwargs)
+
+        headers = kwargs.pop('headers', {})
+        headers['Authorization'] = f"Bearer {access_token}"
+        return func(self, headers, *args, **kwargs)
     return _auth_required_fn_wrapper
 
 def check_creds():
