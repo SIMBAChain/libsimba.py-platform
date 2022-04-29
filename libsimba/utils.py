@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timedelta
 from urllib.parse import urlparse, urlencode, urlunparse
 import logging
+
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
@@ -15,11 +16,20 @@ class SearchFilter(dict):
     def query_args(self):
         search_terms = self.keys()
         query_args = dict()
-        [query_args.update({'filter[{}]'.format(search_term.replace('__','.')): self.get(search_term)}) for search_term in search_terms]
+        [
+            query_args.update(
+                {
+                    "filter[{}]".format(search_term.replace("__", ".")): self.get(
+                        search_term
+                    )
+                }
+            )
+            for search_term in search_terms
+        ]
         return query_args
 
 
-def token_expired(token_data: dict, offset: int=60):
+def token_expired(token_data: dict, offset: int = 60):
     """
     Checks to see if a token has expired, by checking the 'expires' key
     Adds an offset to allow for delays when performing auth processes
@@ -28,18 +38,19 @@ def token_expired(token_data: dict, offset: int=60):
     :param offset: To allow for delays in auth processes, this number of seconds is added to the expiry time
     :return:
     """
-    if 'expires' in token_data:
-        expires = token_data['expires']
+    if "expires" in token_data:
+        expires = token_data["expires"]
         now_w_offset = datetime.now() + timedelta(seconds=offset)
         expiry = datetime.fromtimestamp(expires)
         if now_w_offset >= expiry:
-            log.debug('Saved token expires within 60 seconds')
+            log.debug("Saved token expires within 60 seconds")
             return True
-        log.debug('Saved token valid for at least 60 seconds')
+        log.debug("Saved token valid for at least 60 seconds")
         return False
     else:
-        log.info('No expiry date stored for token, assume expired')
+        log.info("No expiry date stored for token, assume expired")
         return True
+
 
 def save_token(client_id: str, token_data: dict):
     """
@@ -59,14 +70,14 @@ def save_token(client_id: str, token_data: dict):
     :param token_data: The tokeauth data to save
     :return:
     """
-    token_dir = os.getenv('TOKEN_DIR', './')
+    token_dir = os.getenv("TOKEN_DIR", "./")
     os.makedirs(token_dir, exist_ok=True)
-    token_file = os.path.join(token_dir, '{}_token.json'.format(client_id))
-    with open(token_file, 'w') as t1:
-        expiry_date = datetime.now() + timedelta(seconds=int(token_data['expires_in']))
-        token_data['expires'] = int(expiry_date.timestamp())
+    token_file = os.path.join(token_dir, "{}_token.json".format(client_id))
+    with open(token_file, "w") as t1:
+        expiry_date = datetime.now() + timedelta(seconds=int(token_data["expires_in"]))
+        token_data["expires"] = int(expiry_date.timestamp())
         json.dump(token_data, t1)
-        log.info('Saved token : {}'.format(token_file))
+        log.info("Saved token : {}".format(token_file))
 
 
 def get_saved_token(client_id: str):
@@ -86,19 +97,20 @@ def get_saved_token(client_id: str):
     :param client_id: The ID for the client, token files are named <client_id>_token.json
     :return: a dict of the token data, retrieved from the token file.
     """
-    token_dir = os.getenv('TOKEN_DIR', './')
+    token_dir = os.getenv("TOKEN_DIR", "./")
     if os.path.isdir(token_dir):
-        token_file = os.path.join(token_dir, '{}_token.json'.format(client_id))
+        token_file = os.path.join(token_dir, "{}_token.json".format(client_id))
         if os.path.isfile(token_file):
-            with open(token_file, 'r') as t1:
+            with open(token_file, "r") as t1:
                 token_data = json.load(t1)
-                log.debug('Found saved token : {}'.format(token_file))
+                log.debug("Found saved token : {}".format(token_file))
 
                 if token_expired(token_data):
-                    raise Exception('Token expiry date elapsed')
+                    raise Exception("Token expiry date elapsed")
                 return token_data
-        raise Exception('Token file not found')
-    raise Exception('Token dir not found')
+        raise Exception("Token file not found")
+    raise Exception("Token dir not found")
+
 
 def build_url(base_api_url, path, args_dict):
     # Returns a list in the structure of urlparse.ParseResult

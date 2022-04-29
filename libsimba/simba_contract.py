@@ -21,7 +21,7 @@ class SimbaContract(ParamCheckingContract):
 
         :param method_name: The method name
         :type method_name: str
-        
+
         :param \**kwargs:
             See below
 
@@ -30,17 +30,21 @@ class SimbaContract(ParamCheckingContract):
         :return: List of transaction details
         :rtype: List[json]
         """
-        return SimbaRequest("v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args).send()
-    
-    def call_method(self, method_name: str,  inputs: dict, query_args: Optional[dict] = None):
+        return SimbaRequest(
+            "v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args
+        ).send()
+
+    def call_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
         """
-        Call a contract method 
+        Call a contract method
 
         :param method_name: The method name
         :type method_name: str
         :param inputs: The method arguments
         :type inputs: dict
-        
+
         :param \**kwargs:
             See below
 
@@ -51,10 +55,20 @@ class SimbaContract(ParamCheckingContract):
         """
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
-        return SimbaRequest("v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args, method='POST').send(json_payload=json.dumps(inputs))
+        return SimbaRequest(
+            "v2/apps/{}/{}/".format(self.contract_uri, method_name),
+            query_args,
+            method="POST",
+        ).send(json_payload=json.dumps(inputs))
 
     # Example files: files = {'file': open('report.xls', 'rb')}
-    def call_contract_method_with_files(self, method_name: str, inputs: dict, files: Optional[dict] = None, query_args: Optional[dict] = None):
+    def call_contract_method_with_files(
+        self,
+        method_name: str,
+        inputs: dict,
+        files: Optional[dict] = None,
+        query_args: Optional[dict] = None,
+    ):
         """
         Call a contract method and upload off-chain files
 
@@ -75,7 +89,11 @@ class SimbaContract(ParamCheckingContract):
         """
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
-        return SimbaRequest("v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args, method='POST').send(json_payload=json.dumps(inputs), files=files)
+        return SimbaRequest(
+            "v2/apps/{}/{}/".format(self.contract_uri, method_name),
+            query_args,
+            method="POST",
+        ).send(json_payload=json.dumps(inputs), files=files)
 
     @filter_set
     def get_transactions(self, query_args: Optional[dict] = None):
@@ -91,7 +109,9 @@ class SimbaContract(ParamCheckingContract):
         :rtype: List[json]
         """
         query_args = query_args or {}
-        return SimbaRequest("v2/apps/{}/transactions/".format(self.contract_uri), query_args).send()
+        return SimbaRequest(
+            "v2/apps/{}/transactions/".format(self.contract_uri), query_args
+        ).send()
 
     def validate_bundle_hash(self, bundle_hash: str, query_args: Optional[dict] = None):
         """
@@ -99,7 +119,7 @@ class SimbaContract(ParamCheckingContract):
 
         :param bundle_hash: The hash or UUID of the bundle
         :type bundle_hash: str
-        
+
         :param \**kwargs:
             See below
 
@@ -109,10 +129,17 @@ class SimbaContract(ParamCheckingContract):
         :rtype: json
         """
         query_args = query_args or {}
-        return SimbaRequest("v2/apps/{}/validate/{}/{}".format(self.app_name, self.contract_name, bundle_hash), query_args).send()
+        return SimbaRequest(
+            "v2/apps/{}/validate/{}/{}".format(
+                self.app_name, self.contract_name, bundle_hash
+            ),
+            query_args,
+        ).send()
 
     @filter_set
-    def get_transaction_statuses(self, txn_hashes: List[str] = None, query_args: Optional[dict] = None):
+    def get_transaction_statuses(
+        self, txn_hashes: List[str] = None, query_args: Optional[dict] = None
+    ):
         """
         List all transactions
 
@@ -134,8 +161,11 @@ class SimbaContract(ParamCheckingContract):
         query_args = query_args or {}
         if isinstance(txn_hashes, str):
             txn_hashes = [txn_hashes]
-        if 'filter[transaction_hash.in]' not in query_args and txn_hashes:
-            query_args['filter[transaction_hash.in]'] = ','.join(txn_hashes)
-        return SimbaRequest("v2/apps/{}/contract/{}/transactions".format(
-            self.app_name, self.contract_name
-        ), query_args).send()
+        if "filter[transaction_hash.in]" not in query_args and txn_hashes:
+            query_args["filter[transaction_hash.in]"] = ",".join(txn_hashes)
+        return SimbaRequest(
+            "v2/apps/{}/contract/{}/transactions".format(
+                self.app_name, self.contract_name
+            ),
+            query_args,
+        ).send()

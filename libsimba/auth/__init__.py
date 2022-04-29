@@ -1,6 +1,4 @@
-
 class AuthProvider:
-
     @staticmethod
     def main():
         return NotImplementedError
