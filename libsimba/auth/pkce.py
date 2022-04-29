@@ -9,10 +9,17 @@ from time import sleep
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from libsimba.auth import AuthProvider
-from libsimba.settings import CLIENT_ID, SCOPE, BASE_AUTH_URL, AUTH_ENDPOINT, BASE_API_URL
+from libsimba.settings import (
+    CLIENT_ID,
+    SCOPE,
+    BASE_AUTH_URL,
+    AUTH_ENDPOINT,
+    BASE_API_URL,
+)
 from libsimba.utils import build_url, save_token, get_saved_token
 
 import logging
+
 log = logging.getLogger(__name__)
 
 
@@ -23,7 +30,7 @@ class Pkce(AuthProvider):
     @staticmethod
     def main():
         Pkce.login()
-    
+
     @staticmethod
     def login():
         if Pkce._is_authenticated():
@@ -37,27 +44,29 @@ class Pkce(AuthProvider):
         query_params = {
             "response_type": "code",
             "client_id": CLIENT_ID,
-            "redirect_uri": "http://localhost:7201", 
-            "scope": SCOPE, 
+            "redirect_uri": "http://localhost:7201",
+            "scope": SCOPE,
             "code_challenge": code_challenge,
-            "code_challenge_method": "S256"
+            "code_challenge_method": "S256",
         }
 
-        log.debug(build_url(BASE_AUTH_URL, "{}authorize".format(AUTH_ENDPOINT), query_params))
+        log.debug(
+            build_url(BASE_AUTH_URL, "{}authorize".format(AUTH_ENDPOINT), query_params)
+        )
 
         while Pkce.access_token is None:
             pass
-        
+
         return Pkce.access_token
 
     @staticmethod
     def start_server(code_verifier):
         class CallbackHandler(BaseHTTPRequestHandler):
-            #Handler for the GET requests
+            # Handler for the GET requests
             def do_GET(self):
-                if re.match(r'', self.path):
+                if re.match(r"", self.path):
                     try:
-                        code = (parse_qs(self.path.split("?")[1]))['code'][0]
+                        code = (parse_qs(self.path.split("?")[1]))["code"][0]
                         self.write_ok()
                         self.get_token(code)
                     except:
@@ -65,30 +74,36 @@ class Pkce(AuthProvider):
 
             def write_ok(self):
                 self.send_response(200)
-                self.send_header('Content-type','text/html')
+                self.send_header("Content-type", "text/html")
                 self.end_headers()
-                self.wfile.write("OK <p> You may close this window and return to shell :) </p>".encode())
-        
+                self.wfile.write(
+                    "OK <p> You may close this window and return to shell :) </p>".encode()
+                )
+
             def get_token(self, code):
                 body = {
                     "code": code,
                     "code_verifier": code_verifier,
                     "client_id": CLIENT_ID,
                     "redirect_uri": "http://localhost:7201",
-                    "grant_type": "authorization_code"
+                    "grant_type": "authorization_code",
                 }
 
                 auth_url = build_url(BASE_AUTH_URL, AUTH_ENDPOINT, {})
-                
-                r = requests.post("{}token".format(auth_url), data=body, headers={'origin': 'http://localhost:7201'})
-                
-                access_token = r.json()['access_token']
+
+                r = requests.post(
+                    "{}token".format(auth_url),
+                    data=body,
+                    headers={"origin": "http://localhost:7201"},
+                )
+
+                access_token = r.json()["access_token"]
 
                 save_token(client_id=CLIENT_ID, token_data=r.json())
-                
+
                 Pkce.access_token = access_token
 
-        server = HTTPServer(('', 7201), CallbackHandler)
+        server = HTTPServer(("", 7201), CallbackHandler)
         server.serve_forever()
 
     @staticmethod
@@ -103,7 +118,9 @@ class Pkce(AuthProvider):
 
         whoami_url = build_url(BASE_API_URL, "user/whoami/", {})
         try:
-            r = requests.get(whoami_url, headers={'Authorization': "Bearer {}".format(access_token)})
+            r = requests.get(
+                whoami_url, headers={"Authorization": "Bearer {}".format(access_token)}
+            )
             if r.status_code != 200:
                 return False
             Pkce.access_token = access_token
@@ -114,14 +131,14 @@ class Pkce(AuthProvider):
     @staticmethod
     def _prepare_challenge():
         random = secrets.token_bytes(64)
-        code_verifier = base64.b64encode(random, b'-_').decode().replace('=', '')
+        code_verifier = base64.b64encode(random, b"-_").decode().replace("=", "")
 
         m = hashlib.sha256()
         m.update(code_verifier.encode())
         d = m.digest()
-        code_challenge = base64.b64encode(d, b'-_').decode().replace('=', '')
+        code_challenge = base64.b64encode(d, b"-_").decode().replace("=", "")
         return [code_verifier, code_challenge]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     Pkce.main()

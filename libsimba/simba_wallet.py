@@ -112,7 +112,13 @@ class Wallet(WalletBase):
         except TypeError as exc:
             raise LibSimbaException(message=f"Invalid transaction provided: {exc}")
 
-        return signed.rawTransaction.hex()
+        return {
+            "rawTransaction": signed.rawTransaction.hex(),
+            "hash": signed.hash.hex(),
+            "r": signed.r,
+            "s": signed.s,
+            "v": signed.v,
+        }
 
     def get_address(self):
         """

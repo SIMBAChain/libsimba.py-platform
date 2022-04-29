@@ -2,10 +2,13 @@ from typing import Any, Tuple, List
 
 from requests.api import get
 
-def get_file_for_upload(file_name:str, file_object_or_path:Any, read_mode: str = 'rb') -> tuple:
+
+def get_file_for_upload(
+    file_name: str, file_object_or_path: Any, read_mode: str = "rb"
+) -> tuple:
     """
     takes file_name and file_object_or_path and formats files in a way that is acceptable to Python
-    requests for multipart encoded file. 
+    requests for multipart encoded file.
     if type(file_object_or_path) == str, then we convert to a readable object
 
     Args:
@@ -17,9 +20,10 @@ def get_file_for_upload(file_name:str, file_object_or_path:Any, read_mode: str =
         tuple: multipart form encoded file format: ('file', (file_name, readable_file_object))
     """
     if type(file_object_or_path) == str:
-        return ('file', (file_name, open(file_object_or_path, read_mode)))
+        return ("file", (file_name, open(file_object_or_path, read_mode)))
     else:
-        return ('file', (file_name, file_object_or_path))
+        return ("file", (file_name, file_object_or_path))
+
 
 def open_files(files: List[Tuple]) -> List[tuple]:
     """
@@ -38,16 +42,21 @@ def open_files(files: List[Tuple]) -> List[tuple]:
     for fileTuple in files:
         if len(fileTuple) == 3:
             file_name, file_object_or_path, read_mode = fileTuple
-            fileList.append(get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode))
+            fileList.append(
+                get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode)
+            )
         elif len(fileTuple) == 2:
-            file_name, file_object_or_path = fileTuple 
-            read_mode = 'r'
-            fileList.append(get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode))
+            file_name, file_object_or_path = fileTuple
+            read_mode = "r"
+            fileList.append(
+                get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode)
+            )
     return fileList
 
-def close_files(files:List[tuple]):
+
+def close_files(files: List[tuple]):
     """
-    closes files after we call open_files 
+    closes files after we call open_files
 
     Args:
         files (List[tuple]): list in form [('file', (file_name, readable_file_object)),...]
