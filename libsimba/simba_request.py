@@ -95,13 +95,13 @@ class SimbaRequest:
                     response = await async_client.post(
                         self.url,
                         headers=headers,
-                        data=payload,
+                        data=json_payload,
                         follow_redirects=True,
                         files=files,
                     )
                 else:
                     response = await async_client.post(
-                        self.url, headers=headers, data=payload, follow_redirects=True
+                        self.url, headers=headers, data=json_payload, follow_redirects=True
                     )
                 return await self._process_response_async(
                     async_client, response, headers
