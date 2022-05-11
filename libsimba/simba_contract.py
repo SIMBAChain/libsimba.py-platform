@@ -113,6 +113,13 @@ class SimbaContract(ParamCheckingContract):
             "v2/apps/{}/transactions/".format(self.contract_uri), query_args
         ).send()
 
+    @filter_set
+    def query_events(self, event_name: str, query_args: Optional[dict] = None):
+        query_args = query_args or {}
+        return SimbaRequest(
+            "v2/apps/{}/events/{}/".format(self.contract_uri, event_name), query_args
+        ).send()
+
     def validate_bundle_hash(self, bundle_hash: str, query_args: Optional[dict] = None):
         """
         Validate a previously created bundle using the contract name and bundle hash. This will examine the bundle manifest and the file hashes defined in it against the files in off chain storage, ensuring that all the referenced data has not been tampered with. The errors element will contain any validation errors encountered.
