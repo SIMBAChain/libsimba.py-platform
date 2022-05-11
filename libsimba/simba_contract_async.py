@@ -50,6 +50,12 @@ class SimbaContractAsync(SimbaContract):
             "v2/apps/{}/transactions/".format(self.contract_uri), query_args
         ).send_async()
 
+    async def query_events(self, event_name: str, query_args: Optional[dict] = None):
+        query_args = query_args or {}
+        return await SimbaRequest(
+            "v2/apps/{}/events/{}/".format(self.contract_uri, event_name), query_args
+        ).send()
+
     async def validate_bundle_hash(
         self, bundle_hash: str, query_args: Optional[dict] = None
     ):
