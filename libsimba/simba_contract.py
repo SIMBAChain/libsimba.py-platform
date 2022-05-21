@@ -113,7 +113,6 @@ class SimbaContract(ParamCheckingContract):
             "v2/apps/{}/transactions/".format(self.contract_uri), query_args
         ).send()
 
-    @filter_set
     def query_events(self, event_name: str, query_args: Optional[dict] = None):
         query_args = query_args or {}
         return SimbaRequest(
