@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "libsimba.py-platform"
-version = "0.1.4"
+version = "0.1.7.1-alpha"
 description = ""
 authors = [
     "Adam Brinckman <abrinckm@gmail.com>",
