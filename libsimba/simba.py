@@ -147,33 +147,7 @@ class Simba:
             "/v2/apps/{}/contract/{}/".format(app_id, contract_name), query_args
         ).send()
 
-    @filter_set
-    def list_contract_transactions(
-        self, query_args: QueryArgs, app_id: str, contract_name: str
-    ):
-        """
-        GET
-        /v2/apps/{application}/contract/{contract_name}/transactions/
-
-        List contract transactions
-
-        :param app_id: Application name
-        :type app_id: str
-        :param contract_name: The contract name
-        :type contract_name: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *search_filter* (``SearchFilter``) - Optional
-        :return: List of cached transactions made against the contract
-        :rtype: List[json]
-        """
-        return SimbaRequest(
-            "/v2/apps/{}/contract/{}/transactions/".format(app_id, contract_name),
-            query_args,
-        ).send()
+    #NOTE(Adam): Replace with graphql endpoint
 
     @filter_set
     def list_contracts(self, query_args, app_id: str):
@@ -368,73 +342,7 @@ class Simba:
             "/v2/apps/{}/contract/{}/info".format(app_id, contract_name), query_args
         ).send()
 
-    def get_instanced_contract(
-        self,
-        app_id: str,
-        contract_name: str,
-        contract_id: str,
-        query_args: Optional[QueryArgs] = None,
-    ):
-        """
-        GET
-        /v2/apps/{application}/contract/{contract_name}/contracts/{contract_id}/
-
-        Get detailed information about an instance of a given parent contract
-
-        A deployed contract instance is a contract that is typically stateful, i.e., maintains properties or maps of data which has a parent contract. The parent provides the entry point for querying transactions that are submitted to instances that share the same parent. The parent contract API exposes a new endpoint which allows creating instances based on the parent. Instances can be invoked via the API endpoints that allow address or assetId identification. If an instance is created with an assetId constructor parameter, this can be used to identify the contract via the asset id value.
-
-        :param app_id: Application name
-        :type app_id: str
-        :param contract_name: The parent contract name
-        :type contract_name: str
-        :param contract_id: The instanced contract Id
-        :type contract_id: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *query_args* (``QueryArgs``) - Optional
-        :return: Contract metadata
-        :rtype: json
-        """
-        query_args = query_args or {}
-        return SimbaRequest(
-            "/v2/apps/{}/contract/{}/contracts/{}/".format(
-                app_id, contract_name, contract_id
-            ),
-            query_args,
-        ).send()
-
-    @filter_set
-    def list_contract_instances(
-        self, query_args: QueryArgs, app_id: str, contract_name: str
-    ):
-        """
-        GET
-        /v2/apps/{application}/contract/{contract_name}/contracts/
-
-        List contract instances
-
-        A deployed contract instance is a contract that is typically stateful, i.e., maintains properties or maps of data which has a parent contract. The parent provides the entry point for querying transactions that are submitted to instances that share the same parent. The parent contract API exposes a new endpoint which allows creating instances based on the parent. Instances can be invoked via the API endpoints that allow address or assetId identification. If an instance is created with an assetId constructor parameter, this can be used to identify the contract via the asset id value.
-
-        :param app_id: Application name
-        :type app_id: str
-        :param contract_name: The contract name
-        :type contract_name: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *search_filter* (``SearchFilter``) - Optional
-        :return: A list of contract instances contained in the application
-        :rtype: List[json]
-        """
-        return SimbaRequest(
-            "/v2/apps/{}/contract/{}/contracts/".format(app_id, contract_name),
-            query_args,
-        ).send()
+    #NOTE(Adam): Unlikely that an application would use contract instance info
 
     @filter_set
     def list_events(
@@ -540,44 +448,7 @@ class Simba:
             query_args,
         ).send()
 
-    @filter_set
-    def list_transactions_by_address(
-        self,
-        query_args: QueryArgs,
-        app_id: str,
-        contract_name: str,
-        identifier: str,
-        method_name: str,
-    ):
-        """
-        GET
-        /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
-
-        List Transactions by address
-
-        :param app_id: Application name
-        :type app_id: str
-        :param contract_name: The contract name
-        :type contract_name: str
-        :param identifier: The contract address
-        :type identifier: str
-        :param method_name: The method name
-        :type method_name: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *search_filter* (``SearchFilter``) - Optional
-        :return: List of transaction details
-        :rtype: List[json]
-        """
-        return SimbaRequest(
-            "/v2/apps/{}/contract/{}/address/{}/{}/".format(
-                app_id, contract_name, identifier, method_name
-            ),
-            query_args,
-        ).send()
+    #NOTE(Adam): Replace with graphQL endpoint
 
     def submit_transaction_by_address(
         self,
@@ -629,44 +500,7 @@ class Simba:
             method="POST",
         ).send(headers=headers, json_payload=inputs)
 
-    @filter_set
-    def list_transactions_by_asset(
-        self,
-        query_args: QueryArgs,
-        app_id: str,
-        contract_name: str,
-        identifier: str,
-        method_name: str,
-    ):
-        """
-        GET
-        /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
-
-        List transactions by asset
-
-        :param app_id: Application name
-        :type app_id: str
-        :param contract_name: The contract name
-        :type contract_name: str
-        :param identifier: The asset identifier
-        :type identifier: str
-        :param method_name: The method name
-        :type method_name: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *search_filter* (``SearchFilter``) - Optional
-        :return: List of transaction details
-        :rtype: List[json]
-        """
-        return SimbaRequest(
-            "/v2/apps/{}/contract/{}/asset/{}/{}/".format(
-                app_id, contract_name, identifier, method_name
-            ),
-            query_args,
-        ).send()
+    #NOTE(Adam): Replace with graphql endpoint
 
     def submit_transaction_by_asset(
         self,
@@ -718,36 +552,7 @@ class Simba:
             method="POST",
         ).send(headers=headers, json_payload=inputs)
 
-    @filter_set
-    def list_transactions_by_method(
-        self, query_args: QueryArgs, app_id: str, contract_name: str, method_name: str
-    ):
-        """
-        GET
-        /v2/apps/{application}/contract/{contract_name}/{method_name}/
-
-        List contract methods
-
-        :param app_id: Application name
-        :type app_id: str
-        :param contract_name: The contract name
-        :type contract_name: str
-        :param method_name: The method name
-        :type method_name: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *search_filter* (``SearchFilter``) - Optional
-        :return: List of transaction details
-        :rtype: List[json]
-        """
-        query_args = query_args or {}
-        return SimbaRequest(
-            "/v2/apps/{}/contract/{}/{}/".format(app_id, contract_name, method_name),
-            query_args,
-        ).send()
+    #NOTE(Adam): Replace with GraphQL endpoint
 
     def submit_contract_method(
         self,
@@ -941,44 +746,7 @@ class Simba:
             method="POST",
         ).send(headers=headers, json_payload=inputs)
 
-    def create_contract_instance(
-        self,
-        app_id: str,
-        contract_name: str,
-        query_args: Optional[QueryArgs] = None,
-        sender_address: str = None,
-    ):
-        """
-        POST
-        /v2/apps/{application}/new/{contract_name}/
-
-        create contract instance
-
-        :param app_id: Application name
-        :type app_id: str
-        :param contract_name: The contract name
-        :type contract_name: str
-        :param sender_address: The user address for self signing
-        :type sender_address: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *query_args* (``QueryArgs``) - Optional
-        :return: Transaction detail
-        :rtype: json
-        """
-        headers = {}
-        if sender_address:
-            headers["txn-sender"] = sender_address
-
-        query_args = query_args or {}
-        return SimbaRequest(
-            "/v2/apps/{}/new/{}/".format(app_id, contract_name),
-            query_args,
-            method="POST",
-        ).send(headers=headers)
+    #NOTE(Adam): Omit contract deployments. Leave it to the plugins to do this
 
     def submit_signed_transaction(
         self,
@@ -1020,4 +788,5 @@ class Simba:
     /v2/apps/{application}/contract/{contract_name}/graphql/
     post gql search Application
     """
-    # TODO(Adam): Add this library function for gql search
+
+    # TODO(Adam): Add this library function for gql
