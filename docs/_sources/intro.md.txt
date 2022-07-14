@@ -43,7 +43,7 @@ BASE_API_URL="https://simba-dev-api.platform.simbachain.com/"
 AUTH_FLOW="client_credentials"
 CLIENT_SECRET="ASwe29JUHhhIHsih238hfs8w7HSD88hah823hsdhHWE8665sdhfhjsdjHUSHHh92387hahHHS239823AJHhsdjcbjs09283jsd98JHHhw192301Hyihsn91ncmzhjkaO"
 CLIENT_ID="oiquwyeOIHbwe78ashah928H80jh2190hbWYHBnl"
-BASE_AUTH_URL="https://simba-dev-api.platform.simbachain.com"
+BASE_AUTH_URL="https://simba-dev-api.platform.simbachain.com/"
 AUTH_ENDPOINT="/o/"
 ```
 
