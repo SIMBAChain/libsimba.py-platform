@@ -13,7 +13,7 @@ AUTH_FLOW = "client_credentials"
 CLIENT_ID = ""
 CLIENT_SECRET = ""
 SCOPE = "api://{}/scaas.access".format(CLIENT_ID)
-BASE_AUTH_URL = "https://simba-dev-api.platform.simbachain.com"
+BASE_AUTH_URL = "https://simba-dev-api.platform.simbachain.com/"
 TENANT_ID = ""
 AUTH_ENDPOINT = "/o/"
 
