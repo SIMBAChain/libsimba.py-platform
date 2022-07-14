@@ -25,7 +25,7 @@ Alternatively, using virtualenv:
 
 ```
 git clone https://github.com/SIMBAChain/libsimba.py-platform.git
-libsimba.py-platform
+cd libsimba.py-platform
 virtualenv -p python3 .venv
 source .venv/bin/activate
 poetry install
