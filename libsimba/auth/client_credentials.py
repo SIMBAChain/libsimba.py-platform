@@ -31,12 +31,6 @@ class ClientCredentials(AuthProvider):
             return ClientCredentials.access_token
         log.info("Failed ClientCredentials._is_authenticated()")
 
-        # payload = {
-        #     "grant_type": "client_credentials",
-        #     "client_id": CLIENT_ID,
-        #     "client_secret": CLIENT_SECRET,
-        #     "scope": SCOPE,
-        # }
         credential = f'{CLIENT_ID}:{CLIENT_SECRET}'
         encoded_credential = base64.b64encode(credential.encode('utf-8'))
 
