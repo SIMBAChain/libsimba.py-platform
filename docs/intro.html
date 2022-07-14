@@ -92,7 +92,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#install-for-development"><em>Install for development</em></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#configuration"><em>Configuration</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration"><em>Configuration</em></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#django-oauth2-toolkit-authentication">Django OAuth2 Toolkit Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#keycloak-authentication">Keycloak Authentication</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#usage"><em>Usage</em></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#instantiate-the-simba-enterprise-client"><em>Instantiate the SIMBA Enterprise client</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#list-all-simba-applications-available-to-your-user"><em>List all SIMBA applications available to your user</em></a></li>
@@ -197,8 +201,16 @@
 <div class="section" id="install-for-development">
 <h3><em>Install for development</em><a class="headerlink" href="#install-for-development" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">SIMBAChain</span><span class="o">/</span><span class="n">libsimba</span><span class="o">.</span><span class="n">py</span><span class="o">-</span><span class="n">platform</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">libsimba</span><span class="o">.</span><span class="n">py</span><span class="o">-</span><span class="n">platform</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">libsimba</span><span class="o">.</span><span class="n">py</span><span class="o">-</span><span class="n">platform</span>
 <span class="n">poetry</span> <span class="n">env</span> <span class="n">use</span> <span class="n">python3</span><span class="mf">.7</span>
+<span class="n">poetry</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>Alternatively, using virtualenv:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">SIMBAChain</span><span class="o">/</span><span class="n">libsimba</span><span class="o">.</span><span class="n">py</span><span class="o">-</span><span class="n">platform</span><span class="o">.</span><span class="n">git</span>
+<span class="n">libsimba</span><span class="o">.</span><span class="n">py</span><span class="o">-</span><span class="n">platform</span>
+<span class="n">virtualenv</span> <span class="o">-</span><span class="n">p</span> <span class="n">python3</span> <span class="o">.</span><span class="n">venv</span>
+<span class="n">source</span> <span class="o">.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">poetry</span> <span class="n">install</span>
 </pre></div>
 </div>
@@ -206,7 +218,65 @@
 </div>
 <div class="section" id="configuration">
 <h2><em>Configuration</em><a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
-<p>You will need to set the following environment variables so that the SDK can make auth requests and interact with the Simba Enterprise Platform (SEP).</p>
+<div class="section" id="django-oauth2-toolkit-authentication">
+<h3>Django OAuth2 Toolkit Authentication<a class="headerlink" href="#django-oauth2-toolkit-authentication" title="Permalink to this headline">¶</a></h3>
+<p>Most users’ environments will be using Django OAuth2 Toolkit for authentication. YOu will need to set some configuration variables to use this authentication flow (see below). To set these variables, you can either set environment variables, or you can create a .env file in the root of your project (in your libsimba.py-platform directory).</p>
+<p>If you’re using a .env file, then an example file would look like (the SECRET and ID in this example are fake):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BASE_API_URL</span><span class="o">=</span><span class="s2">&quot;https://simba-dev-api.platform.simbachain.com/&quot;</span>
+<span class="n">AUTH_FLOW</span><span class="o">=</span><span class="s2">&quot;client_credentials&quot;</span>
+<span class="n">CLIENT_SECRET</span><span class="o">=</span><span class="s2">&quot;ASwe29JUHhhIHsih238hfs8w7HSD88hah823hsdhHWE8665sdhfhjsdjHUSHHh92387hahHHS239823AJHhsdjcbjs09283jsd98JHHhw192301Hyihsn91ncmzhjkaO&quot;</span>
+<span class="n">CLIENT_ID</span><span class="o">=</span><span class="s2">&quot;oiquwyeOIHbwe78ashah928H80jh2190hbWYHBnl&quot;</span>
+<span class="n">BASE_AUTH_URL</span><span class="o">=</span><span class="s2">&quot;https://simba-dev-api.platform.simbachain.com&quot;</span>
+<span class="n">AUTH_ENDPOINT</span><span class="o">=</span><span class="s2">&quot;/o/&quot;</span>
+</pre></div>
+</div>
+<p>Note on the above variables from your .env file:</p>
+<ol class="simple">
+<li><p>AUTH_FLOW defaults to “client credentials” if not set</p></li>
+<li><p>BASE_AUTH_URL defaults to “https://simba-dev-api.platform.simbachain.com/” if not set</p></li>
+<li><p>AUTH_ENDPOINT defaults to “/o/” if not set</p></li>
+<li><p>BASE_API_URL defaults to “https://simba-dev-api.platform.simbachain.com/” if not set</p></li>
+</ol>
+<p>If you would rather set environment variables, then you will need to set:</p>
+<table class="colwidths-auto docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>variable</p></th>
+<th class="head"><p>default</p></th>
+<th class="head"><p>additional notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>LIBSIMBA_BASE_API_URL</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://simba-dev-api.platform.simbachain.com/</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>LIBSIMBA_AUTH_FLOW</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">client_credentials</span></code></p></td>
+<td><p>Can be one of: <code class="docutils literal notranslate"><span class="pre">pkce,</span> <span class="pre">client_credentials,</span> <span class="pre">or</span> <span class="pre">password</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>LIBSIMBA_AUTH_APP_CLIENT_SECRET</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p>This must be set if using <code class="docutils literal notranslate"><span class="pre">client_credentials</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>LIBSIMBA_AUTH_APP_CLIENT_ID</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p>This must be set if using <code class="docutils literal notranslate"><span class="pre">client_credentials</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>LIBSIMBA_AUTH_BASE_URL</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">https://simba-dev-api.platform.simbachain.com/</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>LIBSIMBA_AUTH_ENDPOINT</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">/o/</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p>(Please see <a class="reference external" href="#SETTING-UP-FOR-DJANGO-OAUTH2-CLIENT-CREDENTIALS-FLOW">setting up Django OAuth2 Toolkit client credentials flow</a> for an example on how to setup for Django OAuth2 authentication.)</p>
+</div>
+<div class="section" id="keycloak-authentication">
+<h3>Keycloak Authentication<a class="headerlink" href="#keycloak-authentication" title="Permalink to this headline">¶</a></h3>
+<p>If you are using the Keycloak authentication flow, you will need to set the following environment variables so that the SDK can make auth requests and interact with the SIMBA Blocks platform.</p>
 <table class="colwidths-auto docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>variable</p></th>
@@ -250,6 +320,7 @@
 </tbody>
 </table>
 <p>(Please see <a class="reference external" href="#SETTING-UP-FOR-KEYCLOAK-CLIENT-CREDENTIALS-FLOW">setting up keycloak client credentials flow</a> for an example on how to setup for keycloak authentication.)</p>
+</div>
 </div>
 <div class="section" id="usage">
 <h2><em>Usage</em><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
