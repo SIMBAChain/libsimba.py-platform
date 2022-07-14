@@ -46,9 +46,16 @@ TENANT_ID = REALM_ID = os.getenv("LIBSIMBA_AUTH_TENANT_ID", TENANT_ID)
 AUTH_ENDPOINT = os.getenv("LIBSIMBA_AUTH_ENDPOINT", AUTH_ENDPOINT)
 
 # using decouple.config
-# set CLIENT_ID and CLIENT_SECRET in .env
+# set CLIENT_ID and CLIENT_SECRET in .env in root directory of libsimba.py-platform
+# eg in .env: 
+    # CLIENT_ID="some client id"
+    # CLIENT_SECRET="some client secret"
+BASE_API_URL = config("BASE_API_URL", default=BASE_API_URL)
+AUTH_FLOW = config("AUTH_FLOW", default=AUTH_FLOW)
 CLIENT_SECRET = config("CLIENT_SECRET", default=CLIENT_SECRET)
 CLIENT_ID = config("CLIENT_ID", default=CLIENT_ID)
+BASE_AUTH_URL = config("BASE_AUTH_URL", default=BASE_AUTH_URL)
+AUTH_ENDPOINT = config("AUTH_ENDPOINT", default=AUTH_ENDPOINT)
 SCOPE = "api://{}/scaas.access".format(CLIENT_ID)
 
 # Test settings
