@@ -1,20 +1,21 @@
 import json
 import os
 from os.path import join, dirname
+from decouple import config
 
 DEBUG = True
 
 PROJECT_PATH = dirname(__file__)
 
 # Default settings
-BASE_API_URL = "https://api.sep.dev.simbachain.com"
+BASE_API_URL = "https://simba-dev-api.platform.simbachain.com/"
 AUTH_FLOW = "client_credentials"
-CLIENT_SECRET = ""
 CLIENT_ID = ""
+CLIENT_SECRET = ""
 SCOPE = "api://{}/scaas.access".format(CLIENT_ID)
-BASE_AUTH_URL = "https://login.microsoftonline.com"
+BASE_AUTH_URL = "https://simba-dev-api.platform.simbachain.com"
 TENANT_ID = ""
-AUTH_ENDPOINT = "/{}/oauth2/v2.0/".format(TENANT_ID)
+AUTH_ENDPOINT = "/o/"
 
 # Use the env to override local_settings
 # So load local_settings first
@@ -43,6 +44,12 @@ BASE_AUTH_URL = os.getenv("LIBSIMBA_AUTH_BASE_URL", BASE_AUTH_URL)
 TENANT_ID = REALM_ID = os.getenv("LIBSIMBA_AUTH_TENANT_ID", TENANT_ID)
 
 AUTH_ENDPOINT = os.getenv("LIBSIMBA_AUTH_ENDPOINT", AUTH_ENDPOINT)
+
+# using decouple.config
+# set CLIENT_ID and CLIENT_SECRET in .env
+CLIENT_SECRET = config("CLIENT_SECRET", default=CLIENT_SECRET)
+CLIENT_ID = config("CLIENT_ID", default=CLIENT_ID)
+SCOPE = "api://{}/scaas.access".format(CLIENT_ID)
 
 # Test settings
 TEST_APP = "<set in local settings>"

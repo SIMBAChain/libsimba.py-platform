@@ -8,6 +8,7 @@ docs/.doctrees
 **_token.json
 
 **.env
+**.venv
 
 # Vim
 *.*~
