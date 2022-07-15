@@ -17,6 +17,7 @@ requests = "^2.25.1"
 httpx = "^0.21.1"
 hdwallet = "^2.1.1"
 web3 = "^5.28.0"
+python-decouple = "^3.6"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^3.5.4"

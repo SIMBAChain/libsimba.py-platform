@@ -1,6 +1,7 @@
 import requests
-
+from requests.auth import HTTPBasicAuth
 from libsimba.auth import AuthProvider
+import base64
 from libsimba.settings import (
     CLIENT_ID,
     CLIENT_SECRET,
@@ -30,19 +31,26 @@ class ClientCredentials(AuthProvider):
             return ClientCredentials.access_token
         log.info("Failed ClientCredentials._is_authenticated()")
 
+        credential = f'{CLIENT_ID}:{CLIENT_SECRET}'
+        encoded_credential = base64.b64encode(credential.encode('utf-8'))
+
         payload = {
             "grant_type": "client_credentials",
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-            "scope": SCOPE,
+        }
+
+        headers = {
+            "content-type": "application/x-www-form-urlencoded",
+            "Cache-Control": "no-cache",
+            "Authorization": f"Basic {encoded_credential}"
         }
 
         access_token = None
         try:
             log.info("Redoing auth")
-            auth_url = build_url(BASE_AUTH_URL, "{}token".format(AUTH_ENDPOINT), {})
-            r = requests.post(auth_url, data=payload, allow_redirects=True)
-
+            auth_url = build_url(BASE_AUTH_URL, f"{AUTH_ENDPOINT}token/", {})
+            basic_auth = HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET)
+            r = requests.post(auth_url, auth=basic_auth, headers=headers, data=payload, allow_redirects=True)
+            r.raise_for_status()
             access_token = r.json()["access_token"]
         except Exception as e:
             log.error(e)
@@ -67,7 +75,7 @@ class ClientCredentials(AuthProvider):
         whoami_url = build_url(BASE_API_URL, "/user/whoami/", {})
         try:
             r = requests.get(
-                whoami_url, headers={"Authorization": "Bearer {}".format(access_token)}
+                whoami_url, headers={"Authorization": f"Bearer {access_token}"}
             )
             if r.status_code != 200:
                 return False

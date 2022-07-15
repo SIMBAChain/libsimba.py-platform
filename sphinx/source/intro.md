@@ -17,14 +17,56 @@ pip install libsimba.py-platform-0.1.4.tar.gz
 
 ```
 git clone https://github.com/SIMBAChain/libsimba.py-platform.git
-cd libsimba.py-platform.git
+cd libsimba.py-platform
 poetry env use python3.7
+poetry install
+```
+Alternatively, using virtualenv:
+
+```
+git clone https://github.com/SIMBAChain/libsimba.py-platform.git
+cd libsimba.py-platform
+virtualenv -p python3 .venv
+source .venv/bin/activate
 poetry install
 ```
 
 ## *Configuration*
 
-You will need to set the following environment variables so that the SDK can make auth requests and interact with the Simba Enterprise Platform (SEP).
+### Django OAuth2 Toolkit Authentication
+Most users' environments will be using Django OAuth2 Toolkit for authentication. YOu will need to set some configuration variables to use this authentication flow (see below). To set these variables, you can either set environment variables, or you can create a .env file in the root of your project (in your libsimba.py-platform directory). 
+
+If you're using a .env file, then an example file would look like (the SECRET and ID in this example are fake):
+
+```
+BASE_API_URL="https://simba-dev-api.platform.simbachain.com/"
+AUTH_FLOW="client_credentials"
+CLIENT_SECRET="ASwe29JUHhhIHsih238hfs8w7HSD88hah823hsdhHWE8665sdhfhjsdjHUSHHh92387hahHHS239823AJHhsdjcbjs09283jsd98JHHhw192301Hyihsn91ncmzhjkaO"
+CLIENT_ID="oiquwyeOIHbwe78ashah928H80jh2190hbWYHBnl"
+BASE_AUTH_URL="https://simba-dev-api.platform.simbachain.com"
+AUTH_ENDPOINT="/o/"
+```
+
+Note on the above variables from your .env file:
+1. AUTH_FLOW defaults to "client credentials" if not set
+2. BASE_AUTH_URL defaults to "https://simba-dev-api.platform.simbachain.com/" if not set
+3. AUTH_ENDPOINT defaults to "/o/" if not set
+4. BASE_API_URL defaults to "https://simba-dev-api.platform.simbachain.com/" if not set
+
+If you would rather set environment variables, then you will need to set:
+|variable|default|additional notes|
+|---|---|---|
+|LIBSIMBA_BASE_API_URL|`https://simba-dev-api.platform.simbachain.com/`||
+|LIBSIMBA_AUTH_FLOW|`client_credentials`|Can be one of: `pkce, client_credentials, or password`|
+|LIBSIMBA_AUTH_APP_CLIENT_SECRET|`None`|This must be set if using `client_credentials`|
+|LIBSIMBA_AUTH_APP_CLIENT_ID|`None`|This must be set if using `client_credentials`|
+|LIBSIMBA_AUTH_BASE_URL|`https://simba-dev-api.platform.simbachain.com/`||
+|LIBSIMBA_AUTH_ENDPOINT|`/o/`||
+
+(Please see [setting up Django OAuth2 Toolkit client credentials flow](#SETTING-UP-FOR-DJANGO-OAUTH2-CLIENT-CREDENTIALS-FLOW) for an example on how to setup for Django OAuth2 authentication.)
+
+### Keycloak Authentication
+If you are using the Keycloak authentication flow, you will need to set the following environment variables so that the SDK can make auth requests and interact with the SIMBA Blocks platform.
 
 |variable|default|additional notes|
 |---|---|---|
