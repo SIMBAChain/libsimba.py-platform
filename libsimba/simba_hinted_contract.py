@@ -1,6 +1,7 @@
 from typing import List, Dict, Optional, Union, Any
 from jinja2 import Template
 import requests
+from libsimba.settings import BASE_API_URL
 from libsimba.decorators import auth_required
 from libsimba.utils import build_url
 from libsimba import templates
@@ -14,7 +15,8 @@ class SimbaHintedContract:
         app_name: str,
         contract_name: str,
         contract_class_name: str = None,
-        base_api_url: str = "https://api.sep.dev.simbachain.com/",
+        # base_api_url: str = "https://api.sep.dev.simbachain.com/",
+        base_api_url: str = BASE_API_URL,
         output_file: str = "newContract.py",
     ):
         """
@@ -57,6 +59,8 @@ class SimbaHintedContract:
             self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts
         )
         resp = requests.get(url, headers=headers)
+        print(f'resp: {resp}')
+        print(resp.request.url)
         metadata = resp.json()["metadata"]
         return metadata
 

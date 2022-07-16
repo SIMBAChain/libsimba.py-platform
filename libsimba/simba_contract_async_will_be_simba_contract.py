@@ -1,13 +1,14 @@
 import json
 from typing import List, Optional
 from libsimba.simba_request import SimbaRequest
-from libsimba.simba_contract import SimbaContract
+from libsimba.simba_contract_sync import SimbaContractSync
 
 
-class SimbaContractAsync(SimbaContract):
+class SimbaContract(SimbaContractSync):
     def __init__(self, base_api_url: str, app_name: str, contract_name: str):
         super().__init__(base_api_url, app_name, contract_name)
-        self.async_contract_uri = "{}/async/contract/{}".format(
+        # probably don't need this property anymore
+        self.sync_contract_uri = "{}/sync/contract/{}".format(
             self.app_name, self.contract_name
         )
 
@@ -15,7 +16,7 @@ class SimbaContractAsync(SimbaContract):
         query_args = query_args or {}
         return await SimbaRequest(
             "v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args
-        ).send_async()
+        ).send()
 
     async def call_method(
         self, method_name: str, inputs: dict, query_args: Optional[dict] = None
@@ -23,10 +24,10 @@ class SimbaContractAsync(SimbaContract):
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
         return await SimbaRequest(
-            "v2/apps/{}/{}/".format(self.async_contract_uri, method_name),
+            "v2/apps/{}/{}/".format(self.contract_uri, method_name),
             query_args,
             method="POST",
-        ).send_async(json_payload=json.dumps(inputs))
+        ).send(json_payload=json.dumps(inputs))
 
     # Example files: files = {'file': open('report.xls', 'rb')}
     async def call_contract_method_with_files(
@@ -42,13 +43,13 @@ class SimbaContractAsync(SimbaContract):
             "v2/apps/{}/{}/".format(self.async_contract_uri, method_name),
             query_args,
             method="POST",
-        ).send_async(json_payload=json.dumps(inputs), files=files)
+        ).send(json_payload=json.dumps(inputs), files=files)
 
     async def get_transactions(self, query_args: Optional[dict] = None):
         query_args = query_args or {}
         return await SimbaRequest(
             "v2/apps/{}/transactions/".format(self.contract_uri), query_args
-        ).send_async()
+        ).send()
 
     async def query_events(self, event_name: str, query_args: Optional[dict] = None):
         query_args = query_args or {}
@@ -65,7 +66,7 @@ class SimbaContractAsync(SimbaContract):
                 self.app_name, self.contract_name, bundle_hash
             ),
             query_args,
-        ).send_async()
+        ).send()
 
     async def get_transaction_statuses(
         self, txn_hashes: List[str] = None, query_args: Optional[dict] = None
@@ -84,4 +85,4 @@ class SimbaContractAsync(SimbaContract):
                 self.app_name, self.contract_name
             ),
             query_args,
-        ).send_async()
+        ).send()

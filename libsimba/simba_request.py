@@ -1,6 +1,7 @@
 import httpx
 import json
 from typing import Optional
+import requests
 from httpx import InvalidURL, ConnectError, ProtocolError, RequestError, Response
 from libsimba.utils import build_url
 from libsimba.settings import BASE_API_URL
@@ -42,7 +43,7 @@ class SimbaRequest:
         return self._json_response
 
     @auth_required
-    def send(
+    def send_sync(
         self,
         headers: dict,
         json_payload: Optional[dict] = None,
@@ -51,7 +52,7 @@ class SimbaRequest:
     ):
         if self.method == "get":
             response = httpx.get(self.url, headers=headers, follow_redirects=True)
-            return self._process_response(response, headers, fetch_all)
+            return self._process_response_sync(response, headers, fetch_all)
         elif self.method == "post":
             headers.update({"content-type": "application/json"})
             json_payload = json_payload or {}
@@ -70,10 +71,10 @@ class SimbaRequest:
                     data=json.dumps(json_payload),
                     follow_redirects=True,
                 )
-            return self._process_response(response, headers)
+            return self._process_response_sync(response, headers)
 
     @auth_required
-    async def send_async(
+    async def send(
         self,
         headers: dict,
         json_payload: Optional[dict] = None,
@@ -85,7 +86,7 @@ class SimbaRequest:
                 response = await async_client.get(
                     self.url, headers=headers, follow_redirects=True
                 )
-                return await self._process_response_async(
+                return await self._process_response(
                     async_client, response, headers, fetch_all
                 )
             elif self.method == "post":
@@ -103,20 +104,20 @@ class SimbaRequest:
                     response = await async_client.post(
                         self.url, headers=headers, data=json_payload, follow_redirects=True
                     )
-                return await self._process_response_async(
+                return await self._process_response(
                     async_client, response, headers
                 )
 
-    def _process_response(
+    def _process_response_sync(
         self, response: Response, headers: dict, fetch_all: Optional[bool] = False
     ):
         json_response = self._json_response_or_raise(response)
         if fetch_all:
-            json_response = self._fetch_all(json_response, headers)
+            json_response = self._fetch_all_sync(json_response, headers)
         self._json_response = json_response
         return json_response
 
-    async def _process_response_async(
+    async def _process_response(
         self,
         client: httpx.AsyncClient,
         response: Response,
@@ -125,7 +126,7 @@ class SimbaRequest:
     ):
         json_response = self._json_response_or_raise(response)
         if fetch_all:
-            json_response = await self._fetch_all_async(json_response, headers, client)
+            json_response = await self._fetch_all(json_response, headers, client)
         self._json_response = json_response
         return json_response
 
@@ -142,7 +143,7 @@ class SimbaRequest:
             raise LibSimbaException(message=str(e))
         return json_response
 
-    def _fetch_all(self, json_response: dict, headers: dict):
+    def _fetch_all_sync(self, json_response: dict, headers: dict):
         if not json_response.get("results"):
             return json_response
 
@@ -150,14 +151,14 @@ class SimbaRequest:
         next_page_url = json_response.get("next")
 
         while next_page_url is not None:
-            r = request.get(next_page_url, headers=headers, follow_redirects=True)
+            r = requests.get(next_page_url, headers=headers, follow_redirects=True)
             json_response = r.json()
             results += json_response.get("results")
             next_page_url = json_response.get("next")
 
         return results
 
-    async def _fetch_all_async(
+    async def _fetch_all(
         self, json_response: dict, headers: dict, client: httpx.AsyncClient
     ):
         if not json_response.get("results"):

@@ -25,7 +25,7 @@ class QueryArgs(dict):
     pass
 
 
-class Simba:
+class SimbaSync:
     def __init__(self, base_api_url=BASE_API_URL):
         self.base_api_url = base_api_url  # TODO(Adam): Phase out
         SimbaRequest.base_api_url = base_api_url
@@ -39,7 +39,7 @@ class Simba:
         :returns: User info as json
         :rtype: json
         """
-        return SimbaRequest("user/whoami/", {}).send()
+        return SimbaRequest("user/whoami/", {}).send_sync()
 
     def smart_contract_client(self, app_name: str, contract_name: str):
         """
@@ -78,7 +78,7 @@ class Simba:
         :return: List of applications
         :rtype: json
         """
-        return SimbaRequest("/v2/apps/", query_args).send()
+        return SimbaRequest("/v2/apps/", query_args).send_sync()
 
     def get_application(self, app_id: str, query_args: Optional[QueryArgs] = None):
         """
@@ -97,7 +97,7 @@ class Simba:
         :rtype: json
         """
         query_args = query_args or {}
-        return SimbaRequest("/v2/apps/{}/".format(app_id), query_args).send()
+        return SimbaRequest("/v2/apps/{}/".format(app_id), query_args).send_sync()
 
     @filter_set
     def list_application_transactions(self, query_args: QueryArgs, app_id: str):
@@ -119,7 +119,7 @@ class Simba:
         """
         return SimbaRequest(
             "/v2/apps/{}/transactions/".format(app_id), query_args
-        ).send()
+        ).send_sync()
 
     def get_application_contract(
         self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
@@ -145,7 +145,7 @@ class Simba:
         query_args = query_args or {}
         return SimbaRequest(
             "/v2/apps/{}/contract/{}/".format(app_id, contract_name), query_args
-        ).send()
+        ).send_sync()
 
     @filter_set
     def list_contract_transactions(
@@ -173,7 +173,7 @@ class Simba:
         return SimbaRequest(
             "/v2/apps/{}/contract/{}/transactions/".format(app_id, contract_name),
             query_args,
-        ).send()
+        ).send_sync()
 
     @filter_set
     def list_contracts(self, query_args, app_id: str):
@@ -194,7 +194,7 @@ class Simba:
         :return: Information on the application contract
         :rtype: List[json]
         """
-        return SimbaRequest("/v2/apps/{}/contracts/".format(app_id), query_args).send()
+        return SimbaRequest("/v2/apps/{}/contracts/".format(app_id), query_args).send_sync()
 
     def validate_bundle(
         self,
@@ -228,7 +228,7 @@ class Simba:
         return SimbaRequest(
             "/v2/apps/{}/validate/{}/{}/".format(app_id, contract_name, bundle_hash),
             query_args,
-        ).send()
+        ).send_sync()
 
     def get_bundle(
         self,
@@ -264,7 +264,7 @@ class Simba:
                 app_id, contract_name, bundle_hash
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     def get_bundle_file(
         self,
@@ -303,7 +303,7 @@ class Simba:
                 app_id, contract_name, bundle_hash, file_name
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     def get_manifest_for_bundle_from_bundle_hash(
         self,
@@ -339,7 +339,7 @@ class Simba:
                 app_id, contract_name, bundle_hash
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     def list_contract_info(
         self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
@@ -366,7 +366,7 @@ class Simba:
         query_args = query_args or {}
         return SimbaRequest(
             "/v2/apps/{}/contract/{}/info".format(app_id, contract_name), query_args
-        ).send()
+        ).send_sync()
 
     def get_instanced_contract(
         self,
@@ -404,7 +404,7 @@ class Simba:
                 app_id, contract_name, contract_id
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     @filter_set
     def list_contract_instances(
@@ -434,7 +434,7 @@ class Simba:
         return SimbaRequest(
             "/v2/apps/{}/contract/{}/contracts/".format(app_id, contract_name),
             query_args,
-        ).send()
+        ).send_sync()
 
     @filter_set
     def list_events(
@@ -466,7 +466,7 @@ class Simba:
                 app_id, contract_name, event_name
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     def get_receipt(
         self,
@@ -502,7 +502,7 @@ class Simba:
                 app_id, contract_name, receipt_hash
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     def get_transaction(
         self,
@@ -538,7 +538,7 @@ class Simba:
                 app_id, contract_name, transaction_hash
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     @filter_set
     def list_transactions_by_address(
@@ -577,7 +577,7 @@ class Simba:
                 app_id, contract_name, identifier, method_name
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     def submit_transaction_by_address(
         self,
@@ -591,7 +591,7 @@ class Simba:
     ):
         """
         POST
-        /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
+        /v2/apps/{application}/sync/contract/{contract_name}/address/{identifier}/{method_name}/
 
         Submit instance address method
 
@@ -622,12 +622,12 @@ class Simba:
 
         query_args = query_args or {}
         return SimbaRequest(
-            "/v2/apps/{}/contract/{}/address/{}/{}/".format(
+            "/v2/apps/{}/sync/contract/{}/address/{}/{}/".format(
                 app_id, contract_name, identifier, method_name
             ),
             query_args,
             method="POST",
-        ).send(headers=headers, json_payload=inputs)
+        ).send_sync(headers=headers, json_payload=inputs)
 
     @filter_set
     def list_transactions_by_asset(
@@ -666,7 +666,7 @@ class Simba:
                 app_id, contract_name, identifier, method_name
             ),
             query_args,
-        ).send()
+        ).send_sync()
 
     def submit_transaction_by_asset(
         self,
@@ -680,7 +680,7 @@ class Simba:
     ):
         """
         POST
-        /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
+        /v2/apps/{application}/sync/contract/{contract_name}/asset/{identifier}/{method_name}/
 
         Submit instance asset method
 
@@ -711,12 +711,12 @@ class Simba:
 
         query_args = query_args or {}
         return SimbaRequest(
-            "/v2/apps/{}/contract/{}/asset/{}/{}/".format(
+            "/v2/apps/{}/sync/contract/{}/asset/{}/{}/".format(
                 app_id, contract_name, identifier, method_name
             ),
             query_args,
             method="POST",
-        ).send(headers=headers, json_payload=inputs)
+        ).send_sync(headers=headers, json_payload=inputs)
 
     @filter_set
     def list_transactions_by_method(
@@ -747,7 +747,7 @@ class Simba:
         return SimbaRequest(
             "/v2/apps/{}/contract/{}/{}/".format(app_id, contract_name, method_name),
             query_args,
-        ).send()
+        ).send_sync()
 
     def submit_contract_method(
         self,
@@ -760,7 +760,7 @@ class Simba:
     ):
         """
         POST
-        /v2/apps/{application}/contract/{contract_name}/{method_name}/
+        /v2/apps/{application}/sync/contract/{contract_name}/{method_name}/
 
         Submit a transaction to a contract method
 
@@ -789,12 +789,12 @@ class Simba:
 
         query_args = query_args or {}
         return SimbaRequest(
-            "/v2/apps/{}/contract/{}/{}/".format(app_id, contract_name, method_name),
+            "/v2/apps/{}/sync/contract/{}/{}/".format(app_id, contract_name, method_name),
             query_args,
             method="POST",
-        ).send(headers=headers, json_payload=inputs)
+        ).send_sync(headers=headers, json_payload=inputs)
 
-    def submit_transaction_by_address_async(
+    async def submit_transaction_by_address_async(
         self,
         app_id: str,
         contract_name: str,
@@ -806,7 +806,7 @@ class Simba:
     ):
         """
         POST
-        /v2/apps/{application}/async/contract/{contract_name}/address/{identifier}/{method_name}/
+        /v2/apps/{application}/contract/{contract_name}/address/{identifier}/{method_name}/
 
         Submit async instance address method
 
@@ -836,15 +836,15 @@ class Simba:
             headers["txn-sender"] = sender_address
 
         query_args = query_args or {}
-        return SimbaRequest(
-            "/v2/apps/{}/async/contract/{}/address/{}/{}/".format(
+        return await SimbaRequest(
+            "/v2/apps/{}/contract/{}/address/{}/{}/".format(
                 app_id, contract_name, identifier, method_name
             ),
             query_args,
             method="POST",
         ).send(headers=headers, json_payload=inputs)
 
-    def submit_transaction_by_asset_async(
+    async def submit_transaction_by_asset_async(
         self,
         app_id: str,
         contract_name: str,
@@ -856,7 +856,7 @@ class Simba:
     ):
         """
         POST
-        /v2/apps/{application}/async/contract/{contract_name}/asset/{identifier}/{method_name}/
+        /v2/apps/{application}/contract/{contract_name}/asset/{identifier}/{method_name}/
 
         Submit async instance asset method
 
@@ -886,15 +886,15 @@ class Simba:
             headers["txn-sender"] = sender_address
 
         query_args = query_args or {}
-        return SimbaRequest(
-            "/v2/apps/{}/async/contract/{}/asset/{}/{}/".format(
+        return await SimbaRequest(
+            "/v2/apps/{}/contract/{}/asset/{}/{}/".format(
                 app_id, contract_name, identifier, method_name
             ),
             query_args,
             method="POST",
         ).send(headers=headers, json_payload=inputs)
 
-    def submit_contract_method_async(
+    async def submit_contract_method_async(
         self,
         app_id: str,
         contract_name: str,
@@ -905,7 +905,7 @@ class Simba:
     ):
         """
         POST
-        /v2/apps/{application}/async/contract/{contract_name}/{method_name}/
+        /v2/apps/{application}/contract/{contract_name}/{method_name}/
 
         post async method
 
@@ -933,7 +933,7 @@ class Simba:
             headers["txn-sender"] = sender_address
 
         query_args = query_args or {}
-        return SimbaRequest(
+        return await SimbaRequest(
             "/v2/apps/{}/async/contract/{}/{}/".format(
                 app_id, contract_name, method_name
             ),
@@ -978,7 +978,7 @@ class Simba:
             "/v2/apps/{}/new/{}/".format(app_id, contract_name),
             query_args,
             method="POST",
-        ).send(headers=headers)
+        ).send_sync(headers=headers)
 
     def submit_signed_transaction(
         self,
@@ -1013,7 +1013,7 @@ class Simba:
             "/v2/apps/{}/transactions/{}/".format(app_id, txn_id),
             query_args,
             method="POST",
-        ).send(json_payload={"transaction": txn})
+        ).send_sync(json_payload={"transaction": txn})
 
     """
     POST
