@@ -1,6 +1,6 @@
 from typing import Optional
 
-from libsimba.simba_contract_sync import SimbaContract
+from libsimba.simba_contract_sync import SimbaContractSync
 from libsimba.decorators import filter_set
 from libsimba.settings import BASE_API_URL
 from libsimba.simba_request import SimbaRequest
@@ -52,7 +52,7 @@ class SimbaSync:
         :returns: The instantiated client for the application's smart contract.
         :rtype: SimbaContract
         """
-        return SimbaContract(self.base_api_url, app_name, contract_name)
+        return SimbaContractSync(self.base_api_url, app_name, contract_name)
 
     # -------------------------------------------------
     # All proceeding functions are general App getters
@@ -934,7 +934,7 @@ class SimbaSync:
 
         query_args = query_args or {}
         return await SimbaRequest(
-            "/v2/apps/{}/async/contract/{}/{}/".format(
+            "/v2/apps/{}/contract/{}/{}/".format(
                 app_id, contract_name, method_name
             ),
             query_args,

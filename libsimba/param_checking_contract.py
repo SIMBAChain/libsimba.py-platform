@@ -12,7 +12,7 @@ class ParamCheckingContract:
         self.contract_name = contract_name
         self.base_api_url = base_api_url
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
-        self.async_contract_uri = "{}/async/contract/{}".format(
+        self.sync_contract_uri = "{}/sync/contract/{}".format(
             self.app_name, self.contract_name
         )
         self.metadata = self.get_metatadata()
@@ -23,7 +23,7 @@ class ParamCheckingContract:
         query_args = query_args or {}
         resp = SimbaRequest(
             "v2/apps/{}/?format=json".format(self.contract_uri), query_args
-        ).send()
+        ).send_sync()
         return resp.get("metadata")
 
     def is_array(self, param) -> bool:
