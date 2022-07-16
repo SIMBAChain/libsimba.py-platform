@@ -230,7 +230,7 @@ class SimbaHintedContract:
         if self.is_array(struct_param):
             struct_type = struct_param[:struct_param.find('[')]
             new_struct_type = struct_type.split('.')[1]
-            new_struct_type = self.contract_name + '.' + new_struct_type 
+            new_struct_type = self.contract_class_name + '.' + new_struct_type 
             struct_type = new_struct_type
             if forward_reference:
                 struct_type = f'"{struct_type}"'
@@ -238,7 +238,7 @@ class SimbaHintedContract:
             return struct_type
 
         new_struct_type = struct_param.split('.')[1]
-        new_struct_type = self.contract_name + '.' + new_struct_type 
+        new_struct_type = self.contract_class_name + '.' + new_struct_type 
         struct_type = new_struct_type
 
         if forward_reference:
