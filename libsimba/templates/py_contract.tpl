@@ -47,25 +47,18 @@ class {{SimbaHintedContractObj.contract_class_name}}:
         {% if accepts_files -%}
         files: List[Tuple] = None,
         {% endif -%}
-        async_call: Optional[bool] = True,
         query_args: Optional[dict] = None,
         qry_mthd: Optional[bool] = False,
         search_filter: SearchFilter = None):
         {%- if accepts_files %}
         """
         If qry_mthd == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
-        
-        If async_call == True, then invocations will hit async SEP endpoint for your contract, which means
-        they will be placed in a queue. This is default behavior.
 
         files parameter should be list with tuple elements of form (file_name, file_path) or (file_name, readable_file_like_object). see libsimba.file_handler for further details on what open_files expects as arguments
         """
         {%- else %}
         """
         If qry_mthd == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
-        
-        If async_call == True, then invocations will hit async SEP endpoint for your contract, which means
-        they will be placed in a queue. This is default behavior.
         """
         {%- endif %}
         inputs = {
@@ -78,28 +71,66 @@ class {{SimbaHintedContractObj.contract_class_name}}:
         convert_classes(inputs)
         query_args = query_args or {}
         if qry_mthd:
-            if async_call:
                 res = await self.simba_contract.query_method("{{method_name}}", query_args = query_args, search_filter = search_filter)
-                return res
-            else:
-                res = self.simba_contract_sync.query_method("{{method_name}}", query_args = query_args, search_filter = search_filter)
                 return res
         else:
             {% if accepts_files -%}
             files = open_files(files)
-            if async_call:
-                res = await self.simba_contract.call_contract_method_with_files("{{method_name}}", inputs, files = files, query_args = query_args)
-                return res
-            else:
-                res = self.simba_contract_sync.call_contract_method_with_files("{{method_name}}", inputs, files = files, query_args = query_args)
-                return res
+            res = await self.simba_contract.call_contract_method_with_files("{{method_name}}", inputs, files = files, query_args = query_args)
             close_files(files)
+            return res
             {%- else -%}
-            if async_call == True:
-                res = await self.simba_contract.call_method("{{method_name}}", inputs, query_args = query_args)
-                return res
-            else:
-                res = self.simba_contract_sync.call_method("{{method_name}}", inputs, query_args = query_args)
-                return res
+            res = await self.simba_contract.call_method("{{method_name}}", inputs, query_args = query_args)
+            return res
             {%- endif %}
-{% endfor %}
+
+    def {{method_name}}_sync(
+        self,
+        {% if method_dict["param_info"] -%}
+        {% for input_dict in method_dict["param_info"] -%}
+        {%- set param_name = input_dict["param_name"] -%}
+        {%- set hint_type = input_dict["hint_type"] -%}
+        {%- set default_value = input_dict["default_value"] -%}
+        {{param_name}}: {{hint_type}} = {{default_value}},
+        {% endfor -%}
+        {%- endif -%}
+        {% if accepts_files -%}
+        files: List[Tuple] = None,
+        {% endif -%}
+        query_args: Optional[dict] = None,
+        qry_mthd: Optional[bool] = False,
+        search_filter: SearchFilter = None):
+        {%- if accepts_files %}
+        """
+        If qry_mthd == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
+
+        files parameter should be list with tuple elements of form (file_name, file_path) or (file_name, readable_file_like_object). see libsimba.file_handler for further details on what open_files expects as arguments
+        """
+        {%- else %}
+        """
+        If qry_mthd == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
+        
+        """
+        {%- endif %}
+        inputs = {
+            {%- for input_dict in method_dict["param_info"] %}
+            {%- set param_name = input_dict["param_name"] %}
+            {%- set original_param_name = input_dict["original_param_name"] %}
+            "{{original_param_name}}": {{param_name}},
+            {%- endfor %}
+        }
+        convert_classes(inputs)
+        query_args = query_args or {}
+        if qry_mthd:
+                res = self.simba_contract_sync.query_method("{{method_name}}", query_args = query_args, search_filter = search_filter)
+        else:
+            {% if accepts_files -%}
+            files = open_files(files)
+            res = self.simba_contract_sync.call_contract_method_with_files("{{method_name}}", inputs, files = files, query_args = query_args)
+            close_files(files)
+            return res
+            {%- else -%}
+            res = self.simba_contract_sync.call_method("{{method_name}}", inputs, query_args = query_args)
+            return res
+            {%- endif %}
+    {% endfor %}
