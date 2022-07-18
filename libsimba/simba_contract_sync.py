@@ -3,6 +3,7 @@ from typing import List, Optional, Any, Dict
 from libsimba.decorators import filter_set
 from libsimba.simba_request import SimbaRequest
 from libsimba.param_checking_contract import ParamCheckingContract
+from libsimba.decorators import filter_set
 
 
 class SimbaContractSync(ParamCheckingContract):
@@ -15,8 +16,8 @@ class SimbaContractSync(ParamCheckingContract):
         self.metadata = self.get_metadata()
         self.params_restricted = self.param_restrictions()
 
-    
-    def query_method(self, query_args: dict, method_name: str):
+    @filter_set
+    def query_method(self, method_name: str, query_args: Optional[dict] = None):
         """
         Query transactions by method
 
@@ -35,8 +36,8 @@ class SimbaContractSync(ParamCheckingContract):
             "v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args
         ).send_sync()
 
-    def call_method(
-        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    def _call_method(
+        self, method_name: str, inputs: dict, http_method: Optional[str] = "POST", query_args: Optional[dict] = None
     ):
         """
         Call a contract method
@@ -56,10 +57,11 @@ class SimbaContractSync(ParamCheckingContract):
         """
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
+        _contract_uri = self.sync_contract_uri if http_method == "POST" else self.contract_uri
         return SimbaRequest(
-            "v2/apps/{}/{}/".format(self.sync_contract_uri, method_name),
+            "v2/apps/{}/{}/".format(_contract_uri, method_name),
             query_args,
-            method="POST",
+            method=http_method,
         ).send_sync(json_payload=json.dumps(inputs))
 
     # Example files: files = {'file': open('report.xls', 'rb')}
@@ -95,6 +97,22 @@ class SimbaContractSync(ParamCheckingContract):
             query_args,
             method="POST",
         ).send_sync(json_payload=json.dumps(inputs), files=files)
+
+    def call_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
+        http_method = "GET"
+        return self._call_method(
+            method_name, inputs, http_method=http_method, query_args=query_args
+        )
+
+    def submit_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
+        http_method = "POST"
+        return self._call_method(
+            method_name, inputs, http_method=http_method, query_args=query_args
+        )
 
     @filter_set
     def get_transactions(self, query_args: Optional[dict] = None):

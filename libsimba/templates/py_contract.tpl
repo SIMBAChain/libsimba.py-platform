@@ -33,6 +33,7 @@ class {{SimbaHintedContractObj.contract_class_name}}:
     {% endfor -%}
     {%- for method_dict in SimbaHintedContractObj.info_for_all_methods() %}
     {%- set accepts_files = method_dict["accepts_files"] %}
+    {%- set is_accessor = method_dict["is_accessor"] %}
     {%- set method_name = method_dict["method_name"] %}
     async def {{method_name}}(
         self,
@@ -48,17 +49,17 @@ class {{SimbaHintedContractObj.contract_class_name}}:
         files: List[Tuple] = None,
         {% endif -%}
         query_args: Optional[dict] = None,
-        qry_mthd: Optional[bool] = False,
+        do_query: Optional[bool] = False,
         search_filter: SearchFilter = None):
         {%- if accepts_files %}
         """
-        If qry_mthd == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
+        If do_query == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
 
         files parameter should be list with tuple elements of form (file_name, file_path) or (file_name, readable_file_like_object). see libsimba.file_handler for further details on what open_files expects as arguments
         """
         {%- else %}
         """
-        If qry_mthd == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
+        If do_query == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
         """
         {%- endif %}
         inputs = {
@@ -70,9 +71,9 @@ class {{SimbaHintedContractObj.contract_class_name}}:
         }
         convert_classes(inputs)
         query_args = query_args or {}
-        if qry_mthd:
-                res = await self.simba_contract.query_method("{{method_name}}", query_args = query_args, search_filter = search_filter)
-                return res
+        if do_query:
+            res = await self.simba_contract.query_method("{{method_name}}", query_args = query_args, search_filter = search_filter)
+            return res
         else:
             {% if accepts_files -%}
             files = open_files(files)
@@ -80,8 +81,13 @@ class {{SimbaHintedContractObj.contract_class_name}}:
             close_files(files)
             return res
             {%- else -%}
+            {% if is_accessor -%}
             res = await self.simba_contract.call_method("{{method_name}}", inputs, query_args = query_args)
             return res
+            {%- else -%}
+            res = await self.simba_contract.submit_method("{{method_name}}", inputs, query_args = query_args)
+            return res
+            {%- endif -%}
             {%- endif %}
 
     def {{method_name}}_sync(
@@ -98,17 +104,17 @@ class {{SimbaHintedContractObj.contract_class_name}}:
         files: List[Tuple] = None,
         {% endif -%}
         query_args: Optional[dict] = None,
-        qry_mthd: Optional[bool] = False,
+        do_query: Optional[bool] = False,
         search_filter: SearchFilter = None):
         {%- if accepts_files %}
         """
-        If qry_mthd == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
+        If do_query == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
 
         files parameter should be list with tuple elements of form (file_name, file_path) or (file_name, readable_file_like_object). see libsimba.file_handler for further details on what open_files expects as arguments
         """
         {%- else %}
         """
-        If qry_mthd == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
+        If do_query == True, then invocations of {{method_name}} will be queried. Otherwise {{method_name}} will be invoked with inputs.
         
         """
         {%- endif %}
@@ -121,8 +127,9 @@ class {{SimbaHintedContractObj.contract_class_name}}:
         }
         convert_classes(inputs)
         query_args = query_args or {}
-        if qry_mthd:
-                res = self.simba_contract_sync.query_method("{{method_name}}", query_args = query_args, search_filter = search_filter)
+        if do_query:
+            res = self.simba_contract_sync.query_method("{{method_name}}", query_args = query_args, search_filter = search_filter)
+            return res
         else:
             {% if accepts_files -%}
             files = open_files(files)
@@ -130,7 +137,12 @@ class {{SimbaHintedContractObj.contract_class_name}}:
             close_files(files)
             return res
             {%- else -%}
+            {% if is_accessor -%}
             res = self.simba_contract_sync.call_method("{{method_name}}", inputs, query_args = query_args)
             return res
+            {%- else -%}
+            res = self.simba_contract_sync.submit_method("{{method_name}}", inputs, query_args = query_args)
+            return res
+            {%- endif -%}
             {%- endif %}
     {% endfor %}

@@ -1,5 +1,6 @@
 import json
 from typing import List, Optional
+from libsimba.decorators import filter_set
 from libsimba.simba_request import SimbaRequest
 from libsimba.simba_contract_sync import SimbaContractSync
 
@@ -12,22 +13,40 @@ class SimbaContract(SimbaContractSync):
             self.app_name, self.contract_name
         )
 
+    @filter_set
     async def query_method(self, method_name: str, query_args: Optional[dict] = None):
         query_args = query_args or {}
         return await SimbaRequest(
             "v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args
         ).send()
 
-    async def call_method(
-        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    async def _call_method(
+        self, method_name: str, inputs: dict, http_method: Optional[str] = "POST", query_args: Optional[dict] = None
     ):
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
         return await SimbaRequest(
             "v2/apps/{}/{}/".format(self.contract_uri, method_name),
             query_args,
-            method="POST",
+            method=http_method,
         ).send(json_payload=json.dumps(inputs))
+
+    async def call_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
+        http_method = "GET"
+        return await self._call_method(
+            method_name, inputs, http_method=http_method, query_args=query_args
+        )
+
+    async def submit_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
+        http_method = "POST"
+        return await self._call_method(
+            method_name, inputs, http_method=http_method, query_args=query_args
+        )
+
 
     # Example files: files = {'file': open('report.xls', 'rb')}
     async def call_contract_method_with_files(

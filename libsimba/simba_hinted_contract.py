@@ -116,6 +116,23 @@ class SimbaHintedContract:
                 return True 
         log.debug(f'[{func_name}] :: EXIT : False')
         return False
+
+    def is_accessor(self, method_name:str) -> bool:
+        """
+        returns a bool indicating whether method_name is an accessor (getter)
+        Args:
+            method_name (str): method_name for which we want to determine if files are accepted or not
+        Returns:
+            bool: 
+        """
+        func_name = "SimbaHintedContract.is_accessor"
+        params = {
+            "method_name": method_name,
+        }
+        log.debug(f'[{func_name}]: :: ENTER : params : {params}')
+        _is_accessor = self.contract_methods[method_name]['accessor']
+        log.debug(f'[{func_name}] :: EXIT : _is_accessor : ${_is_accessor}')
+        return _is_accessor
     
     def file_methods(self) -> List[str]:
         """
@@ -425,7 +442,7 @@ class SimbaHintedContract:
             return arr_type
         return full_type
 
-    def method_info(self, method_name:str, accepts_files:bool, it_returns:bool) -> dict:
+    def method_info(self, method_name:str, accepts_files:bool, it_returns:bool, is_accessor: bool) -> dict:
         """
         method_info produces a dict of info for method
         
@@ -448,7 +465,9 @@ class SimbaHintedContract:
         method_dict = {
             "method_name": method_name,
             "accepts_files": accepts_files,
-            "param_info": []}
+            "param_info": [],
+            "is_accessor": is_accessor,
+            }
         for param in params:
             input_dict = {}
             param_name = param['name']
@@ -484,7 +503,8 @@ class SimbaHintedContract:
         for method_name in self.contract_methods:
             accepts_files = self.accepts_files(method_name)
             it_returns = self.return_data_types(method_name, as_dict=False)
-            info_for_methods.append(self.method_info(method_name, accepts_files, it_returns))
+            is_accessor = self.is_accessor(method_name)
+            info_for_methods.append(self.method_info(method_name, accepts_files, it_returns, is_accessor))
         return info_for_methods
 
     def write_contract(self):
