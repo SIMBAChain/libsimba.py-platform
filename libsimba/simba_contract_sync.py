@@ -64,6 +64,22 @@ class SimbaContractSync(ParamCheckingContract):
             method=http_method,
         ).send_sync(json_payload=json.dumps(inputs))
 
+    def call_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
+        http_method = "GET"
+        return self._call_method(
+            method_name, inputs, http_method=http_method, query_args=query_args
+        )
+
+    def submit_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
+        http_method = "POST"
+        return self._call_method(
+            method_name, inputs, http_method=http_method, query_args=query_args
+        )
+
     # Example files: files = {'file': open('report.xls', 'rb')}
     def call_contract_method_with_files(
         self,
@@ -98,21 +114,6 @@ class SimbaContractSync(ParamCheckingContract):
             method="POST",
         ).send_sync(json_payload=json.dumps(inputs), files=files)
 
-    def call_method(
-        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
-    ):
-        http_method = "GET"
-        return self._call_method(
-            method_name, inputs, http_method=http_method, query_args=query_args
-        )
-
-    def submit_method(
-        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
-    ):
-        http_method = "POST"
-        return self._call_method(
-            method_name, inputs, http_method=http_method, query_args=query_args
-        )
 
     @filter_set
     def get_transactions(self, query_args: Optional[dict] = None):
