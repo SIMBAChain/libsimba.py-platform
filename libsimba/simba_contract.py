@@ -1,175 +1,105 @@
 import json
-from typing import List, Optional, Any, Dict
+from typing import List, Optional
 from libsimba.decorators import filter_set
 from libsimba.simba_request import SimbaRequest
-from libsimba.param_checking_contract import ParamCheckingContract
+from libsimba.simba_contract_sync import SimbaContractSync
 
 
-class SimbaContract(ParamCheckingContract):
+class SimbaContract(SimbaContractSync):
     def __init__(self, base_api_url: str, app_name: str, contract_name: str):
-        self.app_name = app_name
-        self.contract_name = contract_name
-        SimbaRequest.base_api_url = base_api_url
-        self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
-        self.metadata = self.get_metadata()
-        self.params_restricted = self.param_restrictions()
+        super().__init__(base_api_url, app_name, contract_name)
+        # probably don't need this property anymore
+        self.sync_contract_uri = "{}/sync/contract/{}".format(
+            self.app_name, self.contract_name
+        )
 
-    
-    def query_method(self, query_args: dict, method_name: str):
-        """
-        Query transactions by method
-
-        :param method_name: The method name
-        :type method_name: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *search_filter* (``SearchFilter``) - Optional
-        :return: List of transaction details
-        :rtype: List[json]
-        """
-        return SimbaRequest(
+    @filter_set
+    async def query_method(self, method_name: str, query_args: Optional[dict] = None):
+        query_args = query_args or {}
+        return await SimbaRequest(
             "v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args
         ).send()
 
-    def call_method(
-        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    async def _call_method(
+        self, method_name: str, inputs: dict, http_method: Optional[str] = "POST", query_args: Optional[dict] = None
     ):
-        """
-        Call a contract method
-
-        :param method_name: The method name
-        :type method_name: str
-        :param inputs: The method arguments
-        :type inputs: dict
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *query_args* (``QueryArgs``) - Optional
-        :return: Transaction detail
-        :rtype: json
-        """
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
-        return SimbaRequest(
+        return await SimbaRequest(
             "v2/apps/{}/{}/".format(self.contract_uri, method_name),
             query_args,
-            method="POST",
+            method=http_method,
         ).send(json_payload=json.dumps(inputs))
 
+    async def call_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
+        http_method = "GET"
+        return await self._call_method(
+            method_name, inputs, http_method=http_method, query_args=query_args
+        )
+
+    async def submit_method(
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
+    ):
+        http_method = "POST"
+        return await self._call_method(
+            method_name, inputs, http_method=http_method, query_args=query_args
+        )
+
+
     # Example files: files = {'file': open('report.xls', 'rb')}
-    def call_contract_method_with_files(
+    async def call_contract_method_with_files(
         self,
         method_name: str,
         inputs: dict,
-        files: Optional[dict] = None,
+        files=None,
         query_args: Optional[dict] = None,
     ):
-        """
-        Call a contract method and upload off-chain files
-
-        :param method_name: The method name
-        :type method_name: str
-        :param inputs: The method arguments
-        :type inputs: dict
-        :param files: The files in the form of {'file_1': '<raw binary>'}
-        :type files: dict
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *query_args* (``QueryArgs``) - Optional
-        :return: Transaction detail
-        :rtype: json
-        """
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
-        return SimbaRequest(
-            "v2/apps/{}/{}/".format(self.contract_uri, method_name),
+        return await SimbaRequest(
+            "v2/apps/{}/{}/".format(self.async_contract_uri, method_name),
             query_args,
             method="POST",
         ).send(json_payload=json.dumps(inputs), files=files)
 
-    @filter_set
-    def get_transactions(self, query_args: Optional[dict] = None):
-        """
-        List all transactions
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *search_filter* (``SearchFilter``) - Optional
-        :return: List of transaction details
-        :rtype: List[json]
-        """
+    async def get_transactions(self, query_args: Optional[dict] = None):
         query_args = query_args or {}
-        return SimbaRequest(
+        return await SimbaRequest(
             "v2/apps/{}/transactions/".format(self.contract_uri), query_args
         ).send()
 
-    def query_events(self, event_name: str, query_args: Optional[dict] = None):
+    async def query_events(self, event_name: str, query_args: Optional[dict] = None):
         query_args = query_args or {}
-        return SimbaRequest(
+        return await SimbaRequest(
             "v2/apps/{}/events/{}/".format(self.contract_uri, event_name), query_args
         ).send()
 
-    def validate_bundle_hash(self, bundle_hash: str, query_args: Optional[dict] = None):
-        """
-        Validate a previously created bundle using the contract name and bundle hash. This will examine the bundle manifest and the file hashes defined in it against the files in off chain storage, ensuring that all the referenced data has not been tampered with. The errors element will contain any validation errors encountered.
-
-        :param bundle_hash: The hash or UUID of the bundle
-        :type bundle_hash: str
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *query_args* (``QueryArgs``) - Optional
-        :return: An object containing any errors if the validation has failed.
-        :rtype: json
-        """
+    async def validate_bundle_hash(
+        self, bundle_hash: str, query_args: Optional[dict] = None
+    ):
         query_args = query_args or {}
-        return SimbaRequest(
+        return await SimbaRequest(
             "v2/apps/{}/validate/{}/{}".format(
                 self.app_name, self.contract_name, bundle_hash
             ),
             query_args,
         ).send()
 
-    @filter_set
-    def get_transaction_statuses(
+    async def get_transaction_statuses(
         self, txn_hashes: List[str] = None, query_args: Optional[dict] = None
     ):
-        """
-        List all transactions
-
-        This function expects either a SearchFilter with the search term `transaction_hash__in`. Example:
-
-        search_filter = SearchFilter(transaction_hash__in='hash1,hash2,hash3')
-
-        Or a list of txn hashes.
-
-        :param \**kwargs:
-            See below
-
-        :Keyword Arguments:
-            * *search_filter* (``SearchFilter``)
-            * *txn_hashes* (``List[str]``)
-        :return: List of transaction status details
-        :rtype: List[json]
-        """
+        # transaction status for a list of txn hashes
+        # filter[transaction_hash.in] can be a key in query_args, or the txn_hashes param
+        # if filter is not in the query_args, and txn_hashes is given,
+        # this method correctly formats the filter string in query_args
         query_args = query_args or {}
         if isinstance(txn_hashes, str):
             txn_hashes = [txn_hashes]
         if "filter[transaction_hash.in]" not in query_args and txn_hashes:
             query_args["filter[transaction_hash.in]"] = ",".join(txn_hashes)
-        return SimbaRequest(
+        return await SimbaRequest(
             "v2/apps/{}/contract/{}/transactions".format(
                 self.app_name, self.contract_name
             ),
