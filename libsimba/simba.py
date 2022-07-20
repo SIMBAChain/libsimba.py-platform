@@ -18,7 +18,7 @@ class Simba(SimbaSync):
     async def whoami(self):
         return await SimbaRequest("user/whoami/").send()
 
-    def smart_contract_client(self, app_name, contract_name):
+    def smart_contract_client(self, app_name: str, contract_name: str):
         return SimbaContract(self.base_api_url, app_name, contract_name)
 
     # -------------------------------------------------

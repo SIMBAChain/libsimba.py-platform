@@ -154,6 +154,17 @@ class KeywordConverter:
         self.keyword_dict = self.keyword_conversion()
     
     def keyword_conversion(self):
+        """
+        The purpose of this method is to avoid naming collisions in our output language
+        We do this by switching te casing of the first letter of method and object names in our output langauge
+        if the name collides with a reserved word
+
+        So if a smart contract developer named a method "dict", and they were outputting a Python file,
+        then the python name would be converted to "Dict"
+
+        Returns:
+            kw_dict: dict
+        """
         if self.language.lower() == "python":
             kw_dict = {}
             for kw in keyword.kwlist:
