@@ -4,7 +4,7 @@ from libsimba.simba_contract import SimbaContract
 from libsimba.decorators import filter_set
 from libsimba.settings import BASE_API_URL
 from libsimba.simba_request import SimbaRequest
-from libsimba.simba_sync import SimbaSync, QueryArgs
+from libsimba.simba_sync import SimbaSync
 
 import logging
 
@@ -31,7 +31,7 @@ class Simba(SimbaSync):
     """
 
     @filter_set
-    async def list_applications(self, query_args: dict):
+    async def list_applications(self, query_args: Optional[dict] = None):
         return await SimbaRequest("/v2/apps/", query_args).send()
 
     """
@@ -55,7 +55,7 @@ class Simba(SimbaSync):
     """
 
     @filter_set
-    async def list_application_transactions(self, query_args: dict, app_id: str):
+    async def list_application_transactions(self, app_id: str, query_args: Optional[dict] = None):
         return await SimbaRequest(
             "/v2/apps/{}/transactions/".format(app_id), query_args
         ).send()
@@ -82,7 +82,7 @@ class Simba(SimbaSync):
 
     @filter_set
     async def list_contract_transactions(
-        self, query_args: dict, app_id: str, contract_name: str
+        self, app_id: str, contract_name: str, query_args: Optional[dict] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/transactions/".format(app_id, contract_name),
@@ -96,7 +96,7 @@ class Simba(SimbaSync):
     """
 
     @filter_set
-    async def list_contracts(self, query_args: dict, app_id: str):
+    async def list_contracts(self, app_id: str, query_args: Optional[dict] = None):
         return await SimbaRequest(
             "/v2/apps/{}/contracts/".format(app_id), query_args
         ).send()
@@ -176,6 +176,9 @@ class Simba(SimbaSync):
         bundle_hash: str,
         query_args: Optional[dict] = None,
     ):
+        url =  "/v2/apps/{}/contract/{}/bundle/{}/manifest/".format(
+                app_id, contract_name, bundle_hash
+            )
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/bundle/{}/manifest/".format(
                 app_id, contract_name, bundle_hash
@@ -226,7 +229,7 @@ class Simba(SimbaSync):
 
     @filter_set
     async def list_contract_instances(
-        self, query_args: dict, app_id: str, contract_name: str
+        self, app_id: str, contract_name: str, query_args: Optional[dict] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/contracts/".format(app_id, contract_name),
@@ -241,7 +244,7 @@ class Simba(SimbaSync):
 
     @filter_set
     async def list_events(
-        self, query_args: dict, app_id: str, contract_name: str, event_name: str
+        self, app_id: str, contract_name: str, event_name: str, query_args: Optional[dict] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/events/{}/".format(
@@ -301,11 +304,11 @@ class Simba(SimbaSync):
     @filter_set
     async def list_transactions_by_address(
         self,
-        query_args: QueryArgs,
         app_id: str,
         contract_name: str,
         identifier: str,
         method_name: str,
+        query_args: Optional[dict] = None,
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/address/{}/{}/".format(
@@ -346,11 +349,11 @@ class Simba(SimbaSync):
     @filter_set
     async def list_transactions_by_asset(
         self,
-        query_args: QueryArgs,
         app_id: str,
         contract_name: str,
         identifier: str,
         method_name: str,
+        query_args: Optional[dict] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/asset/{}/{}/".format(
@@ -390,7 +393,7 @@ class Simba(SimbaSync):
 
     @filter_set
     async def list_transactions_by_method(
-        self, query_args: QueryArgs, app_id: str, contract_name: str, method_name: str
+        self, app_id: str, contract_name: str, method_name: str, query_args: Optional[dict] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/{}/".format(app_id, contract_name, method_name),

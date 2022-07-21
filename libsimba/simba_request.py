@@ -18,7 +18,7 @@ class SimbaRequest:
 
     def __init__(self, endpoint: str, query_params: dict, method: str = "get"):
         self.endpoint = endpoint
-        self.query_params = query_params
+        self.query_params = query_params or {}
         self.method = method.lower()
         self._response = None
         self._json_response = None

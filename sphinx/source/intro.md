@@ -82,7 +82,7 @@ If you are using the Keycloak authentication flow, you will need to set the foll
 (Please see [setting up keycloak client credentials flow](#SETTING-UP-FOR-KEYCLOAK-CLIENT-CREDENTIALS-FLOW) for an example on how to setup for keycloak authentication.)
 
 ## *Usage*
-### *Instantiate the SIMBA Enterprise client*
+### *Instantiate the SIMBA client*
 
 ```python
 from libsimba.simba import Simba
@@ -90,34 +90,52 @@ from libsimba.simba import Simba
 simba = Simba() 
 ```
 
-Or if you prefer to write asynchronous python code, then you can instantiate the async client:
+The Simba client object runs asynchronously by default, so if you would like to run synchronous code instead, you should use the SimbaSync client:
 
 ```python
-from libsimba.simba import SimbaAsync
+from libsimba.simba import SimbaSync
 
-simba_async = SimbaAsync()
+simba_async = SimbaSync()
 ```
 
-All method signatures for both clients are exactly the same. The only difference being that most async client methods will return a coroutine. The two most accepted ways to write asynchronous python code is to either use `asyncio` or the `async/await` syntax. See example below:
+All method signatures for both clients are exactly the same. The only difference being that most default Simba client methods will return a coroutine. The two most accepted ways to write asynchronous python code is to either use `asyncio` or the `async/await` syntax. See example below:
 
 ```python
+from libsimba.simba import Simba
+simba = Simba() 
 import asyncio
 
-# Using asyncio
-apps = asyncio.run(simba_async.list_applications())
-# .. do something with apps
+# Using Simba's default async behavior
 
-# Using async/await
+# Using Simba and async/await
 class Example:
     async def do_something(self):
-        apps = await simba_async.list_applications()
+        apps = await simba.list_applications()
         # .. do something with apps
+
+# Using simba and asyncio
+# if you want to run directly from a file and see printed output, use soemthing like the following:
+async def main():
+    apps = await simba.list_applications()
+asyncio.run(main())
 ```
 
-### *List all SIMBA applications available to your user*
 ```python
-simba.list_applications()
+from libsimba.simba import SimbaSync
+simba_async = SimbaSync()
+# Using SimbaSync with synchronous behavior
+class SyncExample:
+    async def do_something(self):
+        apps = simba_sync.list_applications()
+        # .. do something with apps
+
+# Making a call and viewing printed result:
+def main():
+    apps = simba_sync.list_applications()
+main()
 ```
+
+### *Both the Simba and SimbaSync Client Will Return The Same Data:*
 
 Sample output:
 ```
@@ -131,7 +149,8 @@ All methods returning a python list may be filtered using the SearchFilter class
 ```python
 from libsimba import SearchFilter
 
-apps = simba.list_applications(
+# using SimbaSync
+apps = simba_sync.list_applications(
     search_filter=SearchFilter(name__contains='myappname')
     )
 ```
@@ -140,7 +159,8 @@ The SearchFilter may be constructed using [Django's Field Lookup Syntax](https:/
 
 ### *List all contracts for a given SIMBA application*
 ```python
-simba.list_contracts("myapi")
+# using SimbaSync
+simba_sync.list_contracts("myapi")
 ```
 
 Sample output:
@@ -152,7 +172,8 @@ Please note the `api_name` field. The `api_name` field is used as the parameter 
 
 ### *Get info on the contract method calls and data types*
 ```python
-simba.list_contract_info("myapi", "fabcar-test1")
+# using SimbaSync
+simba_sync.list_contract_info("myapi", "fabcar-test1")
 ```
 
 Sample output:
@@ -164,7 +185,7 @@ The contract information provides details on methods, method parameters and retu
 
 ### *Example method call using the SDK*
 ```python
-from libsimba.simba import Simba
+from libsimba.simba import SimbaSync
 import logging
 log = logging.getLogger(__name__)
 
@@ -178,8 +199,8 @@ simba_app_inputs = {
     'color': 'Yellow',
     'owner': 'Dale'
 }
-
-contract = simba.smart_contract_client(simba_app_name, simba_app_contract)
+simba_sync = SimbaSync()
+contract = simba_sync.smart_contract_client(simba_app_name, simba_app_contract)
 log.info('{} :: {}'.format(simba_app_name, simba_app_contract))
 
 r = contract.call_method(simba_app_method, simba_app_inputs)
@@ -192,23 +213,23 @@ log.info(r)
 ### *Self-signing transaction*
 It's also possible to sign the transaction with a locally loaded wallet.
 ```python
-from libsimba.simba import Simba
+from libsimba.simba_sync import SimbaSync
 from libsimba.simba_wallet import Wallet
 
-simba = Simba()
+simba_sync = SimbaSync()
 wallet = Wallet()
 wallet.generate_from_private_key("private_key")
 
-contract = simba.smart_contract_client(simba_app_name, simba_app_contract)
+contract = simba_sync.smart_contract_client(simba_app_name, simba_app_contract)
 unsigned_transaction = contract.call_method(simba_app_method, simba_app_inputs)
 signed_transaction = wallet.sign_transaction(unsigned_transaction['raw_transaction'])
 
-response = simba.submit_signed_transaction(
+response = simba_sync.submit_signed_transaction(
     app_id=simba_app_name, txn_id=unsigned_transaction['id'], txn=signed_transaction)
 ```
 
 ## *Use a class-based approach to interacting with your deployed smart contract*
-LibSimba.py-platform has a module called the SimbaHintedContract that can be used to autogenerate a smart contract class containing method calls matching those of the given deployed smart contract. This makes it easier for developers to write applications as they no longer need write and then wire up functions for each smart contract method.
+LibSimba.py-platform has a module called the SimbaHintedContract that can be used to autogenerate a smart contract class containing method names matching those of the given deployed smart contract. This makes it easier for developers to write applications as they no longer need write and then wire up functions for each smart contract method.
 
 For a complete example on how to use the SimbaHintedContract module please see this [example notebook](https://github.com/SIMBAChain/libsimba.py-platform/blob/docs/notebooks/examples.ipynb).
 ------------------------------------------------
