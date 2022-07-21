@@ -98,8 +98,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#usage"><em>Usage</em></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#instantiate-the-simba-enterprise-client"><em>Instantiate the SIMBA Enterprise client</em></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#list-all-simba-applications-available-to-your-user"><em>List all SIMBA applications available to your user</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#instantiate-the-simba-client"><em>Instantiate the SIMBA client</em></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#both-the-simba-and-simbasync-client-will-return-the-same-data"><em>Both the Simba and SimbaSync Client Will Return The Same Data:</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#use-the-searchfilter-class-to-filter-the-list-of-results"><em>Use the SearchFilter class to filter the list of results</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#list-all-contracts-for-a-given-simba-application"><em>List all contracts for a given SIMBA application</em></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-info-on-the-contract-method-calls-and-data-types"><em>Get info on the contract method calls and data types</em></a></li>
@@ -324,39 +324,56 @@
 </div>
 <div class="section" id="usage">
 <h2><em>Usage</em><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="instantiate-the-simba-enterprise-client">
-<h3><em>Instantiate the SIMBA Enterprise client</em><a class="headerlink" href="#instantiate-the-simba-enterprise-client" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="instantiate-the-simba-client">
+<h3><em>Instantiate the SIMBA client</em><a class="headerlink" href="#instantiate-the-simba-client" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">Simba</span>
 
 <span class="n">simba</span> <span class="o">=</span> <span class="n">Simba</span><span class="p">()</span> 
 </pre></div>
 </div>
-<p>Or if you prefer to write asynchronous python code, then you can instantiate the async client:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">SimbaAsync</span>
+<p>The Simba client object runs asynchronously by default, so if you would like to run synchronous code instead, you should use the SimbaSync client:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">SimbaSync</span>
 
-<span class="n">simba_async</span> <span class="o">=</span> <span class="n">SimbaAsync</span><span class="p">()</span>
+<span class="n">simba_async</span> <span class="o">=</span> <span class="n">SimbaSync</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>All method signatures for both clients are exactly the same. The only difference being that most async client methods will return a coroutine. The two most accepted ways to write asynchronous python code is to either use <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> or the <code class="docutils literal notranslate"><span class="pre">async/await</span></code> syntax. See example below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<p>All method signatures for both clients are exactly the same. The only difference being that most default Simba client methods will return a coroutine. The two most accepted ways to write asynchronous python code is to either use <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> or the <code class="docutils literal notranslate"><span class="pre">async/await</span></code> syntax. See example below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">Simba</span>
+<span class="n">simba</span> <span class="o">=</span> <span class="n">Simba</span><span class="p">()</span> 
+<span class="kn">import</span> <span class="nn">asyncio</span>
 
-<span class="c1"># Using asyncio</span>
-<span class="n">apps</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">simba_async</span><span class="o">.</span><span class="n">list_applications</span><span class="p">())</span>
-<span class="c1"># .. do something with apps</span>
+<span class="c1"># Using Simba&#39;s default async behavior</span>
 
-<span class="c1"># Using async/await</span>
+<span class="c1"># Using Simba and async/await</span>
 <span class="k">class</span> <span class="nc">Example</span><span class="p">:</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">apps</span> <span class="o">=</span> <span class="k">await</span> <span class="n">simba_async</span><span class="o">.</span><span class="n">list_applications</span><span class="p">()</span>
+        <span class="n">apps</span> <span class="o">=</span> <span class="k">await</span> <span class="n">simba</span><span class="o">.</span><span class="n">list_applications</span><span class="p">()</span>
         <span class="c1"># .. do something with apps</span>
+
+<span class="c1"># Using simba and asyncio</span>
+<span class="c1"># if you want to run directly from a file and see printed output, use soemthing like the following:</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">apps</span> <span class="o">=</span> <span class="k">await</span> <span class="n">simba</span><span class="o">.</span><span class="n">list_applications</span><span class="p">()</span>
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">SimbaSync</span>
+<span class="n">simba_async</span> <span class="o">=</span> <span class="n">SimbaSync</span><span class="p">()</span>
+<span class="c1"># Using SimbaSync with synchronous behavior</span>
+<span class="k">class</span> <span class="nc">SyncExample</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">apps</span> <span class="o">=</span> <span class="n">simba_sync</span><span class="o">.</span><span class="n">list_applications</span><span class="p">()</span>
+        <span class="c1"># .. do something with apps</span>
+
+<span class="c1"># Making a call and viewing printed result:</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">apps</span> <span class="o">=</span> <span class="n">simba_sync</span><span class="o">.</span><span class="n">list_applications</span><span class="p">()</span>
+<span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="list-all-simba-applications-available-to-your-user">
-<h3><em>List all SIMBA applications available to your user</em><a class="headerlink" href="#list-all-simba-applications-available-to-your-user" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simba</span><span class="o">.</span><span class="n">list_applications</span><span class="p">()</span>
-</pre></div>
-</div>
+<div class="section" id="both-the-simba-and-simbasync-client-will-return-the-same-data">
+<h3><em>Both the Simba and SimbaSync Client Will Return The Same Data:</em><a class="headerlink" href="#both-the-simba-and-simbasync-client-will-return-the-same-data" title="Permalink to this headline">¶</a></h3>
 <p>Sample output:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;51974f7a-6076-46c3-a37b-cb948f3e3642&#39;</span><span class="p">,</span> <span class="s1">&#39;display_name&#39;</span><span class="p">:</span> <span class="s1">&#39;My Application&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;myapi&#39;</span><span class="p">,</span> <span class="s1">&#39;created_on&#39;</span><span class="p">:</span> <span class="s1">&#39;2019-12-16T10:00:00Z&#39;</span><span class="p">,</span> <span class="s1">&#39;components&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;fd3d9987-fc1e-4d95-8aef-cec18b27f949&#39;</span><span class="p">,</span> <span class="s1">&#39;api_name&#39;</span><span class="p">:</span> <span class="s1">&#39;fabcar-test1&#39;</span><span class="p">,</span> <span class="s1">&#39;created_on&#39;</span><span class="p">:</span> <span class="s1">&#39;2021-11-16T17:16:55.265625Z&#39;</span><span class="p">,</span> <span class="s1">&#39;updated_on&#39;</span><span class="p">:</span> <span class="s1">&#39;2021-11-16T17:16:55.265635Z&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;ff271d8c-760f-4958-87d7-7c66cd626be0&#39;</span><span class="p">,</span> <span class="s1">&#39;api_name&#39;</span><span class="p">:</span> <span class="s1">&#39;myapi&#39;</span><span class="p">,</span> <span class="s1">&#39;created_on&#39;</span><span class="p">:</span> <span class="s1">&#39;2019-12-16T10:00:00Z&#39;</span><span class="p">,</span> <span class="s1">&#39;updated_on&#39;</span><span class="p">:</span> <span class="s1">&#39;2020-05-30T10:00:00Z&#39;</span><span class="p">}],</span> <span class="s1">&#39;organisation&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;51974f7a-6076-46c3-a37b-cb948f3e3641&#39;</span><span class="p">,</span> <span class="s1">&#39;display_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Simbachain&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;org-1&#39;</span><span class="p">},</span> <span class="s1">&#39;metadata&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;openapi&#39;</span><span class="p">:</span> <span class="s1">&#39;http://localhost:8000/v2/apps/myapi/&#39;</span><span class="p">}]</span>
 </pre></div>
@@ -368,7 +385,8 @@
 <p>All methods returning a python list may be filtered using the SearchFilter class. Here is an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba</span> <span class="kn">import</span> <span class="n">SearchFilter</span>
 
-<span class="n">apps</span> <span class="o">=</span> <span class="n">simba</span><span class="o">.</span><span class="n">list_applications</span><span class="p">(</span>
+<span class="c1"># using SimbaSync</span>
+<span class="n">apps</span> <span class="o">=</span> <span class="n">simba_sync</span><span class="o">.</span><span class="n">list_applications</span><span class="p">(</span>
     <span class="n">search_filter</span><span class="o">=</span><span class="n">SearchFilter</span><span class="p">(</span><span class="n">name__contains</span><span class="o">=</span><span class="s1">&#39;myappname&#39;</span><span class="p">)</span>
     <span class="p">)</span>
 </pre></div>
@@ -377,7 +395,8 @@
 </div>
 <div class="section" id="list-all-contracts-for-a-given-simba-application">
 <h3><em>List all contracts for a given SIMBA application</em><a class="headerlink" href="#list-all-contracts-for-a-given-simba-application" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simba</span><span class="o">.</span><span class="n">list_contracts</span><span class="p">(</span><span class="s2">&quot;myapi&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># using SimbaSync</span>
+<span class="n">simba_sync</span><span class="o">.</span><span class="n">list_contracts</span><span class="p">(</span><span class="s2">&quot;myapi&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Sample output:</p>
@@ -388,7 +407,8 @@
 </div>
 <div class="section" id="get-info-on-the-contract-method-calls-and-data-types">
 <h3><em>Get info on the contract method calls and data types</em><a class="headerlink" href="#get-info-on-the-contract-method-calls-and-data-types" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simba</span><span class="o">.</span><span class="n">list_contract_info</span><span class="p">(</span><span class="s2">&quot;myapi&quot;</span><span class="p">,</span> <span class="s2">&quot;fabcar-test1&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># using SimbaSync</span>
+<span class="n">simba_sync</span><span class="o">.</span><span class="n">list_contract_info</span><span class="p">(</span><span class="s2">&quot;myapi&quot;</span><span class="p">,</span> <span class="s2">&quot;fabcar-test1&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Sample output:</p>
@@ -414,7 +434,7 @@
     <span class="s1">&#39;owner&#39;</span><span class="p">:</span> <span class="s1">&#39;Dale&#39;</span>
 <span class="p">}</span>
 
-<span class="n">contract</span> <span class="o">=</span> <span class="n">simba</span><span class="o">.</span><span class="n">smart_contract_client</span><span class="p">(</span><span class="n">simba_app_name</span><span class="p">,</span> <span class="n">simba_app_contract</span><span class="p">)</span>
+<span class="n">contract</span> <span class="o">=</span> <span class="n">simba_sync</span><span class="o">.</span><span class="n">smart_contract_client</span><span class="p">(</span><span class="n">simba_app_name</span><span class="p">,</span> <span class="n">simba_app_contract</span><span class="p">)</span>
 <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> :: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">simba_app_name</span><span class="p">,</span> <span class="n">simba_app_contract</span><span class="p">))</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">contract</span><span class="o">.</span><span class="n">call_method</span><span class="p">(</span><span class="n">simba_app_method</span><span class="p">,</span> <span class="n">simba_app_inputs</span><span class="p">)</span>
@@ -431,15 +451,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">Simba</span>
 <span class="kn">from</span> <span class="nn">libsimba.simba_wallet</span> <span class="kn">import</span> <span class="n">Wallet</span>
 
-<span class="n">simba</span> <span class="o">=</span> <span class="n">Simba</span><span class="p">()</span>
+<span class="n">simba_sync</span> <span class="o">=</span> <span class="n">SimbaSync</span><span class="p">()</span>
 <span class="n">wallet</span> <span class="o">=</span> <span class="n">Wallet</span><span class="p">()</span>
 <span class="n">wallet</span><span class="o">.</span><span class="n">generate_from_private_key</span><span class="p">(</span><span class="s2">&quot;private_key&quot;</span><span class="p">)</span>
 
-<span class="n">contract</span> <span class="o">=</span> <span class="n">simba</span><span class="o">.</span><span class="n">smart_contract_client</span><span class="p">(</span><span class="n">simba_app_name</span><span class="p">,</span> <span class="n">simba_app_contract</span><span class="p">)</span>
+<span class="n">contract</span> <span class="o">=</span> <span class="n">simba_sync</span><span class="o">.</span><span class="n">smart_contract_client</span><span class="p">(</span><span class="n">simba_app_name</span><span class="p">,</span> <span class="n">simba_app_contract</span><span class="p">)</span>
 <span class="n">unsigned_transaction</span> <span class="o">=</span> <span class="n">contract</span><span class="o">.</span><span class="n">call_method</span><span class="p">(</span><span class="n">simba_app_method</span><span class="p">,</span> <span class="n">simba_app_inputs</span><span class="p">)</span>
 <span class="n">signed_transaction</span> <span class="o">=</span> <span class="n">wallet</span><span class="o">.</span><span class="n">sign_transaction</span><span class="p">(</span><span class="n">unsigned_transaction</span><span class="p">[</span><span class="s1">&#39;raw_transaction&#39;</span><span class="p">])</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">simba</span><span class="o">.</span><span class="n">submit_signed_transaction</span><span class="p">(</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">simba_sync</span><span class="o">.</span><span class="n">submit_signed_transaction</span><span class="p">(</span>
     <span class="n">app_id</span><span class="o">=</span><span class="n">simba_app_name</span><span class="p">,</span> <span class="n">txn_id</span><span class="o">=</span><span class="n">unsigned_transaction</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">txn</span><span class="o">=</span><span class="n">signed_transaction</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -447,7 +467,7 @@
 </div>
 <div class="section" id="use-a-class-based-approach-to-interacting-with-your-deployed-smart-contract">
 <h2><em>Use a class-based approach to interacting with your deployed smart contract</em><a class="headerlink" href="#use-a-class-based-approach-to-interacting-with-your-deployed-smart-contract" title="Permalink to this headline">¶</a></h2>
-<p>LibSimba.py-platform has a module called the SimbaHintedContract that can be used to autogenerate a smart contract class containing method calls matching those of the given deployed smart contract. This makes it easier for developers to write applications as they no longer need write and then wire up functions for each smart contract method.</p>
+<p>LibSimba.py-platform has a module called the SimbaHintedContract that can be used to autogenerate a smart contract class containing method names matching those of the given deployed smart contract. This makes it easier for developers to write applications as they no longer need write and then wire up functions for each smart contract method.</p>
 </div>
 <div class="section" id="for-a-complete-example-on-how-to-use-the-simbahintedcontract-module-please-see-this-example-notebook">
 <h2>For a complete example on how to use the SimbaHintedContract module please see this <a class="reference external" href="https://github.com/SIMBAChain/libsimba.py-platform/blob/docs/notebooks/examples.ipynb">example notebook</a>.<a class="headerlink" href="#for-a-complete-example-on-how-to-use-the-simbahintedcontract-module-please-see-this-example-notebook" title="Permalink to this headline">¶</a></h2>
