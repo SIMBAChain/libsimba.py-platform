@@ -31,7 +31,7 @@ class Simba(SimbaSync):
     """
 
     @filter_set
-    async def list_applications(self, query_args: dict):
+    async def list_applications(self, query_args: Optional[QueryArgs] = None):
         return await SimbaRequest("/v2/apps/", query_args).send()
 
     """
@@ -41,7 +41,7 @@ class Simba(SimbaSync):
     """
 
     async def retrieve_application(
-        self, app_id: str, query_args: Optional[dict] = None
+        self, app_id: str, query_args: Optional[QueryArgs] = None
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -55,7 +55,7 @@ class Simba(SimbaSync):
     """
 
     @filter_set
-    async def list_application_transactions(self, query_args: dict, app_id: str):
+    async def list_application_transactions(self, app_id: str, query_args: Optional[QueryArgs] = None):
         return await SimbaRequest(
             "/v2/apps/{}/transactions/".format(app_id), query_args
         ).send()
@@ -67,7 +67,7 @@ class Simba(SimbaSync):
     """
 
     async def get_application_contract(
-        self, app_id: str, contract_name: str, query_args: Optional[dict] = None
+        self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -82,7 +82,7 @@ class Simba(SimbaSync):
 
     @filter_set
     async def list_contract_transactions(
-        self, query_args: dict, app_id: str, contract_name: str
+        self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/transactions/".format(app_id, contract_name),
@@ -96,7 +96,7 @@ class Simba(SimbaSync):
     """
 
     @filter_set
-    async def list_contracts(self, query_args: dict, app_id: str):
+    async def list_contracts(self, app_id: str, query_args: Optional[QueryArgs] = None):
         return await SimbaRequest(
             "/v2/apps/{}/contracts/".format(app_id), query_args
         ).send()
@@ -112,7 +112,7 @@ class Simba(SimbaSync):
         app_id: str,
         contract_name: str,
         bundle_hash: str,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -131,7 +131,7 @@ class Simba(SimbaSync):
         app_id: str,
         contract_name: str,
         bundle_hash: str,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -153,7 +153,7 @@ class Simba(SimbaSync):
         contract_name: str,
         bundle_hash: str,
         file_name,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -174,7 +174,7 @@ class Simba(SimbaSync):
         app_id: str,
         contract_name: str,
         bundle_hash: str,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/bundle/{}/manifest/".format(
@@ -190,7 +190,7 @@ class Simba(SimbaSync):
     """
 
     async def list_contract_info(
-        self, app_id: str, contract_name: str, query_args: Optional[dict] = None
+        self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -208,7 +208,7 @@ class Simba(SimbaSync):
         app_id: str,
         contract_name: str,
         contract_id: str,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -226,7 +226,7 @@ class Simba(SimbaSync):
 
     @filter_set
     async def list_contract_instances(
-        self, query_args: dict, app_id: str, contract_name: str
+        self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/contracts/".format(app_id, contract_name),
@@ -241,7 +241,7 @@ class Simba(SimbaSync):
 
     @filter_set
     async def list_events(
-        self, query_args: dict, app_id: str, contract_name: str, event_name: str
+        self, app_id: str, contract_name: str, event_name: str, query_args: Optional[QueryArgs] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/events/{}/".format(
@@ -261,7 +261,7 @@ class Simba(SimbaSync):
         app_id: str,
         contract_name: str,
         receipt_hash: str,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -282,7 +282,7 @@ class Simba(SimbaSync):
         app_id: str,
         contract_name: str,
         transaction_hash: str,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -301,11 +301,11 @@ class Simba(SimbaSync):
     @filter_set
     async def list_transactions_by_address(
         self,
-        query_args: QueryArgs,
         app_id: str,
         contract_name: str,
         identifier: str,
         method_name: str,
+        query_args: Optional[QueryArgs] = None,
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/address/{}/{}/".format(
@@ -327,7 +327,7 @@ class Simba(SimbaSync):
         identifier: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/address/{}/{}/".format(
@@ -346,11 +346,11 @@ class Simba(SimbaSync):
     @filter_set
     async def list_transactions_by_asset(
         self,
-        query_args: QueryArgs,
         app_id: str,
         contract_name: str,
         identifier: str,
         method_name: str,
+        query_args: Optional[QueryArgs] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/asset/{}/{}/".format(
@@ -372,7 +372,7 @@ class Simba(SimbaSync):
         identifier: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/asset/{}/{}/".format(
@@ -390,7 +390,7 @@ class Simba(SimbaSync):
 
     @filter_set
     async def list_transactions_by_method(
-        self, query_args: QueryArgs, app_id: str, contract_name: str, method_name: str
+        self, app_id: str, contract_name: str, method_name: str, query_args: Optional[QueryArgs] = None
     ):
         return await SimbaRequest(
             "/v2/apps/{}/contract/{}/{}/".format(app_id, contract_name, method_name),
@@ -409,7 +409,7 @@ class Simba(SimbaSync):
         contract_name: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -431,7 +431,7 @@ class Simba(SimbaSync):
         identifier: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         return await SimbaRequest(
             "/v2/apps/{}/sync/contract/{}/address/{}/{}/".format(
@@ -454,7 +454,7 @@ class Simba(SimbaSync):
         identifier: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         return await SimbaRequest(
             "/v2/apps/{}/sync/contract/{}/asset/{}/{}/".format(
@@ -476,7 +476,7 @@ class Simba(SimbaSync):
         contract_name: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[dict] = None,
+        query_args: Optional[QueryArgs] = None,
     ):
         return await SimbaRequest(
             "/v2/apps/{}/sync/contract/{}/{}/".format(
@@ -493,7 +493,7 @@ class Simba(SimbaSync):
     """
 
     async def create_contract_instance(
-        self, app_id: str, contract_name: str, inputs: Optional[dict] = None, query_args: Optional[dict] = None
+        self, app_id: str, contract_name: str, inputs: Optional[dict] = None, query_args: Optional[QueryArgs] = None
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -509,7 +509,7 @@ class Simba(SimbaSync):
     """
     # TODO(Adam): Make a transaction object to assist the user. Right now it's just a dict
     async def submit_signed_transaction(
-        self, app_id: str, txn_id: str, txn: dict, inputs: Optional[dict] = None, query_args: Optional[dict] = None
+        self, app_id: str, txn_id: str, txn: dict, inputs: Optional[dict] = None, query_args: Optional[QueryArgs] = None
     ):
         query_args = query_args or {}
         return await SimbaRequest(
