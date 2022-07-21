@@ -185,7 +185,7 @@ The contract information provides details on methods, method parameters and retu
 
 ### *Example method call using the SDK*
 ```python
-from libsimba.simba import Simba
+from libsimba.simba import SimbaSync
 import logging
 log = logging.getLogger(__name__)
 
@@ -199,7 +199,7 @@ simba_app_inputs = {
     'color': 'Yellow',
     'owner': 'Dale'
 }
-
+simba_sync = SimbaSync()
 contract = simba_sync.smart_contract_client(simba_app_name, simba_app_contract)
 log.info('{} :: {}'.format(simba_app_name, simba_app_contract))
 
@@ -213,7 +213,7 @@ log.info(r)
 ### *Self-signing transaction*
 It's also possible to sign the transaction with a locally loaded wallet.
 ```python
-from libsimba.simba import Simba
+from libsimba.simba_sync import SimbaSync
 from libsimba.simba_wallet import Wallet
 
 simba_sync = SimbaSync()
