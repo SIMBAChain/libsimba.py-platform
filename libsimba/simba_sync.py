@@ -64,7 +64,7 @@ class SimbaSync:
     """
 
     @filter_set
-    def list_applications(self, query_args: Optional[QueryArgs] = None):
+    def list_applications(self, query_args: Optional[dict] = None):
         """
         GET /v2/apps/
 
@@ -80,7 +80,7 @@ class SimbaSync:
         """
         return SimbaRequest("/v2/apps/", query_args).send_sync()
 
-    def get_application(self, app_id: str, query_args: Optional[QueryArgs] = None):
+    def get_application(self, app_id: str, query_args: Optional[dict] = None):
         """
         GET /v2/apps/{application}/
 
@@ -100,7 +100,7 @@ class SimbaSync:
         return SimbaRequest("/v2/apps/{}/".format(app_id), query_args).send_sync()
 
     @filter_set
-    def list_application_transactions(self, app_id: str, query_args: Optional[QueryArgs] = None):
+    def list_application_transactions(self, app_id: str, query_args: Optional[dict] = None):
         """
         GET
         /v2/apps/{application}/transactions/
@@ -122,7 +122,7 @@ class SimbaSync:
         ).send_sync()
 
     def get_application_contract(
-        self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
+        self, app_id: str, contract_name: str, query_args: Optional[dict] = None
     ):
         """
         GET /v2/apps/{application}/contract/{contract_name}/
@@ -149,7 +149,7 @@ class SimbaSync:
 
     @filter_set
     def list_contract_transactions(
-        self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
+        self, app_id: str, contract_name: str, query_args: Optional[dict] = None
     ):
         """
         GET
@@ -176,7 +176,7 @@ class SimbaSync:
         ).send_sync()
 
     @filter_set
-    def list_contracts(self, app_id: str, query_args: Optional[QueryArgs] = None):
+    def list_contracts(self, app_id: str, query_args: Optional[dict] = None):
         """
         GET
         /v2/apps/{application}/contracts/
@@ -201,7 +201,7 @@ class SimbaSync:
         app_id: str,
         contract_name: str,
         bundle_hash: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -235,7 +235,7 @@ class SimbaSync:
         app_id: str,
         contract_name: str,
         bundle_hash: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -272,7 +272,7 @@ class SimbaSync:
         contract_name: str,
         bundle_hash: str,
         file_name: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -310,7 +310,7 @@ class SimbaSync:
         app_id: str,
         contract_name: str,
         bundle_hash: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -342,7 +342,7 @@ class SimbaSync:
         ).send_sync()
 
     def list_contract_info(
-        self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
+        self, app_id: str, contract_name: str, query_args: Optional[dict] = None
     ):
         """
         GET
@@ -373,7 +373,7 @@ class SimbaSync:
         app_id: str,
         contract_name: str,
         contract_id: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -408,7 +408,7 @@ class SimbaSync:
 
     @filter_set
     def list_contract_instances(
-        self, app_id: str, contract_name: str, query_args: Optional[QueryArgs] = None
+        self, app_id: str, contract_name: str, query_args: Optional[dict] = None
     ):
         """
         GET
@@ -438,7 +438,7 @@ class SimbaSync:
 
     @filter_set
     def list_events(
-        self, app_id: str, contract_name: str, event_name: str, query_args: Optional[QueryArgs] = None
+        self, app_id: str, contract_name: str, event_name: str, query_args: Optional[dict] = None
     ):
         """
         GET
@@ -473,7 +473,7 @@ class SimbaSync:
         app_id: str,
         contract_name: str,
         receipt_hash: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -509,7 +509,7 @@ class SimbaSync:
         app_id: str,
         contract_name: str,
         transaction_hash: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -547,7 +547,7 @@ class SimbaSync:
         contract_name: str,
         identifier: str,
         method_name: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -586,7 +586,7 @@ class SimbaSync:
         identifier: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
         sender_address: str = None,
     ):
         """
@@ -636,7 +636,7 @@ class SimbaSync:
         contract_name: str,
         identifier: str,
         method_name: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         GET
@@ -675,7 +675,7 @@ class SimbaSync:
         identifier: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
         sender_address: str = None,
     ):
         """
@@ -720,7 +720,7 @@ class SimbaSync:
 
     @filter_set
     def list_transactions_by_method(
-        self, app_id: str, contract_name: str, method_name: str, query_args: Optional[QueryArgs] = None
+        self, app_id: str, contract_name: str, method_name: str, query_args: Optional[dict] = None
     ):
         """
         GET
@@ -755,7 +755,7 @@ class SimbaSync:
         contract_name: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
         sender_address: str = None,
     ):
         """
@@ -801,7 +801,7 @@ class SimbaSync:
         identifier: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
         sender_address: str = None,
     ):
         """
@@ -851,7 +851,7 @@ class SimbaSync:
         identifier: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
         sender_address: str = None,
     ):
         """
@@ -900,7 +900,7 @@ class SimbaSync:
         contract_name: str,
         method_name: str,
         inputs: dict,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
         sender_address: str = None,
     ):
         """
@@ -945,7 +945,7 @@ class SimbaSync:
         self,
         app_id: str,
         contract_name: str,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
         sender_address: str = None,
     ):
         """
@@ -985,7 +985,7 @@ class SimbaSync:
         app_id: str,
         txn_id: str,
         txn: dict,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         POST

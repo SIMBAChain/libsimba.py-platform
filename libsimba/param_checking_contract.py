@@ -1,9 +1,5 @@
-from typing import List, Optional, Any, Dict
-from libsimba.decorators import auth_required
-from libsimba.utils import build_url
+from typing import List, Optional, Any
 from libsimba.simba_request import SimbaRequest
-import requests
-import json
 
 
 class ParamCheckingContract:

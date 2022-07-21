@@ -3,7 +3,6 @@ from typing import List, Optional
 from libsimba.decorators import filter_set
 from libsimba.simba_request import SimbaRequest
 from libsimba.simba_contract_sync import SimbaContractSync
-from libsimba.simba_sync import QueryArgs
 
 
 class SimbaContract(SimbaContractSync):
@@ -15,14 +14,14 @@ class SimbaContract(SimbaContractSync):
         )
 
     @filter_set
-    async def query_method(self, method_name: str, query_args: Optional[QueryArgs] = None):
+    async def query_method(self, method_name: str, query_args: Optional[dict] = None):
         query_args = query_args or {}
         return await SimbaRequest(
             "v2/apps/{}/{}/".format(self.contract_uri, method_name), query_args
         ).send()
 
     async def _call_method(
-        self, method_name: str, inputs: dict, http_method: Optional[str] = "POST", query_args: Optional[QueryArgs] = None
+        self, method_name: str, inputs: dict, http_method: Optional[str] = "POST", query_args: Optional[dict] = None
     ):
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
@@ -33,7 +32,7 @@ class SimbaContract(SimbaContractSync):
         ).send(json_payload=json.dumps(inputs))
 
     async def call_method(
-        self, method_name: str, inputs: dict, query_args: Optional[QueryArgs] = None
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
     ):
         http_method = "GET"
         return await self._call_method(
@@ -41,7 +40,7 @@ class SimbaContract(SimbaContractSync):
         )
 
     async def submit_method(
-        self, method_name: str, inputs: dict, query_args: Optional[QueryArgs] = None
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
     ):
         http_method = "POST"
         return await self._call_method(
@@ -55,7 +54,7 @@ class SimbaContract(SimbaContractSync):
         method_name: str,
         inputs: dict,
         files=None,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
@@ -65,20 +64,20 @@ class SimbaContract(SimbaContractSync):
             method="POST",
         ).send(json_payload=json.dumps(inputs), files=files)
 
-    async def get_transactions(self, query_args: Optional[QueryArgs] = None):
+    async def get_transactions(self, query_args: Optional[dict] = None):
         query_args = query_args or {}
         return await SimbaRequest(
             "v2/apps/{}/transactions/".format(self.contract_uri), query_args
         ).send()
 
-    async def query_events(self, event_name: str, query_args: Optional[QueryArgs] = None):
+    async def query_events(self, event_name: str, query_args: Optional[dict] = None):
         query_args = query_args or {}
         return await SimbaRequest(
             "v2/apps/{}/events/{}/".format(self.contract_uri, event_name), query_args
         ).send()
 
     async def validate_bundle_hash(
-        self, bundle_hash: str, query_args: Optional[QueryArgs] = None
+        self, bundle_hash: str, query_args: Optional[dict] = None
     ):
         query_args = query_args or {}
         return await SimbaRequest(
@@ -89,7 +88,7 @@ class SimbaContract(SimbaContractSync):
         ).send()
 
     async def get_transaction_statuses(
-        self, txn_hashes: List[str] = None, query_args: Optional[QueryArgs] = None
+        self, txn_hashes: List[str] = None, query_args: Optional[dict] = None
     ):
         # transaction status for a list of txn hashes
         # filter[transaction_hash.in] can be a key in query_args, or the txn_hashes param

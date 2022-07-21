@@ -4,7 +4,6 @@ from libsimba.decorators import filter_set
 from libsimba.simba_request import SimbaRequest
 from libsimba.param_checking_contract import ParamCheckingContract
 from libsimba.decorators import filter_set
-from libsimba.simba_sync import QueryArgs
 
 
 class SimbaContractSync(ParamCheckingContract):
@@ -18,7 +17,7 @@ class SimbaContractSync(ParamCheckingContract):
         self.params_restricted = self.param_restrictions()
 
     @filter_set
-    def query_method(self, method_name: str, query_args: Optional[QueryArgs] = None):
+    def query_method(self, method_name: str, query_args: Optional[dict] = None):
         """
         Query transactions by method
 
@@ -38,7 +37,7 @@ class SimbaContractSync(ParamCheckingContract):
         ).send_sync()
 
     def _call_method(
-        self, method_name: str, inputs: dict, http_method: Optional[str] = "POST", query_args: Optional[QueryArgs] = None
+        self, method_name: str, inputs: dict, http_method: Optional[str] = "POST", query_args: Optional[dict] = None
     ):
         """
         Call a contract method
@@ -66,7 +65,7 @@ class SimbaContractSync(ParamCheckingContract):
         ).send_sync(json_payload=json.dumps(inputs))
 
     def call_method(
-        self, method_name: str, inputs: dict, query_args: Optional[QueryArgs] = None
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
     ):
         http_method = "GET"
         return self._call_method(
@@ -74,7 +73,7 @@ class SimbaContractSync(ParamCheckingContract):
         )
 
     def submit_method(
-        self, method_name: str, inputs: dict, query_args: Optional[QueryArgs] = None
+        self, method_name: str, inputs: dict, query_args: Optional[dict] = None
     ):
         http_method = "POST"
         return self._call_method(
@@ -87,7 +86,7 @@ class SimbaContractSync(ParamCheckingContract):
         method_name: str,
         inputs: dict,
         files: Optional[dict] = None,
-        query_args: Optional[QueryArgs] = None,
+        query_args: Optional[dict] = None,
     ):
         """
         Call a contract method and upload off-chain files
@@ -117,7 +116,7 @@ class SimbaContractSync(ParamCheckingContract):
 
 
     @filter_set
-    def get_transactions(self, query_args: Optional[QueryArgs] = None):
+    def get_transactions(self, query_args: Optional[dict] = None):
         """
         List all transactions
 
@@ -134,13 +133,13 @@ class SimbaContractSync(ParamCheckingContract):
             "v2/apps/{}/transactions/".format(self.contract_uri), query_args
         ).send_sync()
 
-    def query_events(self, event_name: str, query_args: Optional[QueryArgs] = None):
+    def query_events(self, event_name: str, query_args: Optional[dict] = None):
         query_args = query_args or {}
         return SimbaRequest(
             "v2/apps/{}/events/{}/".format(self.contract_uri, event_name), query_args
         ).send_sync()
 
-    def validate_bundle_hash(self, bundle_hash: str, query_args: Optional[QueryArgs] = None):
+    def validate_bundle_hash(self, bundle_hash: str, query_args: Optional[dict] = None):
         """
         Validate a previously created bundle using the contract name and bundle hash. This will examine the bundle manifest and the file hashes defined in it against the files in off chain storage, ensuring that all the referenced data has not been tampered with. The errors element will contain any validation errors encountered.
 
@@ -165,7 +164,7 @@ class SimbaContractSync(ParamCheckingContract):
 
     @filter_set
     def get_transaction_statuses(
-        self, txn_hashes: List[str] = None, query_args: Optional[QueryArgs] = None
+        self, txn_hashes: List[str] = None, query_args: Optional[dict] = None
     ):
         """
         List all transactions
