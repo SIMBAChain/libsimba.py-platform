@@ -9,6 +9,7 @@ from libsimba import templates
 import importlib.resources
 import re
 from libsimba.keyword_converter import KeywordConverter
+from libsimba.simba_sync import SimbaSync
 import logging
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -17,7 +18,7 @@ class SimbaHintedContract:
     def __init__(
         self, 
         app_name: str, 
-        contract_name: str, 
+        contract_name: str = None,
         contract_class_name: str = None,
         template_name: str = 'py_contract.tpl',
         base_api_url: str = BASE_API_URL,
@@ -30,15 +31,13 @@ class SimbaHintedContract:
         will be represented as subclasses of our contract class
         Note that the underlying functionality for method calls is still contained in https://github.com/SIMBAChain/libsimba.py-platform/blob/main/libsimba/simba_contract.py
         Args:
-            metadata (str): string formatted json metadata from our smart contract
             app_name (str): name of the app that accesses our smart contract
-            base_api_url (str, optional): Defaults to 'https://api.sep.dev.simbachain.com/'.
+            base_api_url (str, optional): Defaults to {BASE_API_URL}.
             output_file (str, optional): name of .py file we wish to write our .py version of contract to. Defaults to 'newContract.py'.
             contract_class_name (str, optional): if we want our python class representation of our contract to have a different name 
                 than contract_name, then we specify it with this parameter
         """
-        func_name = "SimbaHintedContract.__init__"
-        log.debug(f'[{func_name}] :: ENTER : ')
+        log.debug(f' :: ENTER : ')
         self.app_name = app_name
         self.language = language
         self.contract_name = contract_name
@@ -54,23 +53,62 @@ class SimbaHintedContract:
         self.struct_names = {fullName: fullName.split('.')[1] for fullName in self.contract.get('types', {})}
         self.keyword_converter = KeywordConverter(language = self.language)
         self.template_name = template_name
-        self.write_contract()
+
+    @classmethod
+    def write_all_contracts(cls, app_name: str):
+        """
+        class method for writing Python versions of all deployed contracts for app {app_name}
+
+        Args:
+            app_name (str): name of the app. This method will create Python versions of all
+                deployed smart contracts for that app
+        """
+        log.debug(f' :: ENTER :')
+        all_contracts = cls._get_all_deployed_contracts_for_app(app_name)
+        for contract in all_contracts:
+            contract_name = contract['asset_type']
+            shc = SimbaHintedContract(app_name, contract_name=contract_name)
+            shc.write_contract()
+
+    def write_contract(self):
+        """
+        write_contract will use a jinja template to create a .py formatted version of our 
+        smart contract, for which our contract will be represented as a class
+        """
+        log.debug(f' :: ENTER :')
+        tmplt = importlib.resources.read_text(templates, self.template_name)
+        template = Template(tmplt)
+        output = template.render(SimbaHintedContractObj=self)
+        # following line is to avoid mixing spaces and tabs
+        output = output.replace('\t', '    ')
+        log.info(f':: simba : writing {self.contract_name} to {self.output_file}')
+        with open(self.output_file, 'w') as f:
+            f.write(output)
+        log.debug(f' :: EXIT :')
+
+    @classmethod
+    def _get_all_deployed_contracts_for_app(cls, app_name: str):
+        log.debug(f' :: ENTER :')
+        simba_sync = SimbaSync()
+        resp = simba_sync.list_contracts(app_name)
+        contracts = resp
+        return contracts
+
 
     @auth_required 
     def get_metadata(self, headers, opts: Optional[dict] = None):
-        func_name = "SimbaHintedContract.get_metadata"
         params = {
             "headers": headers,
             "opts": opts,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         opts = opts or {}
         url = build_url(self.base_api_url, "v2/apps/{}/?format=json".format(self.contract_uri), opts) 
         resp = requests.get(url, headers=headers)
         metadata = resp.json()['metadata']
         for item in metadata['contract']:
             log.debug(f'{item}: {metadata["contract"][item]}\n\n')
-        log.debug(f'[{func_name}] :: EXIT : metadata : {metadata}')
+        log.debug(f' :: EXIT : metadata : {metadata}')
         return metadata
 
     def validate_class_name(self, class_name:str):
@@ -82,18 +120,17 @@ class SimbaHintedContract:
             ValueError: if class_name begins with a digit
             ValueError: if class_name contains nonalpha or non_underscore
         """
-        func_name = "SimbaHintedContract.validate_class_name"
         params = {
             "class_name": class_name,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         if class_name[0].isdigit():
-            log.error(f'[{func_name}] :: ERROR : Class name cannot begin with a digit')
+            log.error(f' :: ERROR : Class name cannot begin with a digit')
             raise ValueError("validate_class_name: Class name cannot begin with a digit")
         match = re.search('[^0-9a-zA-Z_]', class_name)
         if match is not None:
             error_message = "Class Name can only contain alphanumeric chars and underscores"
-            log.error(f'[{func_name}] :: EXIT : {error_message}')
+            log.error(f' :: EXIT : {error_message}')
             raise ValueError(f'validate_class_name: {error_message}')
     
     def accepts_files(self, method_name:str) -> bool:
@@ -105,16 +142,15 @@ class SimbaHintedContract:
         Returns:
             bool: 
         """
-        func_name = "SimbaHintedContract.acceptes_files"
         params = {
             "method_name": method_name,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         for param in self.contract_methods[method_name]['params']:
             if param['name'] == '_bundleHash':
-                log.debug(f'[{func_name}] :: EXIT : True')
+                log.debug(f' :: EXIT : True')
                 return True 
-        log.debug(f'[{func_name}] :: EXIT : False')
+        log.debug(f' :: EXIT : False')
         return False
 
     def is_accessor(self, method_name:str) -> bool:
@@ -125,13 +161,12 @@ class SimbaHintedContract:
         Returns:
             bool: 
         """
-        func_name = "SimbaHintedContract.is_accessor"
         params = {
             "method_name": method_name,
         }
-        log.debug(f'[{func_name}]: :: ENTER : params : {params}')
+        log.debug(f': :: ENTER : params : {params}')
         _is_accessor = self.contract_methods[method_name]['accessor']
-        log.debug(f'[{func_name}] :: EXIT : _is_accessor : ${_is_accessor}')
+        log.debug(f' :: EXIT : _is_accessor : ${_is_accessor}')
         return _is_accessor
     
     def file_methods(self) -> List[str]:
@@ -143,10 +178,9 @@ class SimbaHintedContract:
         Returns:
             List[str]: list of contract methods that accept files
         """
-        func_name = "TestSimbaHinted.file_methods"
-        log.debug(f'[{func_name}] :: ENTER :')
+        log.debug(f' :: ENTER :')
         f_methods = [method for method in self.contract_methods if self.accepts_files(method)]
-        log.debug(f'[{func_name}] :: EXIT : f_methods : {f_methods}')
+        log.debug(f' :: EXIT : f_methods : {f_methods}')
         return f_methods
 
     def return_data_types(self, method_name:str, as_dict=False) -> Union[List, Dict]:
@@ -162,19 +196,18 @@ class SimbaHintedContract:
         Returns:
             [type]: [description]
         """
-        func_name = "TestSimbaHinted.return_data_types"
         params = {
             "method_name": method_name,
             "as_dict": as_dict,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         m = self.contract_methods.get(method_name, None)
         if as_dict:
             result = {}
         else:
             result = []
         if not m:
-            log.debug(f'[{func_name}] :: EXIT : no file methods')
+            log.debug(f' :: EXIT : no file methods')
             return None
         for i, r in enumerate(m.get('returns', [])):
             dt = r['type'] # come back and handle type later
@@ -183,7 +216,7 @@ class SimbaHintedContract:
                 result[str(i)] = native_type
             else:
                 result.append(native_type)
-        log.debug(f'[{func_name}] :: EXIT : m : {m}')
+        log.debug(f' :: EXIT : m : {m}')
         return result
 
     def handle_array(self, full_type: str, basic_type: str) -> str:
@@ -197,16 +230,15 @@ class SimbaHintedContract:
         Returns:
             arr_type (str): string formatted version of array or nested array
         """
-        func_name = "SimbaHintedContract.handle_array"
         params = {
             "full_type": full_type,
             "basic_type": basic_type,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         arr_type = f'List[{basic_type}]'
         for _ in range(self.get_dimensions(full_type)-1):
             arr_type = f'List[{arr_type}]'
-        log.debug(f'[{func_name}] :: EXIT : arr_type : {arr_type}')
+        log.debug(f' :: EXIT : arr_type : {arr_type}')
         return arr_type
 
     def is_array(self, param) -> bool:
@@ -220,14 +252,13 @@ class SimbaHintedContract:
         Returns:
             bool: self-explanatory
         """
-        func_name = "SimbaHintedContract.is_array"
         params = {
             "param": param,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         pattern = re.compile("^[0-9a-z-A-Z.\[\]]*\[[0-9]*\]$")
         is_an_array = pattern.match(param) != None
-        log.debug(f'[{func_name}] :: EXIT : is_an_array : {is_an_array}')
+        log.debug(f' :: EXIT : is_an_array : {is_an_array}')
         return is_an_array
 
     def handle_struct(self, struct_param: str, forward_reference:bool = True):
@@ -238,12 +269,11 @@ class SimbaHintedContract:
         Returns:
             [str]: string in either 'libsimba.Contract.Struct' or 'List[libsimba.Contract.Struct]'form
         """
-        func_name = "SimbaHintedContract.handle_struct"
         params = {
             "struct_param": struct_param,
             "forward_reference": forward_reference,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         if self.is_array(struct_param):
             struct_type = struct_param[:struct_param.find('[')]
             new_struct_type = struct_type.split('.')[1]
@@ -251,7 +281,7 @@ class SimbaHintedContract:
             struct_type = new_struct_type
             if forward_reference:
                 struct_type = f'"{struct_type}"'
-            log.debug(f'[{func_name}] :: EXIT : struct_type : {struct_type}')
+            log.debug(f' :: EXIT : struct_type : {struct_type}')
             return struct_type
 
         new_struct_type = struct_param.split('.')[1]
@@ -260,7 +290,7 @@ class SimbaHintedContract:
 
         if forward_reference:
             struct_type = f'"{struct_type}"'
-        log.debug(f'[{func_name}] :: EXIT : struct_type : {struct_type}')
+        log.debug(f' :: EXIT : struct_type : {struct_type}')
         return struct_type
 
     def component_default_value(self, component_type:str, def_val: Any = None):
@@ -273,12 +303,11 @@ class SimbaHintedContract:
         Returns:
             [Any]: default value for component_type
         """
-        func_name = "SimbaHintedContract.component_default_value"
         params = {
             "component_type": component_type,
             "def_val": def_val,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         # # Until a reason for returning default values other than None
         # # is discovered we will return None
         # if component_type == 'int' and def_val == None:
@@ -287,7 +316,7 @@ class SimbaHintedContract:
         #     def_val = ''
         # if component_type.startswith('List') and def_val == None:
         #     def_val = []
-        # log.debug(f'[{func_name}] :: EXIT : def_val : {def_val}')
+        # log.debug(f' :: EXIT : def_val : {def_val}')
         # # return None in str form if we don't find a proper default value
         return None
 
@@ -301,18 +330,17 @@ class SimbaHintedContract:
         Returns:
             struct_dict: dict : dict containing info for struct we will represent as a class
         """
-        func_name = "SimbaHintedContract.struct_class_name_and_components"
         params = {
             "struct": struct,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         struct_dict = {}
         class_name = self.struct_names[struct]
         class_name = self.keyword_converter.convert_keyword(class_name)
         struct_dict["class_name"] = class_name
         structs = self.contract.get('types', {})
         if not structs:
-            log.debug(f'[{func_name}] :: EXIT : no structs')
+            log.debug(f' :: EXIT : no structs')
             return
         else:
             components = structs[struct]['components']
@@ -339,7 +367,7 @@ class SimbaHintedContract:
             else:
                 comp_dict["default_value"] = default_value
             struct_dict["components"].append(comp_dict)
-        log.debug(f'[{func_name}] :: EXIT : struct_dict : {struct_dict}')
+        log.debug(f' :: EXIT : struct_dict : {struct_dict}')
         # return sig_assignments
         return struct_dict
 
@@ -350,8 +378,7 @@ class SimbaHintedContract:
             [List[dict]]: list of dicts containing info on structs we
             wish to represent as classes
         """
-        func_name = "SimbaHintedContract.calsses_from_structs"
-        log.debug(f'[{func_name}] :: ENTER :')
+        log.debug(f' :: ENTER :')
         struct_dicts = []
         structs = self.contract.get('types', {})
         for struct in structs:
@@ -368,12 +395,11 @@ class SimbaHintedContract:
         Returns:
             [int]: number of dimensions in array
         """
-        func_name = "SimbaHintedContract.get_dimensions"
         params = {
             "param": param,
             "dims": dims,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         if '[' not in param:
             return dims 
         param = param[param.find('[')+1:]
@@ -393,12 +419,11 @@ class SimbaHintedContract:
         Returns:
             (str): string that represents either an array of form List[typ] or typ, where typ is a data type
         """
-        func_name = "SimbaHintedContract.hinted_data_type"
         params = {
             "param": param,
             "forward_reference": forward_reference,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         full_type = param['type']
         if full_type.startswith('struct'):
             full_type = full_type[7:]
@@ -453,13 +478,12 @@ class SimbaHintedContract:
         Returns:
             method_dict: list containing [method signature, method input dict as string]
         """
-        func_name = "SimbaHintedContract.method_info"
         params = {
             "method_name": method_name,
             "accepts_files": accepts_files,
             "it_returns": it_returns,
         }
-        log.debug(f'[{func_name}] :: ENTER : params : {params}')
+        log.debug(f' :: ENTER : params : {params}')
         params = self.contract_methods[method_name]['params']
         method_name = self.keyword_converter.convert_keyword(method_name)
         method_dict = {
@@ -486,7 +510,7 @@ class SimbaHintedContract:
             else:
                 input_dict["hint_type"] = hint_type
             method_dict['param_info'].append(input_dict)
-        log.debug(f'[{func_name}] :: EXIT : method_dict : {method_dict}')
+        log.debug(f' :: EXIT : method_dict : {method_dict}')
         return method_dict
 
     def info_for_all_methods(self) -> List[dict]:
@@ -497,8 +521,7 @@ class SimbaHintedContract:
             info_for_methods List[dict]: list of dicts containing info for all our
             methods
         """
-        func_name = "SimbaHintedContract.info_for_all_methods"
-        log.debug(f'[{func_name}] :: ENTER :')
+        log.debug(f' :: ENTER :')
         info_for_methods = []
         for method_name in self.contract_methods:
             accepts_files = self.accepts_files(method_name)
@@ -506,19 +529,3 @@ class SimbaHintedContract:
             is_accessor = self.is_accessor(method_name)
             info_for_methods.append(self.method_info(method_name, accepts_files, it_returns, is_accessor))
         return info_for_methods
-
-    def write_contract(self):
-        """
-        write_contract will use a jinja template to create a .py formatted version of our 
-        smart contract, for which our contract will be represented as a class
-        """
-        func_name = "SimbaHintedContract.write_contract"
-        log.debug(f'[{func_name}] :: ENTER :')
-        tmplt = importlib.resources.read_text(templates, self.template_name)
-        template = Template(tmplt)
-        output = template.render(SimbaHintedContractObj=self)
-        # following line is to avoid mixing spaces and tabs
-        output = output.replace('\t', '    ')
-        with open(self.output_file, 'w') as f:
-            f.write(output)
-        log.debug(f'[{func_name}] :: EXIT :')
