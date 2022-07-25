@@ -59,10 +59,10 @@ class SimbaContract(SimbaContractSync):
         query_args = query_args or {}
         self.validate_params(method_name, inputs)
         return await SimbaRequest(
-            "v2/apps/{}/{}/".format(self.async_contract_uri, method_name),
+            "v2/apps/{}/{}/".format(self.contract_uri, method_name),
             query_args,
             method="POST",
-        ).send(json_payload=json.dumps(inputs), files=files)
+        ).send(json_payload=inputs, files=files)
 
     async def get_transactions(self, query_args: Optional[dict] = None):
         query_args = query_args or {}

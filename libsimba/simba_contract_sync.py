@@ -112,7 +112,7 @@ class SimbaContractSync(ParamCheckingContract):
             "v2/apps/{}/{}/".format(self.sync_contract_uri, method_name),
             query_args,
             method="POST",
-        ).send_sync(json_payload=json.dumps(inputs), files=files)
+        ).send_sync(json_payload=inputs, files=files)
 
 
     @filter_set

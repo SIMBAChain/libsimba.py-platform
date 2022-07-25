@@ -45,7 +45,7 @@ class SimbaHintedContract:
         self.validate_class_name(self.contract_class_name)
         self.base_api_url = base_api_url
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
-        self.async_contract_uri = "{}/async/contract/{}".format(self.app_name, self.contract_name)
+        self.sync_contract_uri = "{}/sync/contract/{}".format(self.app_name, self.contract_name)
         self.metadata = self.get_metadata()
         self.contract = self.metadata['contract']
         self.contract_methods = self.contract['methods']

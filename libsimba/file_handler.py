@@ -47,7 +47,7 @@ def open_files(files: List[Tuple]) -> List[tuple]:
             )
         elif len(fileTuple) == 2:
             file_name, file_object_or_path = fileTuple
-            read_mode = "r"
+            read_mode = "rb"
             fileList.append(
                 get_file_for_upload(file_name, file_object_or_path, read_mode=read_mode)
             )
