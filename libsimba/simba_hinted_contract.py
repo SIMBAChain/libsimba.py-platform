@@ -81,7 +81,7 @@ class SimbaHintedContract:
         output = template.render(SimbaHintedContractObj=self)
         # following line is to avoid mixing spaces and tabs
         output = output.replace('\t', '    ')
-        log.info(f':: simba : writing {self.contract_name} to {self.output_file}')
+        log.info(f': simba : writing {self.contract_name} to {self.output_file}')
         with open(self.output_file, 'w') as f:
             f.write(output)
         log.debug(f' :: EXIT :')
