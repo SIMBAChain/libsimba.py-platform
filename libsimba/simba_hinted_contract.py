@@ -66,7 +66,7 @@ class SimbaHintedContract:
         log.debug(f' :: ENTER :')
         all_contracts = cls._get_all_deployed_contracts_for_app(app_name)
         for contract in all_contracts:
-            contract_name = contract['asset_type']
+            contract_name = contract['api_name']
             shc = SimbaHintedContract(app_name, contract_name=contract_name)
             shc.write_contract()
 
