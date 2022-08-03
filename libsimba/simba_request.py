@@ -55,8 +55,9 @@ class SimbaRequest:
             return self._process_response_sync(response, headers, fetch_all)
         elif self.method == "post":
             json_payload = json_payload or {}
-            data = {key: json.dumps(json_payload[key]) for key in json_payload}
+            # data = {key: json.dumps(json_payload[key]) for key in json_payload}
             if files is not None:
+                data = {key: json.dumps(json_payload[key]) for key in json_payload}
                 response = requests.post(
                     self.url,
                     headers=headers,
@@ -69,8 +70,8 @@ class SimbaRequest:
                 response = httpx.post(
                     self.url,
                     headers=headers,
-                    data=data,
-                    allow_redirects=True,
+                    data=json_payload,
+                    follow_redirects=True,
                 )
             return self._process_response_sync(response, headers)
 
@@ -92,8 +93,8 @@ class SimbaRequest:
                 )
             elif self.method == "post":
                 json_payload = json_payload or {}
-                data = {key: json.dumps(json_payload[key]) for key in json_payload}
                 if files is not None:
+                    data = {key: json.dumps(json_payload[key]) for key in json_payload}
                     response = await async_client.post(
                         self.url,
                         headers=headers,
@@ -106,7 +107,7 @@ class SimbaRequest:
                     response = await async_client.post(
                         self.url,
                         headers=headers,
-                        data=data,
+                        data=json_payload,
                         follow_redirects=True,
                     )
                 return await self._process_response(
