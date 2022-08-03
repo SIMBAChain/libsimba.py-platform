@@ -34,7 +34,7 @@ poetry install
 ## *Configuration*
 
 ### Django OAuth2 Toolkit Authentication
-Most users' environments will be using Django OAuth2 Toolkit for authentication. YOu will need to set some configuration variables to use this authentication flow (see below). To set these variables, you can either set environment variables, or you can create a .env file in the root of your project (in your libsimba.py-platform directory). 
+Most users' environments will be using Django OAuth2 Toolkit for authentication. You will need to set some configuration variables to use this authentication flow (see below). To set these variables, you can either set environment variables, or you can create a .env file in the root of your project (in your libsimba.py-platform directory). 
 
 If you're using a .env file, then an example file would look like (the SECRET and ID in this example are fake):
 
