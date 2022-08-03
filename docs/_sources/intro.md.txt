@@ -95,7 +95,7 @@ The Simba client object runs asynchronously by default, so if you would like to 
 ```python
 from libsimba.simba import SimbaSync
 
-simba_async = SimbaSync()
+simba_sync = SimbaSync()
 ```
 
 All method signatures for both clients are exactly the same. The only difference being that most default Simba client methods will return a coroutine. The two most accepted ways to write asynchronous python code is to either use `asyncio` or the `async/await` syntax. See example below:
@@ -122,7 +122,7 @@ asyncio.run(main())
 
 ```python
 from libsimba.simba import SimbaSync
-simba_async = SimbaSync()
+simb_async = SimbaSync()
 # Using SimbaSync with synchronous behavior
 class SyncExample:
     async def do_something(self):
@@ -160,7 +160,7 @@ The SearchFilter may be constructed using [Django's Field Lookup Syntax](https:/
 ### *List all contracts for a given SIMBA application*
 ```python
 # using SimbaSync
-simba_sync.list_contracts("myapi")
+simba_sync.list_contracts("myappname")
 ```
 
 Sample output:

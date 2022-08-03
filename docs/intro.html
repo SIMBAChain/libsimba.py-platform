@@ -334,7 +334,7 @@
 <p>The Simba client object runs asynchronously by default, so if you would like to run synchronous code instead, you should use the SimbaSync client:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">SimbaSync</span>
 
-<span class="n">simba_async</span> <span class="o">=</span> <span class="n">SimbaSync</span><span class="p">()</span>
+<span class="n">simba_sync</span> <span class="o">=</span> <span class="n">SimbaSync</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>All method signatures for both clients are exactly the same. The only difference being that most default Simba client methods will return a coroutine. The two most accepted ways to write asynchronous python code is to either use <code class="docutils literal notranslate"><span class="pre">asyncio</span></code> or the <code class="docutils literal notranslate"><span class="pre">async/await</span></code> syntax. See example below:</p>
@@ -358,7 +358,7 @@
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">libsimba.simba</span> <span class="kn">import</span> <span class="n">SimbaSync</span>
-<span class="n">simba_async</span> <span class="o">=</span> <span class="n">SimbaSync</span><span class="p">()</span>
+<span class="n">simb_async</span> <span class="o">=</span> <span class="n">SimbaSync</span><span class="p">()</span>
 <span class="c1"># Using SimbaSync with synchronous behavior</span>
 <span class="k">class</span> <span class="nc">SyncExample</span><span class="p">:</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -396,7 +396,7 @@
 <div class="section" id="list-all-contracts-for-a-given-simba-application">
 <h3><em>List all contracts for a given SIMBA application</em><a class="headerlink" href="#list-all-contracts-for-a-given-simba-application" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># using SimbaSync</span>
-<span class="n">simba_sync</span><span class="o">.</span><span class="n">list_contracts</span><span class="p">(</span><span class="s2">&quot;myapi&quot;</span><span class="p">)</span>
+<span class="n">simba_sync</span><span class="o">.</span><span class="n">list_contracts</span><span class="p">(</span><span class="s2">&quot;myappname&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Sample output:</p>
