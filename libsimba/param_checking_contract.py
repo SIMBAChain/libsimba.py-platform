@@ -1,9 +1,5 @@
-from typing import List, Optional, Any, Dict
-from libsimba.decorators import auth_required
-from libsimba.utils import build_url
+from typing import List, Optional, Any
 from libsimba.simba_request import SimbaRequest
-import requests
-import json
 
 
 class ParamCheckingContract:
@@ -12,7 +8,7 @@ class ParamCheckingContract:
         self.contract_name = contract_name
         self.base_api_url = base_api_url
         self.contract_uri = "{}/contract/{}".format(self.app_name, self.contract_name)
-        self.async_contract_uri = "{}/async/contract/{}".format(
+        self.sync_contract_uri = "{}/sync/contract/{}".format(
             self.app_name, self.contract_name
         )
         self.metadata = self.get_metatadata()
@@ -23,7 +19,7 @@ class ParamCheckingContract:
         query_args = query_args or {}
         resp = SimbaRequest(
             "v2/apps/{}/?format=json".format(self.contract_uri), query_args
-        ).send()
+        ).send_sync()
         return resp.get("metadata")
 
     def is_array(self, param) -> bool:
@@ -44,7 +40,6 @@ class ParamCheckingContract:
         Returns:
             [dict]: dict mapping of dimension -> array-length, eg {0: '4', 1: None, 2: '3', 3: '5'}
         """
-        print("arr:", arr)
         reverseArray = ""
         for ch in arr[::-1]:
             if ch == "[":
@@ -53,13 +48,11 @@ class ParamCheckingContract:
                 reverseArray += "["
             else:
                 reverseArray += ch
-        print("reverseArray:", reverseArray)
         arr_lengths = {}
         for i in range(self.get_dimensions(arr)):
             arr_len = reverseArray[reverseArray.find("[") + 1 : reverseArray.find("]")]
             arr_lengths[i] = int(arr_len) if arr_len else None
             reverseArray = reverseArray[reverseArray.find("]") + 1 :]
-        print("arr_lengths:", arr_lengths)
         return arr_lengths
 
     def get_dimensions(self, param: str, dims: Optional[int] = 0) -> int:
