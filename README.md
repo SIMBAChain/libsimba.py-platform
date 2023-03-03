@@ -1,4 +1,5 @@
-# libsimba.py-platform
+# DEPRECATED
+This SDK has been deprecated. For the new version of the SIMBA Chain Python SDK, see: https://github.com/SIMBAChain/libsimba
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/SIMBAChain/libsimba.py-platform/main?filepath=notebooks%2Fexamples.ipynb)
 
